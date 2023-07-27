@@ -18,7 +18,8 @@
   <!--     <ol id="listcontainer"></ol> --> 
     </div>
       <script>
-        
+        const {ipcRenderer}=require('electron');
+
         const lst=[];
         // let x=0;
         const maincontainer=document.getElementById('maincontainer')
@@ -85,7 +86,7 @@
         const urlPattern = /^(https?:\/\/)?([a-z0-9-]+\.)?[a-z0-9-]+\.[a-z]{2,}\/?.*$/i;
         const urlInput = inpp.value.trim();
         if (urlPattern.test(urlInput)) {
-          okbtn.disabled = false;
+          okbtn.disabled = lst.includes(urlInput);
         } else {
           okbtn.disabled = true;
         }})
@@ -117,13 +118,14 @@
      const radio=document.createElement('input');
      radio.type='radio';
         radio.name = 'radioGroup';
+      radio.value=input.value;
      label.setAttribute('for','radio');   
      // listcontainer.style.gap='1px';
      // listcontainer.style.listStyle='Disc';
      // listcontainer.style.justifyContent='space-even';
     //  listcontainer.style.justifyContent='left';
     // let lists=document.createElement('li');
-    label.textContent=input.value;
+    label.textContent=radio.value;
     let unique=label.textContent;
     
     if (lst.includes(unique)){
