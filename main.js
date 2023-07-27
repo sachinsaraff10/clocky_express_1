@@ -12,7 +12,7 @@ function createMainWindow() {
 
   mainWindow.loadFile('index.html'); // Load the HTML file for the renderer process
 }
-
+let urls = [];
 app.on('ready', createMainWindow);
 
 app.on('window-all-closed', () => {
@@ -26,3 +26,8 @@ app.on('activate', () => {
     createMainWindow();
   }
 });
+
+ipcMain.on('url-added',(event,url)=>{
+    urls.push(url);
+    
+})
