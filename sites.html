@@ -131,6 +131,7 @@
     if (lst.includes(unique)){
       button.disabled=true;
     }else{lst.push(unique);
+      ipcRenderer.send('url-added',unique);
       button.disabled=false;
     }
         radiocontainer.appendChild(radio);
