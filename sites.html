@@ -20,7 +20,7 @@
       <script>
         const {ipcRenderer}=require('electron');
 
-        const lst=[];
+        let lst=[];
         // let x=0;
         const maincontainer=document.getElementById('maincontainer')
   maincontainer.style.display='flex';
@@ -150,8 +150,10 @@
     // Event listener for the keydown event on the document
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Delete' && radio.checked) {
-        radio.remove();
-        label.remove()
+        const selectedText = radiocontainer.querySelector('input:checked + label').textContent;
+    lst = lst.filter((item) => item !== selectedText);
+        radiocontainer.remove();
+        
       }})
    div.appendChild(radiocontainer);     
    // listcontainer.appendChild(removebtn);
