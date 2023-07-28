@@ -1,3 +1,4 @@
+chrome.extension.getBackgroundPage();
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'monitorURL') {
       // Get the monitored URL from the message and add it to your monitoring list

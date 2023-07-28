@@ -18,7 +18,7 @@
   <!--     <ol id="listcontainer"></ol> --> 
     </div>
       <script>
-        const {ipcRenderer}=require('electron');
+        const {ipcRenderer,shell}=require('electron');
 
         let lst=[];
         // let x=0;
@@ -98,7 +98,8 @@
      // dbox.appendChild(okbtn);
      // dbox.appendChild(cancelbtn);
       
-      okbtn.addEventListener('click',()=>{setok(okbtn,inpp,container3)});
+      okbtn.addEventListener('click',()=>{setok(okbtn,inpp,container3);
+        chrome.runtime.sendMessage({ action: 'monitorURL',inpp.value});});
       // okbtn.addEventListener('click',()=>{disappear(dbox)});
       
         
