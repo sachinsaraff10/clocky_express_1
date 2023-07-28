@@ -99,7 +99,8 @@
      // dbox.appendChild(cancelbtn);
       
       okbtn.addEventListener('click',()=>{setok(okbtn,inpp,container3);
-        chrome.runtime.sendMessage({ action: 'monitorURL',inpp.value});});
+        let url=inpp.value        
+        chrome.runtime.sendMessage({ action: 'monitorURL',url});});
       // okbtn.addEventListener('click',()=>{disappear(dbox)});
       
         
