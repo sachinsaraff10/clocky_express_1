@@ -17,3 +17,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   });
   
   // Other background script logic and tasks...
+  chrome.runtime.onInstalled.addListener(() => {
+    console.log('Extension installed or updated!');
+    // Add any initialization logic or tasks here
+  });
+  
+  // Listen for messages from content scripts or other parts of the extension
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    // Handle the incoming messages
+    // You can distinguish different actions using the message.action property
+  });
+  
