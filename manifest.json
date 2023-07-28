@@ -18,8 +18,13 @@
   "web_accessible_resources":[{
         "resources":["sites.html"],
         "matches":["*://*/*"]
-        '
-
-
-  }]
+        '}]
+"manifest_action": {
+    "start_timer": {
+        "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+        }
+    }
+    }
 }
