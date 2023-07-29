@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 const releurl=tabs[i].url
                 if (releurl.includes(monitoredURL)){
                     chrome.windows.create({
-                        url: 'timer.html',
+                        url: 'timers.html',
             type: 'popup',
             width: 400,
             height: 200,
@@ -53,7 +53,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         for (let i=0;i<urls.length;i++)
         {if (taburl.includes(urls[i])){
             chrome.windows.create({
-                url: 'timer.html',
+                url: 'timers.html',
     type: 'popup',
     width: 400,
     height: 200,
