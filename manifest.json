@@ -19,7 +19,7 @@
 //         "resources":["sites.html"],
 //         "matches":["*://*/*"]
 //         }]
-"manifest_action": {
+"commands": {
     "start_timer": {
         "suggested_key": {
         "default": "Ctrl+Shift+S",
