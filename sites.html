@@ -18,7 +18,7 @@
   <!--     <ol id="listcontainer"></ol> --> 
     </div>
       <script>
-        const {ipcRenderer,shell}=require('electron');
+        // const {ipcRenderer,shell}=require('electron');
 
         let lst=[];
         // let x=0;
@@ -135,7 +135,7 @@
     if (lst.includes(unique)){
       button.disabled=true;
     }else{lst.push(unique);
-      ipcRenderer.send('url-added',unique);
+      // ipcRenderer.send('url-added',unique);
       button.disabled=false;
     }
         radiocontainer.appendChild(radio);
