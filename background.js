@@ -5,10 +5,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // Get the monitored URL from the message and add it to your monitoring list
       const monitoredURL = message.url;
       urls.push(monitoredURL);
+      const lowercasedMonitoredURL = monitoredURL.toLowerCase();
       chrome.tabs.query({active:true,currentWindow:true},(tabs)=>{
             for (let i=0;i<tabs.length;i++){
-                const releurl=tabs[i].url
-                if (releurl.includes(monitoredURL)){
+                const releurl=tabs[i].url.toLowerCase();
+                if (releurl.includes(lowercasedMonitoredURL)){
                     chrome.windows.create({
                         url: 'timers.html',
             type: 'popup',
