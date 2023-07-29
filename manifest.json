@@ -15,10 +15,10 @@
     // Add other settings as needed for your extension
   }
   // Add other fields as needed for your extension
-  "web_accessible_resources":[{
-        "resources":["sites.html"],
-        "matches":["*://*/*"]
-        '}]
+//   "web_accessible_resources":[{
+//         "resources":["sites.html"],
+//         "matches":["*://*/*"]
+//         }]
 "manifest_action": {
     "start_timer": {
         "suggested_key": {

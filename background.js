@@ -64,3 +64,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }}
     }
   })
+
+  chrome.runtime.getURL("sites.html",(url)=>{
+
+    fetch(url).then((response)=>response.text()).then((html)
+    =>{
+
+    }
+    
+    )
+    .catch((error)=>{
+        console.error("error fetching sites.html:",error);
+    })
+
+
+    
+
+
+
+  })
