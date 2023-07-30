@@ -10,7 +10,8 @@
     "activeTab",
     "https://*/*", 
     "http://*/*",
-    "http://*/*"
+    "scripting",
+    "chrome://favicon/"
   ],
     // Add other permissions as needed for your extension
   
