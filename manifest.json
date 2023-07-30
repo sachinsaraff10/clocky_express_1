@@ -10,7 +10,6 @@
     "activeTab",
     "https://*/*", 
     "http://*/*",
-    "https://*/*", // Add necessary permissions for the URLs you want to match
     "http://*/*"
   ],
     // Add other permissions as needed for your extension
