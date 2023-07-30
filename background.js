@@ -76,10 +76,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     .catch((error)=>{
         console.error("error fetching sites.html:",error);
     })
+})
 
-
-    
-
-
-
-  })
+try {
+    console.log("start");
+    throw new Error("lol");
+    console.log("end");
+  } catch (e) {
+    console.error(e);
+  }
