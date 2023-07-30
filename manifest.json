@@ -8,10 +8,10 @@
   "permissions": [
     "tabs",
     "activeTab",
-    "https://*/*", 
+    "https://*/*",  
     "http://*/*",
-    "scripting",
-    "chrome://favicon/"
+    "scripting"
+    
   ],
     // Add other permissions as needed for your extension
   
