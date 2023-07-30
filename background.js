@@ -49,7 +49,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 //   });
   
   chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
-    if (changeInfo.status="complete"){
+    if (changeInfo.status==="complete"){
         const taburl=tab.url;
         for (let i=0;i<urls.length;i++)
         {if (taburl.includes(urls[i])){
