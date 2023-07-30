@@ -3,7 +3,7 @@
   "name": "Clocky",
   "version": "1.0",
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   },
   "permissions": [
     "tabs",
