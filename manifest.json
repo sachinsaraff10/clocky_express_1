@@ -8,9 +8,9 @@
   "permissions": [
     "tabs",
     "activeTab",
-
+  ]
     // Add other permissions as needed for your extension
-  ],
+  
 
   "action":{
     "default_icon":{
