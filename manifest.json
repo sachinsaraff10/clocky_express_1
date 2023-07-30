@@ -15,26 +15,11 @@
   "action":{
     "default_icon":{
         "16": "icon-16.png",
-        "32":"icon-32.png"
-
-    }
+        "32":"icon-32.png"},
+    "default_title":"Clocky",
+    "default_popup": "sites.html",
   }
-  "browser_action": {
-    "default_popup": "timers.html"
-    // Add other settings as needed for your extension
-  }
-  // Add other fields as needed for your extension
-//   "web_accessible_resources":[{
-//         "resources":["sites.html"],
-//         "matches":["*://*/*"]
-//         }]
 
-"commands": {
-    "start_timer": {
-        "suggested_key": {
-        "default": "Ctrl+Shift+S",
-        "mac": "Command+Shift+S"
-        }
-    }
-    }
+
+
 }
