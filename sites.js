@@ -1,0 +1,147 @@
+let lst=[];
+        // let x=0;
+        const maincontainer=document.getElementById('maincontainer')
+  maincontainer.style.display='flex';
+  maincontainer.style.flexDirection='column';
+
+  const container2=document.getElementById('container2');
+  container2.style.marginBottom='25px';
+  const container3=document.getElementById('container3');
+  container3.style.display='flex';
+  container3.style.flexDirection='column';
+  container3.style.marginLeft='10px';
+  container3.style.gap='10px';
+  container2.style.flexGrow='.2'; 
+        // const listcontainer=document.getElementById('listcontainer');
+        // listcontainer.style.display='inline-block';
+        // listcontainer.style.justifyContent='space-even';
+        // listcontainer.style.display='flex';
+    // listcontainer.style.flexDirection='column';
+    //     listcontainer.style.gap='2px';
+        // var divv;
+        // let removebtn;
+        // const addbutton=document.getElementById('addbutton');
+        
+        function remover(parent,child){
+         parent.removeChild(child);
+          }
+        // function disappear(box){
+        //   box.close();
+        // }
+        // function newbox(){ var divv=document.createElement("div");
+  // function appender(container1,container2){container2.appendChild(container1)};
+   //                                          divv.classList.add("container");
+   // const newbtn=document.createElement("button");
+  //  divv.style.display='flex';
+  //  divv.style.height='fit-content';
+  //  divv.style.justifyContent='left';
+  //  divv.style.backgroundColor='white';
+  // // newbtn.textContent="New site";
+  // newbtn.addEventListener('click',()=>{setnew(newbtn,divv)});
+      
+   // divv.appendChild(newbtn);
+   // divv.appendChild(removebtn);
+    //  addbutton.addEventListener('click',()=>{setnew(addbutton,divv)})
+    //  maincontainer.appendChild(divv)                     
+    // }
+        
+        // addbutton.addEventListener('click',newbox); 
+   
+     //  function setnew(button,div){
+     // var dbox=document.createElement('dialog');
+     // dbox.classList.add('dcontainer');
+     // // dbox.style.display='flex';
+     // dbox.style.justifycontent='center';
+     // dbox.style.height='fit-content';
+     // dbox.style.width='fit-content';
+  let inpp=document.getElementById('urlId');
+     // inpp.type='text';
+     inpp.placeholder='www.example.com';
+     // inpp.id='urlID';
+     // dbox.appendChild(inpp);
+      const okbtn=document.getElementById('okbutton');
+     // okbtn.textContent="okay";
+      okbtn.disabled=true;
+      inpp.addEventListener('input', () => {
+        const urlPattern = /^(https?:\/\/)?([a-z0-9-]+\.)?[a-z0-9-]+\.[a-z]{2,}\/?.*$/i;
+        const urlInput = inpp.value.trim();
+        if (urlPattern.test(urlInput)) {
+          okbtn.disabled = lst.includes(urlInput);
+        } else {
+          okbtn.disabled = true;
+        }})
+        
+      // });
+      // const cancelbtn=document.createElement('button');
+     // cancelbtn.textContent=`cancel`;
+      // cancelbtn.addEventListener('click',()=>{disappear(dbox)});
+     // dbox.appendChild(okbtn);
+     // dbox.appendChild(cancelbtn);
+      
+      okbtn.addEventListener('click',()=>{setok(okbtn,inpp,container3);
+        let url=inpp.value;        
+        chrome.runtime.sendMessage({ action: 'monitorURL',url});});
+      // okbtn.addEventListener('click',()=>{disappear(dbox)});
+      
+        
+      // document.body.appendChild(dbox);
+       // dbox.showModal();}
+  
+      function setok(button,input,div){
+        // const listcontainer=document.getElementById('listcontainer');
+    const label=document.createElement('label');
+    const radiocontainer=document.createElement('div');
+    
+    // listcontainer.classList.add('listbox');
+    radiocontainer.style.height='fit-content';
+     radiocontainer.style.width='fit-content';
+     radiocontainer.style.display='flex';
+     radiocontainer.style.justifyContent='space-even';
+     const radio=document.createElement('input');
+     radio.type='radio';
+        radio.name = 'radioGroup';
+      radio.value=input.value;
+     label.setAttribute('for','radio');   
+     // listcontainer.style.gap='1px';
+     // listcontainer.style.listStyle='Disc';
+     // listcontainer.style.justifyContent='space-even';
+    //  listcontainer.style.justifyContent='left';
+    // let lists=document.createElement('li');
+    label.textContent=radio.value;
+    let unique=label.textContent;
+    
+    if (lst.includes(unique)){
+      button.disabled=true;
+    }else{lst.push(unique);
+      // ipcRenderer.send('url-added',unique);
+      button.disabled=false;
+    }
+        radiocontainer.appendChild(radio);
+        radiocontainer.appendChild(label);
+     // removebtn=document.createElement("button");
+   // removebtn.textContent="Remove site";
+   // removebtn.addEventListener('click',()=>{remover(div,listcontainer)});
+   // listcontainer.appendChild(lists);
+   radio.addEventListener('click', () => {
+      if (radio.checked) {
+        radio.focus(); 
+        // Ensure the radio button has focus after being checked
+      // radio.addEventListener('click',()=>{radio.checked=false;})}
+      }})
+  
+    // Event listener for the keydown event on the document
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Delete' && radio.checked) {
+        const selectedText = radiocontainer.querySelector('input:checked + label').textContent;
+    lst = lst.filter((item) => item !== selectedText);
+        radiocontainer.remove();
+        
+      }})
+   div.appendChild(radiocontainer);     
+   // listcontainer.appendChild(removebtn);
+   // radio.addEventListener('click',(event)=>{if(event.key==='Delete'){
+   //   remover(div,radiocontainer);
+   
+   
+  // 
+      }
