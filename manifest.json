@@ -8,11 +8,15 @@
   "permissions": [
     "tabs",
     "activeTab",
-    "https://*/*",  
-    "http://*/*",
+    
     "scripting"
     
   ],
+
+  "host_permissions":[
+    "https://*/*",  
+    "http://*/*"
+  ]
     // Add other permissions as needed for your extension
   
 
