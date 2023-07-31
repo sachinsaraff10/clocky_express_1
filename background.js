@@ -1,4 +1,4 @@
-chrome.runtime.getBackgroundPage();
+// chrome.runtime.getBackgroundPage();
 let urls=[];
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'monitorURL') {
