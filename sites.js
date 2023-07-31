@@ -21,7 +21,13 @@ let lst=[];
         // var divv;
         // let removebtn;
         // const addbutton=document.getElementById('addbutton');
-        
+//   document.addEventListener(
+//     'DOMContentLoaded',()=>{
+//         chrome.storage.local.get('urls',function(data){
+//             const urlList= document.getElementById()
+//         })
+//     }
+//   )        
         function remover(parent,child){
          parent.removeChild(child);
           }
@@ -80,7 +86,8 @@ let lst=[];
       
       okbtn.addEventListener('click',()=>{setok(okbtn,inpp,container3);
         let url=inpp.value;        
-        chrome.runtime.sendMessage({ action: 'monitorURL',url});});
+        chrome.runtime.sendMessage({ action: 'monitorURL',url});
+    });
       // okbtn.addEventListener('click',()=>{disappear(dbox)});
       
         
@@ -145,3 +152,49 @@ let lst=[];
    
   // 
       }
+
+      chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
+        if (message.action==="initialize"){
+            let valuables = message.vals;
+            for (entry in valuables){
+                presetok(entry,container3)
+            }
+        }
+      })
+
+      function presetok(input,div){
+        const label=document.createElement('label');
+        const radiocontainer=document.createElement('div');
+        
+        radiocontainer.style.height='fit-content';
+         radiocontainer.style.width='fit-content';
+         radiocontainer.style.display='flex';
+         radiocontainer.style.justifyContent='space-even';
+         const radio=document.createElement('input');
+         radio.type='radio';
+            radio.name = 'radioGroup';
+          radio.value=input;
+         label.setAttribute('for','radio');   
+         
+        label.textContent=radio.value;
+        let unique=label.textContent;
+        radiocontainer.appendChild(radio);
+        radiocontainer.appendChild(label);
+     
+   radio.addEventListener('click', () => {
+      if (radio.checked) {
+        radio.focus(); 
+              }})
+  
+    // Event listener for the keydown event on the document
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Delete' && radio.checked) {
+        const selectedText = radiocontainer.querySelector('input:checked + label').textContent;
+    lst = lst.filter((item) => item !== selectedText);
+        radiocontainer.remove();
+        
+      }})
+   div.appendChild(radiocontainer);     
+    
+      }
+      
