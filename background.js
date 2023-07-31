@@ -23,16 +23,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 
       })  
-      // Perform your logic to monitor the URL and trigger the timer if needed
-      // For example, you can store the monitoredURL in an array and check it against the active tabs using the chrome.tabs API
-      // If the monitoredURL matches an active tab URL, open the timer page
-      // Example:
-      // chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      //   const activeURL = tabs[0].url;
-      //   if (activeURL.includes(monitoredURL)) {
-      //     // Open the timer page using chrome.tabs.create()
-      //   }
-      // });
+     
     }
   });
   
@@ -65,19 +56,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
   })
 
-  chrome.runtime.getURL("sites.html",(url)=>{
-
-    fetch(url).then((response)=>response.text()).then((html)
-    =>{
-
-    }
-    
-    )
-    .catch((error)=>{
-        console.error("error fetching sites.html:",error);
-    })
-})
-
+  
 try {
     console.log("start");
     throw new Error("lol");
