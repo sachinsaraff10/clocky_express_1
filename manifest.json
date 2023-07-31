@@ -16,7 +16,7 @@
   "host_permissions":[
     "https://*/*",  
     "http://*/*"
-  ]
+  ],
     // Add other permissions as needed for your extension
   
 
