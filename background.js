@@ -66,7 +66,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const taburl=tab.url;
 
      chrome.storage.local.get(['urls'],(result)=> {
-        const urls=result.urls
+        const urls=result.urls;
+        if (urls){
         for (let i=0;i<urls.length;i++)
         {if (taburl.includes(urls[i])){
             chrome.windows.create({
@@ -77,7 +78,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     left: screen.availWidth - 420, // Adjust the position to the bottom right
     top: screen.availHeight - 220,
             })
-        }} }) 
+        }} }}) 
     }
   })
 
