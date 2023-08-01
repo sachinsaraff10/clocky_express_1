@@ -34,9 +34,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // }
    
   });
-//   key_vals={}
-//   for (let i=0;i<urls.length;i++){
-//     key_vals[i.toString()]=urls[i];}
+
 
 
 
