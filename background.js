@@ -8,11 +8,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       chrome.storage.local.set({urls:urls},()=>{
         console.log('Data stored in local storage.')
     })
-      const lowercasedMonitoredURL = monitoredURL.toLowerCase();
+      constMonitoredURL = monitoredURL;
       chrome.tabs.query({active:true,currentWindow:true},(tabs)=>{
             for (let i=0;i<tabs.length;i++){
-                const releurl=tabs[i].url.toLowerCase();
-                if (releurl.includes(lowercasedMonitoredURL)){
+                const releurl=tabs[i].url;
+                if (releurl.includes(MonitoredURL)){
                     chrome.windows.create({
                         url: 'timers.html',
             type: 'popup',
