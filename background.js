@@ -99,10 +99,11 @@ chrome.action.onClicked.addListener(()=>{
     }} )})
 
 
-try {
-    console.log("start");
-    throw new Error("lol");
-    console.log("end");
-  } catch (e) {
-    console.error(e);
-  }
+    try {
+        console.log("start");
+        throw new Error("lol");
+        console.log("end");
+    }
+    //  catch (e) {
+    //     console.error(e);
+    // }
