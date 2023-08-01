@@ -57,8 +57,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         type: 'popup',
         width: 200,
         height: 200,
-        left: window.screen.availWidth - 420, // Adjust the position to the bottom right
-        top: window.screen.availHeight - 220,
+        left: screen.availWidth - 420, // Adjust the position to the bottom right
+        top: screen.availHeight - 220,
                 })
             }} }}) 
         }
@@ -70,8 +70,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             type:'popup',
             width:400,
             height:400,
-            left: window.screen.availWidth - 420, // Adjust the position to the bottom right
-            top: window.screen.availHeight,
+            left: screen.availWidth - 420, // Adjust the position to the bottom right
+            top: screen.availHeight,
     
         });
       chrome.storage.local.get (['urls'],(result)=>{ 
