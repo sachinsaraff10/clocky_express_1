@@ -93,7 +93,7 @@ chrome.action.onClicked.addListener(()=>{
 
     });
   chrome.storage.local.get (['urls'],(result)=>{ 
-    let vals=result
+    let vals=result.urls;
     if (vals){
         chrome.runtime.sendMessage({action:'initialize',vals})
         
