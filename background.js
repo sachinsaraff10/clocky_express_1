@@ -43,7 +43,44 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // Other background script logic and tasks...
   chrome.runtime.onInstalled.addListener(() => {
     console.log('Extension installed or updated!');
-    // Add any initialization logic or tasks here
+    chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
+        if (changeInfo.status==="complete"){
+            const taburl=tab.url;
+    
+         chrome.storage.local.get(['urls'],(result)=> {
+            const urls=result.urls;
+            if (urls){
+            for (let i=0;i<urls.length;i++)
+            {if (taburl.includes(urls[i])){
+                chrome.windows.create({
+                    url: 'timers.html',
+        type: 'popup',
+        width: 200,
+        height: 200,
+        left: screen.availWidth - 420, // Adjust the position to the bottom right
+        top: screen.availHeight - 220,
+                })
+            }} }}) 
+        }
+      })
+    
+    chrome.action.onClicked.addListener(()=>{
+        chrome.windows.create({
+            url:'sites.html',
+            type:'popup',
+            width:400,
+            height:400,
+            left: screen.availWidth - 420, // Adjust the position to the bottom right
+            top: screen.availHeight,
+    
+        });
+      chrome.storage.local.get (['urls'],(result)=>{ 
+        let vals=result.urls;
+        if (vals){
+            chrome.runtime.sendMessage({action:'initialize',vals})
+            
+        }} )})
+     // Add any initialization logic or tasks here
   });
 // let keysarray=[];
 // for (let i=0;i<Object.keys(key_vals).length;i++){
@@ -61,43 +98,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // })
  
 
-  chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
-    if (changeInfo.status==="complete"){
-        const taburl=tab.url;
-
-     chrome.storage.local.get(['urls'],(result)=> {
-        const urls=result.urls;
-        if (urls){
-        for (let i=0;i<urls.length;i++)
-        {if (taburl.includes(urls[i])){
-            chrome.windows.create({
-                url: 'timers.html',
-    type: 'popup',
-    width: 200,
-    height: 200,
-    left: screen.availWidth - 420, // Adjust the position to the bottom right
-    top: screen.availHeight - 220,
-            })
-        }} }}) 
-    }
-  })
-
-chrome.action.onClicked.addListener(()=>{
-    chrome.windows.create({
-        url:'sites.html',
-        type:'popup',
-        width:400,
-        height:400,
-        left: screen.availWidth - 420, // Adjust the position to the bottom right
-        top: screen.availHeight,
-
-    });
-  chrome.storage.local.get (['urls'],(result)=>{ 
-    let vals=result.urls;
-    if (vals){
-        chrome.runtime.sendMessage({action:'initialize',vals})
-        
-    }} )})
 
 
     // try {
