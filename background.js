@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   key_vals={}
   for (let i=0;i<urls.length;i++){
     key_vals[i.toString()]=urls[i];}
-chrome.storage.local.set(key_vals,()=>{
+chrome.storage.local.set({url:urls},()=>{
     console.log('Data stored in local storage.')
 })
 
@@ -65,6 +65,9 @@ keysarray.forEach(key=>{
   chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
     if (changeInfo.status==="complete"){
         const taburl=tab.url;
+
+     chrome.storage.local.get(['urls'],(result)=> {
+        const urls=result.urls
         for (let i=0;i<urls.length;i++)
         {if (taburl.includes(urls[i])){
             chrome.windows.create({
@@ -75,7 +78,7 @@ keysarray.forEach(key=>{
     left: screen.availWidth - 420, // Adjust the position to the bottom right
     top: screen.availHeight - 220,
             })
-        }}
+        }} }) 
     }
   })
 chrome.action.onClicked.addListener(()=>{
@@ -88,10 +91,12 @@ chrome.action.onClicked.addListener(()=>{
         top: screen.availHeight,
 
     })
+  chrome.storage.local.get (['urls'],(result)=>{ 
+    let vals=result.urls;
     if (vals){
         chrome.runtime.sendMessage({action:'initialize',vals})
         
-    }
+    }} )
 })
 
 

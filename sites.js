@@ -156,9 +156,11 @@ let lst=[];
       chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
         if (message.action==="initialize"){
             let valuables = message.vals;
-            for (entry in valuables){
+            valuables.forEach((entry) => {
+                
+            
                 presetok(entry,container3)
-            }
+            })
         }
       })
 
