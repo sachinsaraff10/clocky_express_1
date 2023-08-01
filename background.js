@@ -16,10 +16,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     chrome.windows.create({
                         url: 'timers.html',
             type: 'popup',
-            width: 400,
-            height: 200,
-            left: screen.availWidth - 420, // Adjust the position to the bottom right
-            top: screen.availHeight - 220,
+            width: 100,
+            height: 100,
+            left: 1300, // Adjust the position to the bottom right
+            top:800
                     })
                 }
             }
@@ -57,8 +57,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         type: 'popup',
         width: 200,
         height: 200,
-        left: 1600, // Adjust the position to the bottom right
-        top:940,
+        left: 1400, // Adjust the position to the bottom right
+        top:900,
                 })
             }} }}) 
         }
@@ -70,7 +70,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             type:'popup',
             width:300,
             height:300,
-            left: 1600, // Adjust the position to the bottom right
+            left: 1400, // Adjust the position to the bottom right
             top: 70
     
         });
