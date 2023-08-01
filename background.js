@@ -5,7 +5,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // Get the monitored URL from the message and add it to your monitoring list
       const monitoredURL = message.url;
       urls.push(monitoredURL);
-      chrome.storage.local.set({url:urls},()=>{
+      chrome.storage.local.set({urls:urls},()=>{
         console.log('Data stored in local storage.')
     })
       const lowercasedMonitoredURL = monitoredURL.toLowerCase();
