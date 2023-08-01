@@ -85,26 +85,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
      // Add any initialization logic or tasks here
  
 
-  chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
-    if (changeInfo.status==="complete"){
-        const taburl=tab.url;
 
-     chrome.storage.local.get(['urls'],(result)=> {
-        const urls=result.urls;
-        if (urls){
-        for (let i=0;i<urls.length;i++)
-        {if (taburl.includes(urls[i])){
-            chrome.windows.create({
-                url: 'timers.html',
-    type: 'popup',
-    width: 200,
-    height: 200,
-    left: 950, // Adjust the position to the bottom right
-    top:520
-            })
-        }} }}) 
-    }
-  })
 // let keysarray=[];
 // for (let i=0;i<Object.keys(key_vals).length;i++){
 //     keysarray.push(i.toString());
