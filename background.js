@@ -18,8 +18,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             type: 'popup',
             width: 100,
             height: 100,
-            left: 1300, // Adjust the position to the bottom right
-            top:800
+            left: 950, // Adjust the position to the bottom right
+            top:520
                     })
                 }
             }
@@ -57,8 +57,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         type: 'popup',
         width: 200,
         height: 200,
-        left: 1400, // Adjust the position to the bottom right
-        top:900,
+        left: 950, // Adjust the position to the bottom right
+        top:520
                 })
             }} }}) 
         }
@@ -70,7 +70,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             type:'popup',
             width:300,
             height:300,
-            left: 1400, // Adjust the position to the bottom right
+            left: 900, // Adjust the position to the bottom right
             top: 70
     
         });
