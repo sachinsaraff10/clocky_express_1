@@ -46,20 +46,20 @@ chrome.storage.local.set({url:urls},()=>{
     console.log('Extension installed or updated!');
     // Add any initialization logic or tasks here
   });
-let keysarray=[];
-for (let i=0;i<Object.keys(key_vals).length;i++){
-    keysarray.push(i.toString());
-}
+// let keysarray=[];
+// for (let i=0;i<Object.keys(key_vals).length;i++){
+//     keysarray.push(i.toString());
+// }
 
   // Listen for messages from content scripts or other parts of the extension
 //   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 //     // Handle the incoming messages
 //     // You can distinguish different actions using the message.action property
 //   });
-let vals=[];
-keysarray.forEach(key=>{
-    vals.push(keysarray[key]);
-})
+// let vals=[];
+// keysarray.forEach(key=>{
+//     vals.push(keysarray[key]);
+// })
  
 
   chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
@@ -81,6 +81,7 @@ keysarray.forEach(key=>{
         }} }) 
     }
   })
+
 chrome.action.onClicked.addListener(()=>{
     chrome.windows.create({
         url:'sites.html',
@@ -90,14 +91,13 @@ chrome.action.onClicked.addListener(()=>{
         left: screen.availWidth - 420, // Adjust the position to the bottom right
         top: screen.availHeight,
 
-    })
+    });
   chrome.storage.local.get (['urls'],(result)=>{ 
-    let vals=result.urls;
+    let vals=result
     if (vals){
         chrome.runtime.sendMessage({action:'initialize',vals})
         
-    }} )
-})
+    }} )})
 
 
 try {
