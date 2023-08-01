@@ -25,10 +25,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       })  
      
     }
-    if (message.action==='getkeysarray'){
-        sendResponse({keys:keysarray});
+    // if (message.action==='getkeysarray'){
+    //     sendResponse({keys:keysarray});
 
-    }
+    // }
    
   });
   key_vals={}
@@ -47,7 +47,7 @@ chrome.storage.local.set(key_vals,()=>{
     // Add any initialization logic or tasks here
   });
 let keysarray=[];
-for (let i=0;i<urls.length;i++){
+for (let i=0;i<Object.keys(key_vals).length;i++){
     keysarray.push(i.toString());
 }
 
@@ -57,10 +57,9 @@ for (let i=0;i<urls.length;i++){
 //     // You can distinguish different actions using the message.action property
 //   });
 let vals=[];
- for (key in keysarray){
-    vals.push(key_vals[key]);
- } 
-
+keysarray.forEach(key=>{
+    vals.push(keysarray[key]);
+})
  
 
   chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
