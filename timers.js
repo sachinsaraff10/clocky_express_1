@@ -10,14 +10,17 @@ const timerContainer = document.getElementById('timerContainer');
 
             const hourInput = document.createElement('input');
             hourInput.type = 'text';
+            hourInput.placeholder='hours';
             hourInput.classList.add('hours');
 
             const minuteInput = document.createElement('input');
             minuteInput.type = 'text';
+            minuteInput.placeholder='minutes';
             minuteInput.classList.add('minutes');
 
             const secondInput = document.createElement('input');
             secondInput.type = 'text';
+            secondInput.placeholder='seconds';
             secondInput.classList.add('seconds');
 
             const playButton = document.createElement('button');
