@@ -199,4 +199,57 @@ let lst=[];
    div.appendChild(radiocontainer);     
     
       }
-      
+      function addtimer(){
+      const timerDiv = document.createElement('div');
+            timerDiv.classList.add('container');
+
+            const hourInput = document.createElement('input');
+            hourInput.type = 'text';
+            hourInput.placeholder='hours';
+            hourInput.classList.add('hours');
+
+            const minuteInput = document.createElement('input');
+            minuteInput.type = 'text';
+            minuteInput.placeholder='minutes';
+            minuteInput.classList.add('minutes');
+
+            const secondInput = document.createElement('input');
+            secondInput.type = 'text';
+            secondInput.placeholder='seconds';
+            secondInput.classList.add('seconds');
+
+            // const playButton = document.createElement('button');
+            // playButton.textContent = 'Play';
+            // playButton.classList.add('paused');
+            const myselect=document.createElement('select');
+            const op1=document.createElement('option');
+            const op2=document.createElement('option');
+            op1.value=12;
+            op1.textContent='12';
+            op2.value=24;
+            op2.textContent='24';
+            myselect.appendChild(op1);
+            myselect.appendChild(op2);
+
+            timerDiv.appendChild(hourInput);
+            timerDiv.appendChild(document.createTextNode(':'));
+            timerDiv.appendChild(minuteInput);
+            timerDiv.appendChild(document.createTextNode(':'));
+            timerDiv.appendChild(secondInput);
+            timerContainer.appendChild(timerDiv);
+            timerContainer.appendChild(playButton);
+
+            const timer = {
+                button: playButton,
+                hourInput: hourInput,
+                minuteInput: minuteInput,
+                secondInput: secondInput,
+                intervalId: null
+            };
+
+            timers.push(timer);
+
+            playButton.addEventListener('click', () => {
+                handleTimerClick(timer);
+            });
+        }
