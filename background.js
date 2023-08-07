@@ -1,6 +1,7 @@
 // chrome.runtime.getBackgroundPage();
 let urls=[];
 let timers_url={};
+let urltimer={};
 let visitedDomains=new Set();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
@@ -10,8 +11,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       let sent_timer=message.timer;
       let timerId=sent_timer.urlId;
       urls.push(monitoredURL);
+      urltimer[monitoredURL]=sent_timer;
       timers_url[sent_timer.urlId]=sent_timer;
-      chrome.storage.local.set({urls:urls,timers:timers_url},()=>{
+      chrome.storage.local.set({urls:urls,timers:timers_url,dict:urltimer},()=>{
         console.log('Data stored in local storage.')
     })
     let popupurl='timers.html?timerId=${timerId}'
@@ -20,7 +22,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       for (let i = 0; i < tabs.length; i++) {
         let releurl = tabs[i].url;
         let domain = releurl.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
-        releurl.add(domain)
+        
         if (releurl.includes(monitoredURL) && !visitedDomains.has(domain)) {
         chrome.tabs.reload(tabId,{bypassCache:false});
           chrome.windows.create({
@@ -32,6 +34,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             top: 520,
             tabId:tabId
 
+          };()=>{
+            visitedDomains.add(domain);
+            
           });
         }
       }
@@ -48,7 +53,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               width: 100,
               height: 100,
               left: 950, // Adjust the position to the bottom right
-              top: 520;
+              top: 520,
               tabId:tabId
             });
           }

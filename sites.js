@@ -235,12 +235,12 @@ body.style.display='flex';
             container3.appendChild(okayButton);
             container3.appendChild(timerDiv);
             const timer = {
-                button: okayButton,
+                tabId:tabId\,
                 hourInput: hourInput,
                 minuteInput: minuteInput,
                 secondInput: secondInput,
                 urlId:uuidv4(),
-            };
+                intervalId:null};
 
             timers.push(timer);
 

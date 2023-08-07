@@ -1,7 +1,7 @@
 const timerContainer = document.getElementById('timerContainer');
         const addTimerButton = document.getElementById('addTimerButton');
       let intervalID;
-        const timers = [];
+        let timers = [];
       // let intervalID;
       const urlParams = new URLSearchParams(window.location.search);
 let timerId = urlParams.get('timerId');
@@ -10,7 +10,8 @@ chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
     let timerObject = response.timer;
     // Use the timerObject in your popup window
     setTimer(Number(timerObject.hourInput.value),Number(timerObject.minuteInput.value),
-    Number(timerObject.secondInput.value),timerObject)
+    Number(timerObject.secondInput.value),timerObject);
+    handletabstatus(timerObject);
   })
          function createTimer() {
             const timerDiv = document.createElement('div');
@@ -88,6 +89,55 @@ chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
                 timer.secondInput.readOnly = false;
             }
         }
+        function handletabstatus(timer) {
+            let hours = Number(timer.hourInput.value);
+            let minutes = Number(timer.minuteInput.value);
+            let seconds = Number(timer.secondInput.value);
+
+            if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
+                console.log('Invalid, enter a number');
+                return;
+            }
+
+            if (minutes >= 60 || seconds >= 60) {
+                console.log('Invalid, enter number below 60');
+                return;
+            }
+            chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab)=>{if (
+                !changeInfo.url
+            ){
+                timer.hourInput.readOnly = true;
+                timer.minuteInput.readOnly = true;
+                timer.secondInput.readOnly = true;
+
+                timer.intervalId = setTimer(hours, minutes, 
+                    seconds, timer);
+                
+            }else{
+                clearInterval(intervalId);
+                timer.hourInput.readOnly = true;
+                timer.minuteInput.readOnly = true;
+                timer.secondInput.readOnly = true;
+   
+            }
+
+            })}
+            // if (timer.button.textContent === 'Play') {
+            //     timer.button.textContent = 'Pause';
+                // timer.hourInput.readOnly = true;
+                // timer.minuteInput.readOnly = true;
+                // timer.secondInput.readOnly = true;
+
+                // timer.intervalId = setTimer(hours, minutes, seconds, timer)
+            // else {
+            //     timer.button.textContent = 'Play';
+            //     clearInterval(intervalId);
+            //     timer.hourInput.readOnly = false;
+            //     timer.minuteInput.readOnly = false;
+            //     timer.secondInput.readOnly = false;
+            // }
+        
+
 
         function setTimer(hours, minutes, seconds,timer){
           
