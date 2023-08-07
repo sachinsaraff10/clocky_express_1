@@ -9,6 +9,8 @@ chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
     // Response contains the timer object, use it as needed
     let timerObject = response.timer;
     // Use the timerObject in your popup window
+    setTimer(Number(timerObject.hourInput.value),Number(timerObject.minuteInput.value),
+    Number(timerObject.secondInput.value),timerObject)
   })
          function createTimer() {
             const timerDiv = document.createElement('div');
