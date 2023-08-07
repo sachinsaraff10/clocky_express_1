@@ -3,8 +3,14 @@ const timerContainer = document.getElementById('timerContainer');
       let intervalID;
         const timers = [];
       // let intervalID;
-
-        function createTimer() {
+      const urlParams = new URLSearchParams(window.location.search);
+let timerId = urlParams.get('timerId');
+chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
+    // Response contains the timer object, use it as needed
+    let timerObject = response.timer;
+    // Use the timerObject in your popup window
+  })
+         function createTimer() {
             const timerDiv = document.createElement('div');
             timerDiv.classList.add('container');
 

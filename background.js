@@ -1,39 +1,68 @@
 // chrome.runtime.getBackgroundPage();
 let urls=[];
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+let timers_url={};
+let visitedDomains=new Set();
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
       // Get the monitored URL from the message and add it to your monitoring list
-      const monitoredURL = message.url;
+      let monitoredURL = message.url;
+      let sent_timer=message.timer;
+      let timerId=sent_timer.urlId;
       urls.push(monitoredURL);
-      chrome.storage.local.set({urls:urls},()=>{
+      timers_url[sent_timer.urlId]=sent_timer;
+      chrome.storage.local.set({urls:urls,timers:timers_url},()=>{
         console.log('Data stored in local storage.')
     })
-      constMonitoredURL = monitoredURL;
-      chrome.tabs.query({active:true,currentWindow:true},(tabs)=>{
-            for (let i=0;i<tabs.length;i++){
-                const releurl=tabs[i].url;
-                if (releurl.includes(MonitoredURL)){
-                    chrome.windows.create({
-                        url: 'timers.html',
+    let popupurl='timers.html?timerId=${timerId}'
+    // const MonitoredURL = monitoredURL;
+    chrome.tabs.query({ active: false, currentWindow: true }, (tabs) => {
+      for (let i = 0; i < tabs.length; i++) {
+        let releurl = tabs[i].url;
+        let domain = releurl.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+        releurl.add(domain)
+        if (releurl.includes(monitoredURL) && !visitedDomains.has(domain)) {
+        chrome.tabs.reload(tabId,{bypassCache:false});
+          chrome.windows.create({
+            url: popupurl,
             type: 'popup',
             width: 100,
             height: 100,
             left: 950, // Adjust the position to the bottom right
-            top:520
-                    })
-                }
-            }
+            top: 520,
+            tabId:tabId
 
-
-      })  
+          });
+        }
+      }
+    })
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        for (let i = 0; i < tabs.length; i++) {
+          let curr_url = tabs[i].url;
+          let domain = curr_url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+          if (curr_url.includes(MonitoredURL) && !visitedDomains.has(domain)) {
+          chrome.tabs.reload(tabId,{bypassCache:false});
+            chrome.windows.create({
+              url: popupurl,
+              type: 'popup',
+              width: 100,
+              height: 100,
+              left: 950, // Adjust the position to the bottom right
+              top: 520;
+              tabId:tabId
+            });
+          }
+        }
+      })
+}});
      
-    }
+    
     // if (message.action==='getkeysarray'){
     //     sendResponse({keys:keysarray});
 
     // }
    
-  });
+  ;
 
 
 
@@ -43,7 +72,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // Other background script logic and tasks...
   chrome.runtime.onInstalled.addListener(() => {
     console.log('Extension installed or updated!'); });
-   
+
+
+chrom.runtime.onMessage.addListener((message,sender,
+    sendResponse)=>{
+if (message.action==='timer_please'){
+    
+}
+})
    
 chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         if (changeInfo.status==="complete"){
@@ -60,7 +96,9 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         width: 200,
         height: 200,
         left: 950, // Adjust the position to the bottom right
-        top:520
+        top:520,
+        tabId:tabId
+
                 })
             }} }}) 
         }
@@ -73,7 +111,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             width:300,
             height:300,
             left: 900, // Adjust the position to the bottom right
-            top: 70
+            top: 70,
+            tabId:tabId
     
         });
       chrome.storage.local.get (['urls'],(result)=>{ 

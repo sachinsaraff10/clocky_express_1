@@ -1,5 +1,8 @@
 let lst=[];
+const { v4: uuidv4 } = require('uuid');
         // let x=0;
+const body=document.querySelector('body');
+body.style.display='flex';
         const maincontainer=document.getElementById('maincontainer')
   maincontainer.style.display='flex';
   maincontainer.style.flexDirection='column';
@@ -85,8 +88,10 @@ let lst=[];
      // dbox.appendChild(cancelbtn);
       
       okbtn.addEventListener('click',()=>{setok(okbtn,inpp,container3);
+        addtimer();
+        let serializedtimer=JSON.stringify(timer);
         let url=inpp.value;        
-        chrome.runtime.sendMessage({ action: 'monitorURL',url});
+        chrome.runtime.sendMessage({ action: 'set-timer',url:url,timer:serializedtimer});
     });
       // okbtn.addEventListener('click',()=>{disappear(dbox)});
       
@@ -122,7 +127,7 @@ let lst=[];
     }else{lst.push(unique);
       // ipcRenderer.send('url-added',unique);
       button.disabled=false;
-    }
+    }   
         radiocontainer.appendChild(radio);
         radiocontainer.appendChild(label);
      // removebtn=document.createElement("button");
@@ -202,7 +207,7 @@ let lst=[];
       function addtimer(){
       const timerDiv = document.createElement('div');
             timerDiv.classList.add('container');
-
+            
             const hourInput = document.createElement('input');
             hourInput.type = 'text';
             hourInput.placeholder='hours';
@@ -221,35 +226,27 @@ let lst=[];
             // const playButton = document.createElement('button');
             // playButton.textContent = 'Play';
             // playButton.classList.add('paused');
-            const myselect=document.createElement('select');
-            const op1=document.createElement('option');
-            const op2=document.createElement('option');
-            op1.value=12;
-            op1.textContent='12';
-            op2.value=24;
-            op2.textContent='24';
-            myselect.appendChild(op1);
-            myselect.appendChild(op2);
-
             timerDiv.appendChild(hourInput);
             timerDiv.appendChild(document.createTextNode(':'));
             timerDiv.appendChild(minuteInput);
             timerDiv.appendChild(document.createTextNode(':'));
             timerDiv.appendChild(secondInput);
-            timerContainer.appendChild(timerDiv);
-            timerContainer.appendChild(playButton);
-
+            // timerContainer.appendChild(timerDiv);
+            container3.appendChild(okayButton);
+            container3.appendChild(timerDiv);
             const timer = {
-                button: playButton,
+                button: okayButton,
                 hourInput: hourInput,
                 minuteInput: minuteInput,
                 secondInput: secondInput,
-                intervalId: null
+                urlId:uuidv4(),
             };
 
             timers.push(timer);
 
-            playButton.addEventListener('click', () => {
-                handleTimerClick(timer);
-            });
+            chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
+                if (message.action==="set-timer"){
+                    chrome.runtime.sendMessage({action:"monitorURL",tiemr:serializedtimer,hourInput: serializedtimer.hourInput.value,minuteInput: serializedtimer.minuteInput.value,secondInput: serializedtimer.secondInput.value,timer.})
+                }
+            })
         }
