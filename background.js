@@ -77,7 +77,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 chrom.runtime.onMessage.addListener((message,sender,
     sendResponse)=>{
 if (message.action==='timer_please'){
-    
+    let timeID=message.timerId;
+    let timerObject=timers_url[timeID];
+
+    sendResponse({timer:timerObject})
 }
 })
    
