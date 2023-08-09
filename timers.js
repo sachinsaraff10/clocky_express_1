@@ -9,7 +9,7 @@ chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
     // Response contains the timer object, use it as needed
     let timerObject = response.timer;
     // Use the timerObject in your popup window
-
+    createTimer(timer);
     setTimer(timerObject);
     })
          function createTimer(timer) {
@@ -18,14 +18,17 @@ chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
 
             const hourInput = document.createElement('input');
             hourInput.type = 'text';
+            hourInput.readOnly=true
             hourInput.value=timer.hourInput.value
             hourInput.classList.add('hours');
 
             const minuteInput = document.createElement('input');
             minuteInput.type = 'text';
+            minuteInput.readOnly=true
             minuteInput.value=timer.minuteInput.value
             const secondInput = document.createElement('input');
             secondInput.type = 'text';
+            secondInput.readOnly=true
             secondInput.value=timer.secondInput.value;
             secondInput.classList.add('seconds');
 
