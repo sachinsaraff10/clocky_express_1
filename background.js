@@ -4,43 +4,71 @@ let timers_url={};
 let urltimer={};
 let timer_toid={};
 let visitedDomain=new Set();
-let readwritearr={};
+let timer_overwrite={};
+const { v4: uuidv4 } = require('uuid');
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
+        if(urls.length===0)
+        {
       // Get the monitored URL from the message and add it to your monitoring list
       let monitoredURL = message.url;
       let sent_timer=message.timer;
       let timerId=sent_timer.urlId;
+    //   let urlId=uuidv4();
+    //   timer_overwrite[urlId]=sent_timer;
       urls.push(monitoredURL);
       urltimer[monitoredURL]=sent_timer;
       timers_url[timerId]=sent_timer;
       timer_toid[sent_timer]=timerId;
-      chrome.storage.local.set({urls:urls,timers:timers_url,urltotimer:urltimer,timertoid:timer_toid},()=>{
+      chrome.storage.local.set({urls:urls,timers:timers_url,
+        urltotimer:urltimer,timertoid:timer_toid,visitedDomain:visitedDomain},()=>{
         console.log('Data stored in local storage.')
-    })
+    })} 
+    else{
+        chrome.storage.local.get([urls,timers,urltimer,
+            timertoid],(result)=>{
+                
+                let monitoredURL = result.urls;
+                let sent_timer=result.timer;
+                let timerId=result.urlId;
+              //   let urlId=uuidv4();
+              //   timer_overwrite[urlId]=sent_timer;
+                urls.push(monitoredURL);
+                urltimer[monitoredURL]=sent_timer;
+                timers_url[timerId]=sent_timer;
+                timer_toid[sent_timer]=timerId;
+                chrome.storage.local.set({urls:urls,timers:timers_url,
+                  urltotimer:urltimer,timertoid:timer_toid},()=>{
+                  console.log('Data stored in local storage.')
+              })            })
+        
+    }
     // const MonitoredURL = monitoredURL;
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         for (let i = 0; i < tabs.length; i++) {
           let curr_url = tabs[i].url;
           let curr_domain=curr_url.hostname
           for(let i=0;i<urls.length;i++){
-         if (curr_domain===urls[i]) {
-          visitedDomain.add(curr_domain);
-          chrome.storage.local.set({visitedDomain:visitedDomain},
-            ()=>{
-                console.log('Data stored in local storage.')
-            })  
-          let popupURL = `timers.html?timerId=${timer_toid[urltimer[curr_domain]]}`
-          chrome.tabs.reload(tabId,{bypassCache:false});
-            chrome.windows.create({
-              url: popupurl,
-              type: 'popup',
-              width: 100,
-              height: 100,
-              left: 950, // Adjust the position to the bottom right
-              top: 520,
-              tabId:tabId
-            });
+         if (curr_domain===urls[i]) { 
+          chrome.storage.local.get([visitedDomain],(result)=>{
+            let visitedDomain=result.visitedDomain;
+            visitedDomain.add(curr_domain);
+            chrome.storage.local.set({visitedDomain:visitedDomain},
+              ()=>{
+                  console.log('Data stored in local storage.')
+              })  
+            let popupURL = `timers.html?timerId=${timer_toid[urltimer[curr_domain]]}`
+            chrome.tabs.reload(tabId,{bypassCache:false});
+              chrome.windows.create({
+                url: popupurl,
+                type: 'popup',
+                width: 100,
+                height: 100,
+                left: 950, // Adjust the position to the bottom right
+                top: 520,
+                tabId:tabId
+              })})  
+          ;
           }
         }}
       })
@@ -85,7 +113,9 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             chrome.storage.local.get([visitedDomain],(result)=>{
                 let visited=result.visitedDomain;
                 if (visited.has(currentdomain)){
-        
+                    chrome.runtime.sendMessage(
+                        {action:'send_current_timer',}
+                    )
                 }else{
         
                 }})
