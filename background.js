@@ -2,8 +2,6 @@
 let urls=[];
 let timers_url={};
 let urltimer={};
-let visitedDomains=new Set();
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
       // Get the monitored URL from the message and add it to your monitoring list
@@ -16,36 +14,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       chrome.storage.local.set({urls:urls,timers:timers_url,dict:urltimer},()=>{
         console.log('Data stored in local storage.')
     })
-    let popupurl='timers.html?timerId=${timerId}'
     // const MonitoredURL = monitoredURL;
-    chrome.tabs.query({ active: false, currentWindow: true }, (tabs) => {
-      for (let i = 0; i < tabs.length; i++) {
-        let releurl = tabs[i].url;
-        let domain = releurl.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
-        
-        if (releurl.includes(monitoredURL) && !visitedDomains.has(domain)) {
-        chrome.tabs.reload(tabId,{bypassCache:false});
-          chrome.windows.create({
-            url: popupurl,
-            type: 'popup',
-            width: 100,
-            height: 100,
-            left: 950, // Adjust the position to the bottom right
-            top: 520,
-            tabId:tabId
-
-          };()=>{
-            visitedDomains.add(domain);
-            
-          });
-        }
-      }
-    })
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         for (let i = 0; i < tabs.length; i++) {
           let curr_url = tabs[i].url;
-          let domain = curr_url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
-          if (curr_url.includes(MonitoredURL) && !visitedDomains.has(domain)) {
+          for(let i=0;i<urls.length;i++){
+         if (curr_url.includes(urls[i])) {
+
           chrome.tabs.reload(tabId,{bypassCache:false});
             chrome.windows.create({
               url: popupurl,
@@ -57,7 +32,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               tabId:tabId
             });
           }
-        }
+        }}
       })
 }});
      
@@ -87,6 +62,18 @@ if (message.action==='timer_please'){
 
     sendResponse({timer:timerObject})
 }
+})
+
+chrome.tabs.onActivated.addListener((activeInfo)=>{
+    let previoustabId=activeInfo.previoustabId;
+    let currenttabId=activeInfo.currenttabId;
+    chrome.tabs.get(currenttabId,(currentTab)=>{
+        let currentdomain=currentTab.url.hostname;
+        
+    chrome.tabs.get(previoustabId,(previousTab)=>{
+        let olddomain= previousTab.url.hostname;
+        if (olddomain)})
+    })
 })
    
 chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{

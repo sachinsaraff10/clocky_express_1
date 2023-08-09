@@ -9,10 +9,8 @@ chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
     // Response contains the timer object, use it as needed
     let timerObject = response.timer;
     // Use the timerObject in your popup window
-    setTimer(Number(timerObject.hourInput.value),Number(timerObject.minuteInput.value),
-    Number(timerObject.secondInput.value),timerObject);
-    handletabstatus(timerObject);
-  })
+    setTimer(timerObject);
+    })
          function createTimer() {
             const timerDiv = document.createElement('div');
             timerDiv.classList.add('container');
@@ -139,11 +137,14 @@ chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
         
 
 
-        function setTimer(hours, minutes, seconds,timer){
-          
+        function setTimer(timer){
+            let hours = Number(timer.hourInput.value);
+            let minutes = Number(timer.minuteInput.value);
+            let seconds = Number(timer.secondInput.value);
+
             let totalSeconds = hours * 3600 + minutes * 60 + seconds;
 
-   intervalId = setInterval(() => {
+   timer.intervalId = setInterval(() => {
     hours = Math.floor(totalSeconds / 3600);
     minutes = Math.floor((totalSeconds % 3600) / 60);
     seconds = totalSeconds % 60;
