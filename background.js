@@ -2,6 +2,9 @@
 let urls=[];
 let timers_url={};
 let urltimer={};
+let timer_toid={};
+let visitedDomain=new Set();
+let readwritearr={};
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
       // Get the monitored URL from the message and add it to your monitoring list
@@ -10,17 +13,24 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       let timerId=sent_timer.urlId;
       urls.push(monitoredURL);
       urltimer[monitoredURL]=sent_timer;
-      timers_url[sent_timer.urlId]=sent_timer;
-      chrome.storage.local.set({urls:urls,timers:timers_url,dict:urltimer},()=>{
+      timers_url[timerId]=sent_timer;
+      timer_toid[sent_timer]=timerId;
+      chrome.storage.local.set({urls:urls,timers:timers_url,urltotimer:urltimer,timertoid:timer_toid},()=>{
         console.log('Data stored in local storage.')
     })
     // const MonitoredURL = monitoredURL;
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         for (let i = 0; i < tabs.length; i++) {
           let curr_url = tabs[i].url;
+          let curr_domain=curr_url.hostname
           for(let i=0;i<urls.length;i++){
-         if (curr_url.includes(urls[i])) {
-
+         if (curr_domain===urls[i]) {
+          visitedDomain.add(curr_domain);
+          chrome.storage.local.set({visitedDomain:visitedDomain},
+            ()=>{
+                console.log('Data stored in local storage.')
+            })  
+          let popupURL = `timers.html?timerId=${timer_toid[urltimer[curr_domain]]}`
           chrome.tabs.reload(tabId,{bypassCache:false});
             chrome.windows.create({
               url: popupurl,
@@ -67,13 +77,23 @@ if (message.action==='timer_please'){
 chrome.tabs.onActivated.addListener((activeInfo)=>{
     let previoustabId=activeInfo.previoustabId;
     let currenttabId=activeInfo.currenttabId;
-    chrome.tabs.get(currenttabId,(currentTab)=>{
-        let currentdomain=currentTab.url.hostname;
+    chrome.storage.local.get([urls],(result)=>{
+        let releurl=result.urls;
+        chrome.tabs.get(currenttabId,(currentTab)=>{
+            let currentdomain=currentTab.url.hostname;
+        if (releurl.includes(currentdomain)) {
+            chrome.storage.local.get([visitedDomain],(result)=>{
+                let visited=result.visitedDomain;
+                if (visited.has(currentdomain)){
         
-    chrome.tabs.get(previoustabId,(previousTab)=>{
-        let olddomain= previousTab.url.hostname;
-        if (olddomain)})
+                }else{
+        
+                }})
+        }
+        
+        })
     })
+    
 })
    
 chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
