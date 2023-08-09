@@ -48,29 +48,33 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         for (let i = 0; i < tabs.length; i++) {
           let curr_url = tabs[i].url;
           let curr_domain=curr_url.hostname
-          for(let i=0;i<urls.length;i++){
-         if (curr_domain===urls[i]) { 
-          chrome.storage.local.get([visitedDomain],(result)=>{
-            let visitedDomain=result.visitedDomain;
-            visitedDomain.add(curr_domain);
-            chrome.storage.local.set({visitedDomain:visitedDomain},
-              ()=>{
-                  console.log('Data stored in local storage.')
-              })  
-            let popupURL = `timers.html?timerId=${timer_toid[urltimer[curr_domain]]}`
-            chrome.tabs.reload(tabId,{bypassCache:false});
-              chrome.windows.create({
-                url: popupurl,
-                type: 'popup',
-                width: 100,
-                height: 100,
-                left: 950, // Adjust the position to the bottom right
-                top: 520,
-                tabId:tabId
-              })})  
-          ;
-          }
-        }}
+          chrome.storage.local.get([urls],(result)=>{
+            let urls=result.urls;
+            for(let i=0;i<urls.length;i++){
+                if (curr_domain===urls[i]) { 
+                 chrome.storage.local.get([visitedDomain],(result)=>{
+                   let visitedDomain=result.visitedDomain;
+                   visitedDomain.add(curr_domain);
+                   chrome.storage.local.set({visitedDomain:visitedDomain},
+                     ()=>{
+                         console.log('Data stored in local storage.')
+                     })  
+                   let popupURL = `timers.html?timerId=${timer_toid[urltimer[curr_domain]]}`
+                   chrome.tabs.reload(tabId,{bypassCache:false});
+                     chrome.windows.create({
+                       url: popupurl,
+                       type: 'popup',
+                       width: 100,
+                       height: 100,
+                       left: 950, // Adjust the position to the bottom right
+                       top: 520,
+                       tabId:tabId
+                     })})  
+                 
+                 }
+               }})
+          
+    } 
       })
 }});
      
