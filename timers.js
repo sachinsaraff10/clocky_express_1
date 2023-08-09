@@ -9,30 +9,25 @@ chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
     // Response contains the timer object, use it as needed
     let timerObject = response.timer;
     // Use the timerObject in your popup window
+
     setTimer(timerObject);
     })
-         function createTimer() {
+         function createTimer(timer) {
             const timerDiv = document.createElement('div');
             timerDiv.classList.add('container');
 
             const hourInput = document.createElement('input');
             hourInput.type = 'text';
-            hourInput.placeholder='hours';
+            hourInput.value=timer.hourInput.value
             hourInput.classList.add('hours');
 
             const minuteInput = document.createElement('input');
             minuteInput.type = 'text';
-            minuteInput.placeholder='minutes';
-            minuteInput.classList.add('minutes');
-
+            minuteInput.value=timer.minuteInput.value
             const secondInput = document.createElement('input');
             secondInput.type = 'text';
-            secondInput.placeholder='seconds';
+            secondInput.value=timer.secondInput.value;
             secondInput.classList.add('seconds');
-
-            const playButton = document.createElement('button');
-            playButton.textContent = 'Play';
-            playButton.classList.add('paused');
 
             timerDiv.appendChild(hourInput);
             timerDiv.appendChild(document.createTextNode(':'));
@@ -40,21 +35,6 @@ chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
             timerDiv.appendChild(document.createTextNode(':'));
             timerDiv.appendChild(secondInput);
             timerContainer.appendChild(timerDiv);
-            timerContainer.appendChild(playButton);
-
-            const timer = {
-                button: playButton,
-                hourInput: hourInput,
-                minuteInput: minuteInput,
-                secondInput: secondInput,
-                intervalId: null
-            };
-
-            timers.push(timer);
-
-            playButton.addEventListener('click', () => {
-                handleTimerClick(timer);
-            });
         }
 
         function handleTimerClick(timer) {
@@ -108,8 +88,7 @@ chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
                 timer.minuteInput.readOnly = true;
                 timer.secondInput.readOnly = true;
 
-                timer.intervalId = setTimer(hours, minutes, 
-                    seconds, timer);
+                timer.intervalId = setTimer(timer);
                 
             }else{
                 clearInterval(intervalId);

@@ -64,7 +64,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log('Extension installed or updated!'); });
 
 
-chrom.runtime.onMessage.addListener((message,sender,
+chrome.runtime.onMessage.addListener((message,sender,
     sendResponse)=>{
 if (message.action==='timer_please'){
     let timeID=message.timerId;
