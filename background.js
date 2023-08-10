@@ -73,7 +73,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                    let popupURL = `timers.html?domainId=${curr_domain}`
                    chrome.tabs.reload(tabId,{bypassCache:false});
                      chrome.windows.create({
-                       url: popupurl,
+                       url: popupURL,
                        type: 'popup',
                        width: 100,
                        height: 100,
@@ -122,7 +122,7 @@ if (message.action==='timer_please'){
 
 
 chrome.tabs.onActivated.addListener((activeInfo)=>{
-    let previoustabId=activeInfo.previoustabId;
+    
     let currenttabId=activeInfo.currenttabId;
     chrome.storage.local.get(['urls','overwritten','running'],(result)=>{
         let releurl=result.urls;
