@@ -122,7 +122,7 @@ if (message.action==='timer_please'){
 
 chrome.tabs.onActivated.addListener((activeInfo)=>{
     
-    let currenttabId=activeInfo.currenttabId;
+    let currenttabId=activeInfo.tabId
     chrome.storage.local.get(['urls','overwritten','running'],(result)=>{
         let releurl=result.urls;
         let running_url=result.running;
