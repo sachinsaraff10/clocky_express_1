@@ -5,6 +5,7 @@ let urltimer={};
 let timer_toid={};
 let visitedDomain=new Set();
 let timer_overwrite={};
+let running_url=[];
 const { v4: uuidv4 } = require('uuid');
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
@@ -23,7 +24,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       timer_toid[sent_timer]=timerId;
       timer_overwrite[monitoredURL]=sent_timer;
       chrome.storage.local.set({urls:urls,timers:timers_url,
-        urltotimer:urltimer,timertoid:timer_toid,visitedDomain:visitedDomain,overwritten:timer_overwrite},()=>{
+        urltotimer:urltimer,timertoid:timer_toid,visitedDomain:visitedDomain,overwritten:timer_overwrite,
+         running:running_url},()=>{
         console.log('Data stored in local storage.')
     })} 
     else{
@@ -56,10 +58,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             let urls=result.urls;
             for(let i=0;i<urls.length;i++){
                 if (curr_domain===urls[i]) { 
-                 chrome.storage.local.get(['visitedDomain'],(result)=>{
+                 chrome.storage.local.get(['visitedDomain','running'],(result)=>{
                    let visitedDomain=result.visitedDomain;
+                   let running_url=result.running;
+                   running_url.push(curr_domain);
                    visitedDomain.add(curr_domain);
-                   chrome.storage.local.set({visitedDomain:visitedDomain},
+                   chrome.storage.local.set({visitedDomain:visitedDomain,running:running_url},
                      ()=>{
                          console.log('Data stored in local storage.')
                      })  
@@ -117,8 +121,9 @@ if (message.action==='timer_please'){
 chrome.tabs.onActivated.addListener((activeInfo)=>{
     let previoustabId=activeInfo.previoustabId;
     let currenttabId=activeInfo.currenttabId;
-    chrome.storage.local.get(['urls','overwritten'],(result)=>{
+    chrome.storage.local.get(['urls','overwritten','running'],(result)=>{
         let releurl=result.urls;
+        let running_url=result.running;
         let timer_overwrite=result.overwritten;
         chrome.tabs.get(currenttabId,(currentTab)=>{
             let currentdomain=currentTab.url.hostname;
@@ -144,12 +149,42 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                        tabId:tabId
                     }
                 )
-                }else{
-        
                 }})
+        }  else
+        {if(running_url)
+          
+          {let running_timer=timer_overwrite[running_url[0]];
+          chrome.runtime.sendMessage({action:'pausetimer',object:running_timer});
+        }
+          
+          visited.add(currentdomain);
+          running_url=[]
+          running_url.push(currentdomain);
+          chrome.storage.local.set({running:running_url,visitedDomain:visited});
+
+          let popupURL=`timers.html?domainId=${currentdomain}`;
+          chrome.windows.create(
+            {
+              url: popupURL,
+                       type: 'popup',
+                       width: 100,
+                       height: 100,
+                       left: 950, // Adjust the position to the bottom right
+                       top: 520,
+                       tabId:tabId
+            }
+          )
+            
         }
         
         })
+    }else{
+        if (running_url){
+          let running_timer=timer_overwrite[running_url[0]];
+          chrome.runtime.sendMessage({action:'pausetimer',
+          object:running_timer});
+
+        }
     }})
     
 })})
@@ -157,14 +192,15 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
 chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         if (changeInfo.status==="complete"){
             const taburl=tab.url;
-    
+            let currentdomain=taburl.hostname;
          chrome.storage.local.get(['urls'],(result)=> {
             const urls=result.urls;
             if (urls){
             for (let i=0;i<urls.length;i++)
-            {if (taburl.includes(urls[i])){
+            {if (currentdomain===urls[i]){
+                popupURL= `timers.html?domainId=${currentdomain}`
                 chrome.windows.create({
-                    url: 'timers.html',
+                    url:popupURL,
         type: 'popup',
         width: 200,
         height: 200,
