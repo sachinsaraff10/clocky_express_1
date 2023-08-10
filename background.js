@@ -123,22 +123,22 @@ if (message.action==='timer_please'){
 chrome.tabs.onActivated.addListener((activeInfo)=>{
     
     let currenttabId=activeInfo.tabId
-    chrome.storage.local.get(['urls','overwritten','running'],(result)=>{
+    chrome.storage.local.get(['urls','overwritten','running','visitedDomain'],(result)=>{
         let releurl=result.urls;
         let running_url=result.running;
+        let visited=result.visitedDomain;
         let timer_overwrite=result.overwritten;
         chrome.tabs.get(currenttabId,(currentTab)=>{
             let currentdomain=currentTab.url.hostname;
         if (releurl.includes(currentdomain)) {
-            chrome.storage.local.get(['visitedDomain'],(result)=>{
-                let visited=result.visitedDomain;
-                if (visited.has(currentdomain)){
+                      if (visited.has(currentdomain)){
                     chrome.runtime.sendMessage(
                         {action:'store_current_timer'},(response)=>{
 
                     if(response.action==='returned_timer'){
                         let new_timer=response.object;
                         timer_overwrite[currentdomain]=new_timer;
+                        chrome.storage.local.set({overwritten:timer_overwrite})
                 let popupURL=`timers.html?domainId=${currentdomain}`;
                 chrome.windows.create(
                     {
@@ -160,8 +160,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             let pausedtimer=response.object;
             timer_overwrite[running_url[0]]=pausedtimer;
             chrome.storage.local.set(overwritten:timer_overwrite)
-          })}}
-          );}
+          })}
+          ;
           
           visited.add(currentdomain);
           running_url=[]
@@ -179,12 +179,13 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                        top: 520,
                        tabId:currenttabId
             }
-          )
-            
-        }
+          )}
+}
+          
         
-        })
-    }else{
+        
+        
+      }else{
         if (running_url){
           let running_timer=timer_overwrite[running_url[0]];
           chrome.runtime.sendMessage({action:'pausetimer',
@@ -195,9 +196,10 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           });
 
         } 
-    }})
-    
-})})
+    })
+})
+})
+
    
 chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         if (changeInfo.status==="complete"){
