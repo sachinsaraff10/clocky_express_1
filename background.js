@@ -132,17 +132,27 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                     if(response.action==='store_current_timer'){
                         let new_timer=response.object;
                         timer_overwrite[currentdomain]=new_timer;
-                        chrome.storage.local.set({overwritten:timer_overwrite})                    }    }
-                    )
+                let popupURL=`timers.html?domainId=${currentdomain}`;
+                chrome.windows.create(
+                    {
+                        url: popupURL,
+                       type: 'popup',
+                       width: 100,
+                       height: 100,
+                       left: 950, // Adjust the position to the bottom right
+                       top: 520,
+                       tabId:tabId
+                    }
+                )
                 }else{
         
                 }})
         }
         
         })
-    })
+    }})
     
-})
+})})
    
 chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         if (changeInfo.status==="complete"){
