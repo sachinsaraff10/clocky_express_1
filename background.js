@@ -156,8 +156,12 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         {if(running_url)
           
           {let running_timer=timer_overwrite[running_url[0]];
-          chrome.runtime.sendMessage({action:'pausetimer',object:running_timer});
-        }
+          chrome.runtime.sendMessage({action:'pausetimer',object:running_timer},(response)=>{
+            let pausedtimer=response.object;
+            timer_overwrite[running_url[0]]=pausedtimer;
+            chrome.storage.local.set(overwritten:timer_overwrite)
+          })}}
+          );}
           
           visited.add(currentdomain);
           running_url=[]
@@ -187,7 +191,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           object:running_timer},(response)=>{
             let pausedtimer=response.object;
             timer_overwrite[running_url[0]]=pausedtimer;
-            
+            chrome.storage.local.set(overwritten:timer_overwrite)
           });
 
         } 
