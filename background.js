@@ -184,7 +184,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           chrome.runtime.sendMessage({action:'pausetimer',
           object:running_timer});
 
-        }
+        } 
     }})
     
 })})
@@ -198,7 +198,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             if (urls){
             for (let i=0;i<urls.length;i++)
             {if (currentdomain===urls[i]){
-                popupURL= `timers.html?domainId=${currentdomain}`
+               let  popupURL= `timers.html?domainId=${currentdomain}`
                 chrome.windows.create({
                     url:popupURL,
         type: 'popup',
