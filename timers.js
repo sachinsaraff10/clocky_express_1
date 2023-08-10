@@ -146,6 +146,13 @@ chrome.runtime.sendMessage({ action: 'timer_please', domainId }, (response) => {
             })
 
         }
+        if (message.action==='pausetimer'){
+            timer = message.object;
+            clearInterval(timer.intervalId)
+            chrome.storage.local.set({pausedtimer:timer},()=>{
+                sendResponse({action:'returned_timer',object:timer})
+            })
+        }
     })
     totalSeconds--;
   }, 1000);

@@ -136,7 +136,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                     chrome.runtime.sendMessage(
                         {action:'store_current_timer'},(response)=>{
 
-                    if(response.action==='store_current_timer'){
+                    if(response.action==='returned_timer'){
                         let new_timer=response.object;
                         timer_overwrite[currentdomain]=new_timer;
                 let popupURL=`timers.html?domainId=${currentdomain}`;
@@ -184,7 +184,11 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         if (running_url){
           let running_timer=timer_overwrite[running_url[0]];
           chrome.runtime.sendMessage({action:'pausetimer',
-          object:running_timer});
+          object:running_timer},(response)=>{
+            let pausedtimer=response.object;
+            timer_overwrite[running_url[0]]=pausedtimer;
+            
+          });
 
         } 
     }})
