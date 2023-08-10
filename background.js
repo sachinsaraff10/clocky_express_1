@@ -31,19 +31,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log('Data stored in local storage.')
     })} 
     else{
-        chrome.storage.local.get(['urls','timers','urltimer',
+        chrome.storage.local.get(['urls','timers','urltotimer',
             'timertoid','overwritten'],(result)=>{
                 
-                let monitoredURL = result.urls;
-                let sent_timer=result.timer;
-                let timerId=result.urlId;
+                let urls = result.urls;
+                let urltimer=result.urltotimer;
+                
                 let timer_overwrite=result.overwritten;
               //   let urlId=uuidv4();
               //   timer_overwrite[urlId]=sent_timer;
                 urls.push(monitoredURL);
                 urltimer[monitoredURL]=sent_timer;
-                timers_url[timerId]=sent_timer;
-                timer_toid[sent_timer]=timerId;
+                
                 timer_overwrite[monitoredURL]=sent_timer;
                 chrome.storage.local.set({urls:urls,timers:timers_url,
                   urltotimer:urltimer,timertoid:timer_toid,overwritten:timer_overwrite},()=>{
