@@ -117,8 +117,9 @@ if (message.action==='timer_please'){
 chrome.tabs.onActivated.addListener((activeInfo)=>{
     let previoustabId=activeInfo.previoustabId;
     let currenttabId=activeInfo.currenttabId;
-    chrome.storage.local.get(['urls'],(result)=>{
+    chrome.storage.local.get(['urls','overwritten'],(result)=>{
         let releurl=result.urls;
+        let timer_overwrite=result.overwritten;
         chrome.tabs.get(currenttabId,(currentTab)=>{
             let currentdomain=currentTab.url.hostname;
         if (releurl.includes(currentdomain)) {
@@ -128,7 +129,10 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                     chrome.runtime.sendMessage(
                         {action:'store_current_timer'},(response)=>{
 
-                        }
+                    if(response.action==='store_current_timer'){
+                        let new_timer=response.object;
+                        timer_overwrite[currentdomain]=new_timer;
+                        chrome.storage.local.set({overwritten:timer_overwrite})                    }    }
                     )
                 }else{
         

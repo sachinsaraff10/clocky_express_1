@@ -142,7 +142,7 @@ chrome.runtime.sendMessage({ action: 'timer_please', domainId }, (response) => {
     {
         if(message.action==='store_current_timer'){
             chrome.storage.local.set({updatedtimer:timer},()=>{
-                chrome.runtime.sendMessage({action:'returned_timer',object:timer})
+                sendResponse({action:'returned_timer',object:timer})
             })
 
         }
