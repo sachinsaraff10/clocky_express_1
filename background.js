@@ -6,6 +6,7 @@ let timer_toid={};
 let visitedDomain=new Set();
 let timer_overwrite={};
 let running_url=[];
+
 const { v4: uuidv4 } = require('uuid');
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
@@ -15,6 +16,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       let monitoredURL = message.url;
       let sent_timer=message.timer;
       let timerId=sent_timer.urlId;
+      
     //   let urlId=uuidv4();
     //   timer_overwrite[urlId]=sent_timer;
       urls.push(monitoredURL);
@@ -53,6 +55,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         for (let i = 0; i < tabs.length; i++) {
           let curr_url = tabs[i].url;
+          let tabId=tabs[i].id
           let curr_domain=curr_url.hostname
           chrome.storage.local.get(['urls'],(result)=>{
             let urls=result.urls;
@@ -146,7 +149,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                        height: 100,
                        left: 950, // Adjust the position to the bottom right
                        top: 520,
-                       tabId:tabId
+                       tabId:currenttabId
                     }
                 )
                 }})
@@ -171,7 +174,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                        height: 100,
                        left: 950, // Adjust the position to the bottom right
                        top: 520,
-                       tabId:tabId
+                       tabId:currenttabId
             }
           )
             
