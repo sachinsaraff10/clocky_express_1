@@ -5,12 +5,12 @@ const addTimerButton = document.getElementById('addTimerButton');
         let timers = [];
       // let intervalID;
       const urlParams = new URLSearchParams(window.location.search);
-let timerId = urlParams.get('timerId');
-chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
+let timerId = urlParams.get('domainId');
+chrome.runtime.sendMessage({ action: 'timer_please', domainId }, (response) => {
     // Response contains the timer object, use it as needed
     let timerObject = response.timer;
     // Use the timerObject in your popup window
-    createTimer(timer);
+    createTimer(timerObject);
     setTimer(timerObject);
     })
          function createTimer(timer) {
@@ -138,7 +138,15 @@ chrome.runtime.sendMessage({ action: 'timer_please', timerId }, (response) => {
     if (totalSeconds <= 0) {
       clearInterval(intervalId);
     }
+    chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>
+    {
+        if(message.action==='store_current_timer'){
+            chrome.storage.local.set({updatedtimer:timer},()=>{
+                chrome.runtime.sendMessage({action:'returned_timer',object:timer})
+            })
 
+        }
+    })
     totalSeconds--;
   }, 1000);
 

@@ -18,27 +18,31 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     //   timer_overwrite[urlId]=sent_timer;
       urls.push(monitoredURL);
       urltimer[monitoredURL]=sent_timer;
+
       timers_url[timerId]=sent_timer;
       timer_toid[sent_timer]=timerId;
+      timer_overwrite[monitoredURL]=sent_timer;
       chrome.storage.local.set({urls:urls,timers:timers_url,
-        urltotimer:urltimer,timertoid:timer_toid,visitedDomain:visitedDomain},()=>{
+        urltotimer:urltimer,timertoid:timer_toid,visitedDomain:visitedDomain,overwritten:timer_overwrite},()=>{
         console.log('Data stored in local storage.')
     })} 
     else{
-        chrome.storage.local.get([urls,timers,urltimer,
-            timertoid],(result)=>{
+        chrome.storage.local.get(['urls','timers','urltimer',
+            'timertoid','overwritten'],(result)=>{
                 
                 let monitoredURL = result.urls;
                 let sent_timer=result.timer;
                 let timerId=result.urlId;
+                let timer_overwrite=result.overwritten;
               //   let urlId=uuidv4();
               //   timer_overwrite[urlId]=sent_timer;
                 urls.push(monitoredURL);
                 urltimer[monitoredURL]=sent_timer;
                 timers_url[timerId]=sent_timer;
                 timer_toid[sent_timer]=timerId;
+                timer_overwrite[monitoredURL]=sent_timer;
                 chrome.storage.local.set({urls:urls,timers:timers_url,
-                  urltotimer:urltimer,timertoid:timer_toid},()=>{
+                  urltotimer:urltimer,timertoid:timer_toid,overwritten:timer_overwrite},()=>{
                   console.log('Data stored in local storage.')
               })            })
         
@@ -48,18 +52,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         for (let i = 0; i < tabs.length; i++) {
           let curr_url = tabs[i].url;
           let curr_domain=curr_url.hostname
-          chrome.storage.local.get([urls],(result)=>{
+          chrome.storage.local.get(['urls'],(result)=>{
             let urls=result.urls;
             for(let i=0;i<urls.length;i++){
                 if (curr_domain===urls[i]) { 
-                 chrome.storage.local.get([visitedDomain],(result)=>{
+                 chrome.storage.local.get(['visitedDomain'],(result)=>{
                    let visitedDomain=result.visitedDomain;
                    visitedDomain.add(curr_domain);
                    chrome.storage.local.set({visitedDomain:visitedDomain},
                      ()=>{
                          console.log('Data stored in local storage.')
                      })  
-                   let popupURL = `timers.html?timerId=${timer_toid[urltimer[curr_domain]]}`
+                   let popupURL = `timers.html?domainId=${curr_domain}`
                    chrome.tabs.reload(tabId,{bypassCache:false});
                      chrome.windows.create({
                        url: popupurl,
@@ -99,26 +103,32 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 chrome.runtime.onMessage.addListener((message,sender,
     sendResponse)=>{
 if (message.action==='timer_please'){
-    let timeID=message.timerId;
-    let timerObject=timers_url[timeID];
+    let domID=message.domainId;
+    chrome.storage.local.get(['overwritten'],(result)=>{
+        let timer_overwrite=result.overwritten;
+        let timerObject=timer_overwrite[domID];
 
-    sendResponse({timer:timerObject})
-}
-})
+        sendResponse({timer:timerObject})
+    })
+    }})
+    
+
 
 chrome.tabs.onActivated.addListener((activeInfo)=>{
     let previoustabId=activeInfo.previoustabId;
     let currenttabId=activeInfo.currenttabId;
-    chrome.storage.local.get([urls],(result)=>{
+    chrome.storage.local.get(['urls'],(result)=>{
         let releurl=result.urls;
         chrome.tabs.get(currenttabId,(currentTab)=>{
             let currentdomain=currentTab.url.hostname;
         if (releurl.includes(currentdomain)) {
-            chrome.storage.local.get([visitedDomain],(result)=>{
+            chrome.storage.local.get(['visitedDomain'],(result)=>{
                 let visited=result.visitedDomain;
                 if (visited.has(currentdomain)){
                     chrome.runtime.sendMessage(
-                        {action:'send_current_timer',}
+                        {action:'store_current_timer'},(response)=>{
+
+                        }
                     )
                 }else{
         
