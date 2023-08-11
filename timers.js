@@ -5,7 +5,7 @@ const addTimerButton = document.getElementById('addTimerButton');
         let timers = [];
       // let intervalID;
       const urlParams = new URLSearchParams(window.location.search);
-let timerId = urlParams.get('domainId');
+let domainId = urlParams.get('domainId');
 chrome.runtime.sendMessage({ action: 'timer_please', domainId }, (response) => {
     // Response contains the timer object, use it as needed
     let timerObject = response.timer;
