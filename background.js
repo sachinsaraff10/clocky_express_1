@@ -161,10 +161,43 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                       }})
                           }
                           else{
-                            
+                            let running_timer=timer_overwrite[running_url[0]];
+          chrome.runtime.sendMessage({action:'pausetimer',object:running_timer},(response)=>{
+            let pausedtimer=response.object;
+            timer_overwrite[running_url[0]]=pausedtimer;
+            chrome.storage.local.set({overwritten:timer_overwrite})})
+          running_url=[];
+          running_url.push(currentdomain);
+          chrome.storage.local.set({running:running_url,visitedDomain:visited});
+
+          let popupURL=`timers.html?domainId=${currentdomain}`;
+          chrome.windows.create(
+            {
+              url: popupURL,
+                       type: 'popup',
+                       width: 100,
+                       height: 100,
+                       left: 950, // Adjust the position to the bottom right
+                       top: 520,
+                       tabId:currenttabId
+            }
+          )
                           }
                         }else{
-
+          running_url.push(currentdomain);
+          chrome.storage.local.set({running:running_url});
+          let popupURL=`timers.html?domainId=${currentdomain}`;
+          chrome.windows.create(
+            {
+              url: popupURL,
+                       type: 'popup',
+                       width: 100,
+                       height: 100,
+                       left: 950, // Adjust the position to the bottom right
+                       top: 520,
+                       tabId:currenttabId
+            }
+          )
                         }
                     
         }  else
@@ -174,9 +207,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           chrome.runtime.sendMessage({action:'pausetimer',object:running_timer},(response)=>{
             let pausedtimer=response.object;
             timer_overwrite[running_url[0]]=pausedtimer;
-            chrome.storage.local.set({overwritten:timer_overwrite})})
-          
-          
+            chrome.storage.local.set({overwritten:timer_overwrite})})          
           visited.add(currentdomain);
           running_url=[]
           running_url.push(currentdomain);
@@ -195,7 +226,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             }
           )
         }else{
-          visited.add(currentdomain)
+          visited.add(currentdomain);
           running_url.push(currentdomain);
           chrome.storage.local.set({running:running_url,visitedDomain:visited});
 
@@ -237,14 +268,137 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         if (changeInfo.status==="complete"){
             const taburl=tab.url;
             let currentdomain=taburl.hostname;
-         chrome.storage.local.get(['urls','visitedDomain','overwritten',],(result)=> {
+         chrome.storage.local.get(['urls','visitedDomain','overwritten','running'],(result)=> {
             const urls=result.urls;
             let visited=result.visitedDomain;
             let timer_overwrite=result.overwritten;
+            let running_url=result.running;
             if (urls){
             for (let i=0;i<urls.length;i++)
             {if (currentdomain===urls[i]){
-              if(visited.has(currentdomain))
+              if(visited.has(currentdomain)){
+                if(running_url){
+                  if(running_url[0]===currentdomain){
+                    chrome.runtime.sendMessage(
+                      {action:'store_current_timer'},(response)=>{
+
+                  if(response.action==='returned_timer'){
+                      let new_timer=response.object;
+                      timer_overwrite[currentdomain]=new_timer;
+                      chrome.storage.local.set({overwritten:timer_overwrite,running:running_url})
+              let popupURL=`timers.html?domainId=${currentdomain}`;
+              chrome.windows.create(
+                  {
+                      url: popupURL,
+                     type: 'popup',
+                     width: 100,
+                     height: 100,
+                     left: 950, // Adjust the position to the bottom right
+                     top: 520,
+                     tabId:currenttabId
+                  }
+              )
+                  }
+                  else{
+
+                    let running_timer=timer_overwrite[running_url[0]];
+          chrome.runtime.sendMessage({action:'pausetimer',object:running_timer},(response)=>{
+            let pausedtimer=response.object;
+            timer_overwrite[running_url[0]]=pausedtimer;
+            chrome.storage.local.set({overwritten:timer_overwrite})})
+          running_url=[];
+          running_url.push(currentdomain);
+          chrome.storage.local.set({running:running_url,visitedDomain:visited});
+
+          let popupURL=`timers.html?domainId=${currentdomain}`;
+          chrome.windows.create(
+            {
+              url: popupURL,
+                       type: 'popup',
+                       width: 100,
+                       height: 100,
+                       left: 950, // Adjust the position to the bottom right
+                       top: 520,
+                       tabId:currenttabId
+            }
+          )
+
+                  }
+                }else{
+                  running_url.push(currentdomain);
+                  chrome.storage.local.set({running:running_url});
+                  let popupURL=`timers.html?domainId=${currentdomain}`;
+                  chrome.windows.create(
+                    {
+                      url: popupURL,
+                               type: 'popup',
+                               width: 100,
+                               height: 100,
+                               left: 950, // Adjust the position to the bottom right
+                               top: 520,
+                               tabId:currenttabId
+                    }
+                  )
+
+
+                }
+              }
+              else{
+                if(running_url){
+                  {let running_timer=timer_overwrite[running_url[0]];
+                    chrome.runtime.sendMessage({action:'pausetimer',object:running_timer},(response)=>{
+                      let pausedtimer=response.object;
+                      timer_overwrite[running_url[0]]=pausedtimer;
+                      chrome.storage.local.set({overwritten:timer_overwrite})})          
+                    visited.add(currentdomain);
+                    running_url=[]
+                    running_url.push(currentdomain);
+                    chrome.storage.local.set({running:running_url,visitedDomain:visited});
+          
+                    let popupURL=`timers.html?domainId=${currentdomain}`;
+                    chrome.windows.create(
+                      {
+                        url: popupURL,
+                                 type: 'popup',
+                                 width: 100,
+                                 height: 100,
+                                 left: 950, // Adjust the position to the bottom right
+                                 top: 520,
+                                 tabId:currenttabId
+                      }
+                    )
+                }
+                else{
+                  visited.add(currentdomain);
+          running_url.push(currentdomain);
+          chrome.storage.local.set({running:running_url,visitedDomain:visited});
+
+          let popupURL=`timers.html?domainId=${currentdomain}`;
+          chrome.windows.create(
+            {
+              url: popupURL,
+                       type: 'popup',
+                       width: 100,
+                       height: 100,
+                       left: 950, // Adjust the position to the bottom right
+                       top: 520,
+                       tabId:currenttabId
+            }
+          )
+                }
+              } }
+              else{
+                if (running_url){
+                  let running_timer=timer_overwrite[running_url[0]];
+                  chrome.runtime.sendMessage({action:'pausetimer',
+                  object:running_timer},(response)=>{
+                    let pausedtimer=response.object;
+                    timer_overwrite[running_url[0]]=pausedtimer;
+                    chrome.storage.local.set(overwritten:timer_overwrite)
+                  });
+        
+                }
+              }
                let  popupURL= `timers.html?domainId=${currentdomain}`
                 
                chrome.windows.create({
