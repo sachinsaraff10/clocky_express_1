@@ -60,9 +60,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             let urls=result.urls;
             for(let i=0;i<urls.length;i++){
                 if (curr_domain===urls[i]) { 
-                 chrome.storage.local.get(['visitedDomain','running'],(result)=>{
+                 chrome.storage.local.get(['visitedDomain','running','overwritten'],(result)=>{
                    let visitedDomain=result.visitedDomain;
                    let running_url=result.running;
+                   let timer_overwrite=result.overwritten;
                    running_url.push(curr_domain);
                    visitedDomain.add(curr_domain);
                    chrome.storage.local.set({visitedDomain:visitedDomain,running:running_url},
@@ -79,6 +80,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                        left: 950, // Adjust the position to the bottom right
                        top: 520,
                        tabId:tabId
+                     },()=>{
+                      
+                      // chrome.storage.local.set({overwritten:timer_overwrite})
                      })})  
                  
                  }
@@ -131,27 +135,38 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         chrome.tabs.get(currenttabId,(currentTab)=>{
             let currentdomain=currentTab.url.hostname;
         if (releurl.includes(currentdomain)) {
-                      if (visited.has(currentdomain)){
-                    chrome.runtime.sendMessage(
-                        {action:'store_current_timer'},(response)=>{
 
-                    if(response.action==='returned_timer'){
-                        let new_timer=response.object;
-                        timer_overwrite[currentdomain]=new_timer;
-                        chrome.storage.local.set({overwritten:timer_overwrite})
-                let popupURL=`timers.html?domainId=${currentdomain}`;
-                chrome.windows.create(
-                    {
-                        url: popupURL,
-                       type: 'popup',
-                       width: 100,
-                       height: 100,
-                       left: 950, // Adjust the position to the bottom right
-                       top: 520,
-                       tabId:currenttabId
-                    }
-                )
-                }})
+                      if (visited.has(currentdomain)){
+                        if (running_url){
+                          if(running_url[0]===currentdomain){
+                            chrome.runtime.sendMessage(
+                              {action:'store_current_timer'},(response)=>{
+      
+                          if(response.action==='returned_timer'){
+                              let new_timer=response.object;
+                              timer_overwrite[currentdomain]=new_timer;
+                              chrome.storage.local.set({overwritten:timer_overwrite,running:running_url})
+                      let popupURL=`timers.html?domainId=${currentdomain}`;
+                      chrome.windows.create(
+                          {
+                              url: popupURL,
+                             type: 'popup',
+                             width: 100,
+                             height: 100,
+                             left: 950, // Adjust the position to the bottom right
+                             top: 520,
+                             tabId:currenttabId
+                          }
+                      )
+                      }})
+                          }
+                          else{
+                            
+                          }
+                        }else{
+
+                        }
+                    
         }  else
         {if(running_url)
           
@@ -159,9 +174,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           chrome.runtime.sendMessage({action:'pausetimer',object:running_timer},(response)=>{
             let pausedtimer=response.object;
             timer_overwrite[running_url[0]]=pausedtimer;
-            chrome.storage.local.set(overwritten:timer_overwrite)
-          })}
-          ;
+            chrome.storage.local.set({overwritten:timer_overwrite})})
+          
           
           visited.add(currentdomain);
           running_url=[]
@@ -179,7 +193,25 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                        top: 520,
                        tabId:currenttabId
             }
-          )}
+          )
+        }else{
+          visited.add(currentdomain)
+          running_url.push(currentdomain);
+          chrome.storage.local.set({running:running_url,visitedDomain:visited});
+
+          let popupURL=`timers.html?domainId=${currentdomain}`;
+          chrome.windows.create(
+            {
+              url: popupURL,
+                       type: 'popup',
+                       width: 100,
+                       height: 100,
+                       left: 950, // Adjust the position to the bottom right
+                       top: 520,
+                       tabId:currenttabId
+            }
+          )
+          }}
 }
           
         
@@ -205,13 +237,18 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         if (changeInfo.status==="complete"){
             const taburl=tab.url;
             let currentdomain=taburl.hostname;
-         chrome.storage.local.get(['urls'],(result)=> {
+         chrome.storage.local.get(['urls','visitedDomain','overwritten',],(result)=> {
             const urls=result.urls;
+            let visited=result.visitedDomain;
+            let timer_overwrite=result.overwritten;
             if (urls){
             for (let i=0;i<urls.length;i++)
             {if (currentdomain===urls[i]){
+              if(visited.has(currentdomain))
                let  popupURL= `timers.html?domainId=${currentdomain}`
-                chrome.windows.create({
+                
+               chrome.windows.create({
+
                     url:popupURL,
         type: 'popup',
         width: 200,
@@ -226,6 +263,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
       })
     
     chrome.action.onClicked.addListener(()=>{
+
         chrome.windows.create({
             url:'sites.html',
             type:'popup',
