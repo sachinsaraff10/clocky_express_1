@@ -92,19 +92,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       })
 }});
      
-    
-    // if (message.action==='getkeysarray'){
-    //     sendResponse({keys:keysarray});
-
-    // }
-   
-  ;
-
-
-
-
-
-
+  
   // Other background script logic and tasks...
   chrome.runtime.onInstalled.addListener(() => {
     console.log('Extension installed or updated!'); });
@@ -403,7 +391,12 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             }} })}}
             ) 
     chrome.action.onClicked.addListener(()=>{
-
+      chrome.storage.local.get (['urls'],(result)=>{ 
+        let vals=result.urls;
+        if (vals){
+            chrome.runtime.sendMessage({action:'initialize',vals})
+        
+            let popupURL=`sites.html?domId=${}`
         chrome.windows.create({
             url:'sites.html',
             type:'popup',
@@ -411,15 +404,12 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             height:300,
             left: 900, // Adjust the position to the bottom right
             top: 70,
-            tabId:tabId
+           
     
         });
-      chrome.storage.local.get (['urls'],(result)=>{ 
-        let vals=result.urls;
-        if (vals){
-            chrome.runtime.sendMessage({action:'initialize',vals})
-            
-        }} )})
+        }} )
+        
+      })
      // Add any initialization logic or tasks here
  
 
