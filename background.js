@@ -54,7 +54,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         for (let i = 0; i < tabs.length; i++) {
           let curr_url = tabs[i].url;
-          let tabId=tabs[i].id
+          let tabId=tabs[i].id;
           let curr_domain=curr_url.hostname
           chrome.storage.local.get(['urls'],(result)=>{
             let urls=result.urls;
@@ -64,6 +64,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                    let visitedDomain=result.visitedDomain;
                    let running_url=result.running;
                    let timer_overwrite=result.overwritten;
+                   
                    running_url.push(curr_domain);
                    visitedDomain.add(curr_domain);
                    chrome.storage.local.set({visitedDomain:visitedDomain,running:running_url},
@@ -114,7 +115,7 @@ if (message.action==='timer_please'){
 
 chrome.tabs.onActivated.addListener((activeInfo)=>{
     
-    let currenttabId=activeInfo.tabId
+    let currenttabId=activeInfo.tabId;
     chrome.storage.local.get(['urls','overwritten','running','visitedDomain'],(result)=>{
         let releurl=result.urls;
         let running_url=result.running;
@@ -281,7 +282,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                      height: 100,
                      left: 950, // Adjust the position to the bottom right
                      top: 520,
-                     tabId:currenttabId
+                     tabId:tabId
                   }
               )}})
                   }
@@ -305,7 +306,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                        height: 100,
                        left: 950, // Adjust the position to the bottom right
                        top: 520,
-                       tabId:currenttabId
+                       tabId:tabId
             }
           )
 
@@ -322,7 +323,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                                height: 100,
                                left: 950, // Adjust the position to the bottom right
                                top: 520,
-                               tabId:currenttabId
+                               tabId:tabId
                     }
                   )
 
@@ -350,7 +351,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                                  height: 100,
                                  left: 950, // Adjust the position to the bottom right
                                  top: 520,
-                                 tabId:currenttabId
+                                 tabId:tabId
                       }
                     )
                 }
@@ -368,7 +369,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                        height: 100,
                        left: 950, // Adjust the position to the bottom right
                        top: 520,
-                       tabId:currenttabId
+                       tabId:tabId
             }
           )
                 }
