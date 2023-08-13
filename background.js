@@ -7,7 +7,7 @@ let visitedDomain=new Set();
 let timer_overwrite={};
 let running_url=[];
 
-const { v4: uuidv4 } = require('uuid');
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
         if(urls.length===0)
@@ -392,13 +392,16 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             ) 
     chrome.action.onClicked.addListener(()=>{
       chrome.storage.local.get (['urls'],(result)=>{ 
-        let vals=result.urls;
-        if (vals){
-            chrome.runtime.sendMessage({action:'initialize',vals})
+        let domains =result.urls;
+        chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
+          if (message.action==='storageplease'){
+            sendResponse({object:domains})
+          }
+        })
         
-            let popupURL=`sites.html?domId=${}`
+            let popupURL=`sites.html?domainId=${domains}`
         chrome.windows.create({
-            url:'sites.html',
+            url:popupURL,
             type:'popup',
             width:300,
             height:300,
@@ -407,7 +410,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
            
     
         });
-        }} )
+        } )
         
       })
      // Add any initialization logic or tasks here

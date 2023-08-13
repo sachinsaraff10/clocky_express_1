@@ -1,6 +1,11 @@
 let lst=[];
 const { v4: uuidv4 } = require('uuid');
         // let x=0;
+const urlParams = new URLSearchParams(window.location.search);
+let domains = urlParams.get('domainId');
+chrome.runtime.sendMessage({action:"storageplease",domains},(response)=>{
+
+})
 const body=document.querySelector('body');
 body.style.display='flex';
         const maincontainer=document.getElementById('maincontainer')
@@ -235,7 +240,7 @@ body.style.display='flex';
             container3.appendChild(okayButton);
             container3.appendChild(timerDiv);
             const timer = {
-                tabId:tabId\,
+                tabId:tabId,
                 hourInput: hourInput,
                 minuteInput: minuteInput,
                 secondInput: secondInput,
@@ -246,7 +251,7 @@ body.style.display='flex';
 
             chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
                 if (message.action==="set-timer"){
-                    chrome.runtime.sendMessage({action:"monitorURL",tiemr:serializedtimer,hourInput: serializedtimer.hourInput.value,minuteInput: serializedtimer.minuteInput.value,secondInput: serializedtimer.secondInput.value,timer.})
+                    chrome.runtime.sendMessage({action:"monitorURL",timer:serializedtimer,hourInput: serializedtimer.hourInput.value,minuteInput: serializedtimer.minuteInput.value,secondInput: serializedtimer.secondInput.value})
                 }
             })
         }
