@@ -380,9 +380,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                        left: 950, // Adjust the position to the bottom right
                        top: 520,
                        tabId:tabId
-            }
-          )
-                }
+            })}
               } }
               else{
                 if (running_url){
