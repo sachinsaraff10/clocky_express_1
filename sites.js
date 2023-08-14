@@ -3,11 +3,15 @@ let lst=[];
         // let x=0;
 const urlParams = new URLSearchParams(window.location.search);
 let domains = urlParams.get('domainId');
+
 chrome.runtime.sendMessage({action:"storageplease"},(response)=>{
 let domains=response.object;
-chrome.storage.local.get(['urltotimer',(result)=>{
-
-}])
+chrome.storage.local.get(['urltotimer'],(result)=>{
+let urltimer=result.urltotimer;
+for (let i=0;i<domains.length;i++){
+    presetok(domains[i],container3,urltimer[domains[i]])
+}
+})
 })
 const body=document.querySelector('body');
 body.style.display='flex';
@@ -22,55 +26,11 @@ body.style.display='flex';
   container3.style.flexDirection='column';
   container3.style.marginLeft='10px';
   container3.style.gap='10px';
-  container2.style.flexGrow='.2'; 
-        // const listcontainer=document.getElementById('listcontainer');
-        // listcontainer.style.display='inline-block';
-        // listcontainer.style.justifyContent='space-even';
-        // listcontainer.style.display='flex';
-    // listcontainer.style.flexDirection='column';
-    //     listcontainer.style.gap='2px';
-        // var divv;
-        // let removebtn;
-        // const addbutton=document.getElementById('addbutton');
-//   document.addEventListener(
-//     'DOMContentLoaded',()=>{
-//         chrome.storage.local.get('urls',function(data){
-//             const urlList= document.getElementById()
-//         })
-//     }
-//   )        
+  container2.style.flexGrow='.2';       
         function remover(parent,child){
          parent.removeChild(child);
           }
-        // function disappear(box){
-        //   box.close();
-        // }
-        // function newbox(){ var divv=document.createElement("div");
-  // function appender(container1,container2){container2.appendChild(container1)};
-   //                                          divv.classList.add("container");
-   // const newbtn=document.createElement("button");
-  //  divv.style.display='flex';
-  //  divv.style.height='fit-content';
-  //  divv.style.justifyContent='left';
-  //  divv.style.backgroundColor='white';
-  // // newbtn.textContent="New site";
-  // newbtn.addEventListener('click',()=>{setnew(newbtn,divv)});
-      
-   // divv.appendChild(newbtn);
-   // divv.appendChild(removebtn);
-    //  addbutton.addEventListener('click',()=>{setnew(addbutton,divv)})
-    //  maincontainer.appendChild(divv)                     
-    // }
-        
-        // addbutton.addEventListener('click',newbox); 
-   
-     //  function setnew(button,div){
-     // var dbox=document.createElement('dialog');
-     // dbox.classList.add('dcontainer');
-     // // dbox.style.display='flex';
-     // dbox.style.justifycontent='center';
-     // dbox.style.height='fit-content';
-     // dbox.style.width='fit-content';
+ 
   let inpp=document.getElementById('urlId');
      // inpp.type='text';
      inpp.placeholder='www.example.com';
@@ -138,10 +98,6 @@ body.style.display='flex';
     }   
         radiocontainer.appendChild(radio);
         radiocontainer.appendChild(label);
-     // removebtn=document.createElement("button");
-   // removebtn.textContent="Remove site";
-   // removebtn.addEventListener('click',()=>{remover(div,listcontainer)});
-   // listcontainer.appendChild(lists);
    radio.addEventListener('click', () => {
       if (radio.checked) {
         radio.focus(); 
@@ -165,19 +121,7 @@ body.style.display='flex';
    
   // 
       }
-
-      chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
-        if (message.action==="initialize"){
-            let valuables = message.vals;
-            valuables.forEach((entry) => {
-                
-            
-                presetok(entry,container3)
-            })
-        }
-      })
-
-      function presetok(input,div){
+      function presetok(input,div,timer){
         const label=document.createElement('label');
         const radiocontainer=document.createElement('div');
         
@@ -193,9 +137,10 @@ body.style.display='flex';
          
         label.textContent=radio.value;
         let unique=label.textContent;
+        
         radiocontainer.appendChild(radio);
         radiocontainer.appendChild(label);
-     
+        storedtimer(timer);
    radio.addEventListener('click', () => {
       if (radio.checked) {
         radio.focus(); 
@@ -215,20 +160,45 @@ body.style.display='flex';
       function addtimer(){
       const timerDiv = document.createElement('div');
             timerDiv.classList.add('container');
-            
+            const okayButton=document.createElement('button');
             const hourInput = document.createElement('input');
             hourInput.type = 'text';
+            hourInput.addEventListener('input',()=>{
+              let hours = Number(minuteInput.value);
+              if (isNaN(hours)){
+                okayButton.disabled=true;
+              }
+            })
             hourInput.placeholder='hours';
             hourInput.classList.add('hours');
+            
 
             const minuteInput = document.createElement('input');
             minuteInput.type = 'text';
             minuteInput.placeholder='minutes';
+            minuteInput.addEventListener('input',()=>{
+              let minutes = Number(minuteInput.value);
+              if (minutes>=60){
+                okayButton.disabled=true;
+              }
+              if (isNaN(minutes)){
+                okayButton.disabled=true;
+              }
+            })
             minuteInput.classList.add('minutes');
 
             const secondInput = document.createElement('input');
             secondInput.type = 'text';
             secondInput.placeholder='seconds';
+            secondInput.addEventListener('input',()=>{
+              let seconds = Number(secondInput.value);
+              if (seconds>=60){
+                okayButton.disabled=true;
+              }
+              if(isNaN(seconds)){
+                okayButton.disabled=true;
+              }
+            })
             secondInput.classList.add('seconds');
             timerDiv.appendChild(hourInput);
             timerDiv.appendChild(document.createTextNode(':'));
@@ -245,40 +215,35 @@ body.style.display='flex';
                 secondInput: secondInput,
                 urlId:uuidv4(),
                 intervalId:null};
-
-
-            timers.push(timer);
-
-            let hours = Number(timer.hourInput.value);
-            let minutes = Number(timer.minuteInput.value);
-            let seconds = Number(timer.secondInput.value);
-            chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
-                if (message.action==="set-timer"){
-                    chrome.runtime.sendMessage({action:"monitorURL",timer:serializedtimer,hourInput: serializedtimer.hourInput.value,minuteInput: serializedtimer.minuteInput.value,secondInput: serializedtimer.secondInput.value})
-                }
-    
-                
-            })
+                timers.push(timer);
+                chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
+                  if (message.action==="set-timer"){
+                    let url=message.url;
+                      okayButton.addEventListener('click',
+                      ()=>{chrome.runtime.sendMessage({action:"monitorURL",
+                      timer:serializedtimer,
+                    url:url})})
+                  }
+              })
         }
 
 
-        function storedtimer(){
+        function storedtimer(timer){
           const timerDiv = document.createElement('div');
                 timerDiv.classList.add('container');
                 
                 const hourInput = document.createElement('input');
                 hourInput.type = 'text';
-                hourInput.placeholder='hours';
                 hourInput.classList.add('hours');
-    
+                hourInput.value=timer.hourInput.value;
                 const minuteInput = document.createElement('input');
                 minuteInput.type = 'text';
-                minuteInput.placeholder='minutes';
+                minuteInput.value=timer.minuteInput.value;
                 minuteInput.classList.add('minutes');
     
                 const secondInput = document.createElement('input');
                 secondInput.type = 'text';
-                secondInput.placeholder='seconds';
+                secondInput.value=timer.secondInput.value;
                 secondInput.classList.add('seconds');
     
                 // const playButton = document.createElement('button');
@@ -289,8 +254,7 @@ body.style.display='flex';
                 timerDiv.appendChild(minuteInput);
                 timerDiv.appendChild(document.createTextNode(':'));
                 timerDiv.appendChild(secondInput);
-                // timerContainer.appendChild(timerDiv);
-                container3.appendChild(okayButton);
+               
                 container3.appendChild(timerDiv);
                 const timer = {
                     tabId:tabId,
@@ -301,10 +265,4 @@ body.style.display='flex';
                     intervalId:null};
     
                 timers.push(timer);
-    
-                chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
-                    if (message.action==="set-timer"){
-                        chrome.runtime.sendMessage({action:"monitorURL",timer:serializedtimer,hourInput: serializedtimer.hourInput.value,minuteInput: serializedtimer.minuteInput.value,secondInput: serializedtimer.secondInput.value})
-                    }
-                })
             }
