@@ -391,7 +391,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   object:running_timer},(response)=>{
                     let pausedtimer=response.object;
                     timer_overwrite[running_url[0]]=pausedtimer;
-                    chrome.storage.local.set(overwritten:timer_overwrite)
+                    running_url=[];
+                    chrome.storage.local.set({overwritten:timer_overwrite,running:running_url})
                   });
         
                 }
