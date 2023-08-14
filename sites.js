@@ -1,10 +1,13 @@
 let lst=[];
-const { v4: uuidv4 } = require('uuid');
+
         // let x=0;
 const urlParams = new URLSearchParams(window.location.search);
 let domains = urlParams.get('domainId');
-chrome.runtime.sendMessage({action:"storageplease",domains},(response)=>{
+chrome.runtime.sendMessage({action:"storageplease"},(response)=>{
+let domains=response.object;
+chrome.storage.local.get(['urltotimer',(result)=>{
 
+}])
 })
 const body=document.querySelector('body');
 body.style.display='flex';
@@ -227,10 +230,6 @@ body.style.display='flex';
             secondInput.type = 'text';
             secondInput.placeholder='seconds';
             secondInput.classList.add('seconds');
-
-            // const playButton = document.createElement('button');
-            // playButton.textContent = 'Play';
-            // playButton.classList.add('paused');
             timerDiv.appendChild(hourInput);
             timerDiv.appendChild(document.createTextNode(':'));
             timerDiv.appendChild(minuteInput);
@@ -247,11 +246,65 @@ body.style.display='flex';
                 urlId:uuidv4(),
                 intervalId:null};
 
+
             timers.push(timer);
 
+            let hours = Number(timer.hourInput.value);
+            let minutes = Number(timer.minuteInput.value);
+            let seconds = Number(timer.secondInput.value);
             chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
                 if (message.action==="set-timer"){
                     chrome.runtime.sendMessage({action:"monitorURL",timer:serializedtimer,hourInput: serializedtimer.hourInput.value,minuteInput: serializedtimer.minuteInput.value,secondInput: serializedtimer.secondInput.value})
                 }
+    
+                
             })
         }
+
+
+        function storedtimer(){
+          const timerDiv = document.createElement('div');
+                timerDiv.classList.add('container');
+                
+                const hourInput = document.createElement('input');
+                hourInput.type = 'text';
+                hourInput.placeholder='hours';
+                hourInput.classList.add('hours');
+    
+                const minuteInput = document.createElement('input');
+                minuteInput.type = 'text';
+                minuteInput.placeholder='minutes';
+                minuteInput.classList.add('minutes');
+    
+                const secondInput = document.createElement('input');
+                secondInput.type = 'text';
+                secondInput.placeholder='seconds';
+                secondInput.classList.add('seconds');
+    
+                // const playButton = document.createElement('button');
+                // playButton.textContent = 'Play';
+                // playButton.classList.add('paused');
+                timerDiv.appendChild(hourInput);
+                timerDiv.appendChild(document.createTextNode(':'));
+                timerDiv.appendChild(minuteInput);
+                timerDiv.appendChild(document.createTextNode(':'));
+                timerDiv.appendChild(secondInput);
+                // timerContainer.appendChild(timerDiv);
+                container3.appendChild(okayButton);
+                container3.appendChild(timerDiv);
+                const timer = {
+                    tabId:tabId,
+                    hourInput: hourInput,
+                    minuteInput: minuteInput,
+                    secondInput: secondInput,
+                    urlId:null
+                    intervalId:null};
+    
+                timers.push(timer);
+    
+                chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
+                    if (message.action==="set-timer"){
+                        chrome.runtime.sendMessage({action:"monitorURL",timer:serializedtimer,hourInput: serializedtimer.hourInput.value,minuteInput: serializedtimer.minuteInput.value,secondInput: serializedtimer.secondInput.value})
+                    }
+                })
+            }

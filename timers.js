@@ -1,9 +1,7 @@
 const timerContainer = document.getElementById('timerContainer');
-const { v4: uuidv4 } = require('uuid');        
+   
 const addTimerButton = document.getElementById('addTimerButton');
       let intervalID;
-        let timers = [];
-      // let intervalID;
       const urlParams = new URLSearchParams(window.location.search);
 let domainId = urlParams.get('domainId');
 chrome.runtime.sendMessage({ action: 'timer_please', domainId }, (response) => {
