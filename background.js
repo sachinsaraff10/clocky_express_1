@@ -260,7 +260,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         if (changeInfo.status==="complete"){
             const taburl=tab.url;
             let currentdomain=taburl.hostname;
-         chrome.storage.local.get(['urls','visitedDomain','overwritten','running'],(result)=> {
+         chrome.storage.local.get(['urls',
+         'visitedDomain','overwritten','running'],(result)=> {
             const urls=result.urls;
             let visited=result.visitedDomain;
             let timer_overwrite=result.overwritten;
@@ -415,7 +416,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             width:300,
             height:300,
             left: 900, // Adjust the position to the bottom right
-            top: 70,
+            top: 70
            
     
         });
