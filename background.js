@@ -136,6 +136,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                               timer_overwrite[currentdomain]=new_timer;
                               chrome.storage.local.set({overwritten:timer_overwrite,running:running_url})
                       let popupURL=`timers.html?domainId=${currentdomain}`;
+                      chrome.tabs.reload(tabId,{bypassCache:false});
                       chrome.windows.create(
                           {
                               url: popupURL,
@@ -160,6 +161,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           chrome.storage.local.set({running:running_url,visitedDomain:visited});
 
           let popupURL=`timers.html?domainId=${currentdomain}`;
+          chrome.tabs.reload(tabId,{bypassCache:false});
           chrome.windows.create(
             {
               url: popupURL,
@@ -176,6 +178,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           running_url.push(currentdomain);
           chrome.storage.local.set({running:running_url});
           let popupURL=`timers.html?domainId=${currentdomain}`;
+          chrome.tabs.reload(tabId,{bypassCache:false});
           chrome.windows.create(
             {
               url: popupURL,
@@ -203,6 +206,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           chrome.storage.local.set({running:running_url,visitedDomain:visited});
 
           let popupURL=`timers.html?domainId=${currentdomain}`;
+          chrome.tabs.reload(tabId,{bypassCache:false});
           chrome.windows.create(
             {
               url: popupURL,
@@ -220,6 +224,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           chrome.storage.local.set({running:running_url,visitedDomain:visited});
 
           let popupURL=`timers.html?domainId=${currentdomain}`;
+          chrome.tabs.reload(tabId,{bypassCache:false});
           chrome.windows.create(
             {
               url: popupURL,
@@ -274,6 +279,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                       timer_overwrite[currentdomain]=new_timer;
                       chrome.storage.local.set({overwritten:timer_overwrite,running:running_url})
               let popupURL=`timers.html?domainId=${currentdomain}`;
+              chrome.tabs.reload(tabId,{bypassCache:false});
               chrome.windows.create(
                   {
                       url: popupURL,
@@ -298,6 +304,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
           chrome.storage.local.set({running:running_url,visitedDomain:visited});
 
           let popupURL=`timers.html?domainId=${currentdomain}`;
+          chrome.tabs.reload(tabId,{bypassCache:false});
           chrome.windows.create(
             {
               url: popupURL,
@@ -315,6 +322,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   running_url.push(currentdomain);
                   chrome.storage.local.set({running:running_url});
                   let popupURL=`timers.html?domainId=${currentdomain}`;
+                  chrome.tabs.reload(tabId,{bypassCache:false});
                   chrome.windows.create(
                     {
                       url: popupURL,
@@ -343,6 +351,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                     chrome.storage.local.set({running:running_url,visitedDomain:visited});
           
                     let popupURL=`timers.html?domainId=${currentdomain}`;
+                    chrome.tabs.reload(tabId,{bypassCache:false});
                     chrome.windows.create(
                       {
                         url: popupURL,
@@ -361,6 +370,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
           chrome.storage.local.set({running:running_url,visitedDomain:visited});
 
           let popupURL=`timers.html?domainId=${currentdomain}`;
+          chrome.tabs.reload(tabId,{bypassCache:false});
           chrome.windows.create(
             {
               url: popupURL,
@@ -398,7 +408,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         })
         
             let popupURL=`sites.html?domainId=${domains}`
-        chrome.windows.create({
+            // chrome.tabs.reload(tabId,{bypassCache:false});
+            chrome.windows.create({
             url:popupURL,
             type:'popup',
             width:300,
