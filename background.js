@@ -116,6 +116,7 @@ if (message.action==='timer_please'){
 chrome.tabs.onActivated.addListener((activeInfo)=>{
     
     let currenttabId=activeInfo.tabId;
+    if(urls){
     chrome.storage.local.get(['urls','overwritten','running','visitedDomain'],(result)=>{
         let releurl=result.urls;
         let running_url=result.running;
@@ -252,7 +253,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         } 
     } }
     )
-})
+})}
 })
 
    
@@ -400,7 +401,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             }} })}}
             ) 
     chrome.action.onClicked.addListener(()=>{
-      chrome.storage.local.get (['urls'],(result)=>{ 
+      if (urls)
+      {chrome.storage.local.get (['urls'],(result)=>{ 
         let domains =result.urls;
         chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
           if (message.action==='storageplease'){
@@ -420,9 +422,21 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
            
     
         });
+        } )}
+      else{chrome.windows.create({
+        url:'sites.html',
+        type:'popup',
+        width:300,
+        height:300,
+        left: 900, // Adjust the position to the bottom right
+        top: 70
+       
+
+    })}
+            ;
         } )
         
-      })
+      
      // Add any initialization logic or tasks here
  
 
