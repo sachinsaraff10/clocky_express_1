@@ -161,6 +161,7 @@ body.style.display='flex';
       const timerDiv = document.createElement('div');
             timerDiv.classList.add('container');
             const okayButton=document.createElement('button');
+            okayButton.textContent='Okay';
             const hourInput = document.createElement('input');
             hourInput.type = 'text';
             hourInput.addEventListener('input',()=>{
@@ -213,7 +214,7 @@ body.style.display='flex';
                 hourInput: hourInput,
                 minuteInput: minuteInput,
                 secondInput: secondInput,
-                urlId:uuidv4(),
+                urlId:null,
                 intervalId:null};
                 timers.push(timer);
                 chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
