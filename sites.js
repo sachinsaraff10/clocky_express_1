@@ -6,12 +6,13 @@ let domains = urlParams.get('domainId');
 
 chrome.runtime.sendMessage({action:"storageplease"},(response)=>{
 let domains=response.object;
-chrome.storage.local.get(['urltotimer'],(result)=>{
-let urltimer=result.urltotimer;
-for (let i=0;i<domains.length;i++){
-    presetok(domains[i],container3,urltimer[domains[i]])
-}
-})
+if (domains){chrome.storage.local.get(['urltotimer'],(result)=>{
+  let urltimer=result.urltotimer;
+  for (let i=0;i<domains.length;i++){
+      presetok(domains[i],container3,urltimer[domains[i]])
+  }
+  })}
+
 })
 const body=document.querySelector('body');
 body.style.display='flex';
@@ -210,7 +211,7 @@ body.style.display='flex';
             container3.appendChild(okayButton);
             container3.appendChild(timerDiv);
             const timer = {
-                tabId:tabId,
+                
                 hourInput: hourInput,
                 minuteInput: minuteInput,
                 secondInput: secondInput,
