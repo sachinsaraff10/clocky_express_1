@@ -7,6 +7,42 @@ let visitedDomain=new Set();
 let timer_overwrite={};
 let running_url=[];
 
+chrome.action.onClicked.addListener(()=>{
+  if (urls)
+  {chrome.storage.local.get (['urls'],(result)=>{ 
+    let domains =result.urls;
+    chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
+      if (message.action==='storageplease'){
+        sendResponse({object:domains})
+      }
+    })
+    
+        let popupURL=`sites.html?domainId=${domains}`
+        // chrome.tabs.reload(tabId,{bypassCache:false});
+        chrome.windows.create({
+        url:popupURL,
+        type:'popup',
+        width:300,
+        height:300,
+        left: 900, // Adjust the position to the bottom right
+        top: 70
+       
+
+    });
+    } )}
+  else{chrome.windows.create({
+    url:'sites.html',
+    type:'popup',
+    width:300,
+    height:300,
+    left: 900, // Adjust the position to the bottom right
+    top: 70
+   
+
+})}
+        ;
+    } )
+    
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
@@ -400,42 +436,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
               } 
             }} })}}
             ) 
-    chrome.action.onClicked.addListener(()=>{
-      if (urls)
-      {chrome.storage.local.get (['urls'],(result)=>{ 
-        let domains =result.urls;
-        chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
-          if (message.action==='storageplease'){
-            sendResponse({object:domains})
-          }
-        })
-        
-            let popupURL=`sites.html?domainId=${domains}`
-            // chrome.tabs.reload(tabId,{bypassCache:false});
-            chrome.windows.create({
-            url:popupURL,
-            type:'popup',
-            width:300,
-            height:300,
-            left: 900, // Adjust the position to the bottom right
-            top: 70
-           
-    
-        });
-        } )}
-      else{chrome.windows.create({
-        url:'sites.html',
-        type:'popup',
-        width:300,
-        height:300,
-        left: 900, // Adjust the position to the bottom right
-        top: 70
-       
-
-    })}
-            ;
-        } )
-        
+ 
       
      // Add any initialization logic or tasks here
  
