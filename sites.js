@@ -156,7 +156,9 @@ body.style.display='flex';
             hourInput.type = 'text';
             hourInput.addEventListener('input',()=>{
               let hours = Number(minuteInput.value);
-              if (isNaN(hours)){
+              let minutes = Number(minuteInput.value);
+  let seconds = Number(secondInput.value);
+              if (isNaN(hours)|| isNaN(minutes) || isNaN(seconds) || minutes >= 60 || seconds >= 60){
                 okayButton.disabled=true;
               }
               else{
@@ -171,18 +173,17 @@ body.style.display='flex';
             minuteInput.type = 'text';
             minuteInput.placeholder='minutes';
             minuteInput.addEventListener('input',()=>{
+              let hours = Number(minuteInput.value);
               let minutes = Number(minuteInput.value);
-              if (minutes>=60){
+              let seconds = Number(secondInput.value);
+
+              if (isNaN(hours)|| isNaN(minutes) || isNaN(seconds) || minutes >= 60 || seconds >= 60){
                 okayButton.disabled=true;
               }
               else{
                 okayButton.disabled=false;
               }
-              if (isNaN(minutes)){
-                okayButton.disabled=true;
-              }else{
-                okayButton.disabled=false;
-              }
+              
             })
             minuteInput.classList.add('minutes');
 
@@ -190,14 +191,10 @@ body.style.display='flex';
             secondInput.type = 'text';
             secondInput.placeholder='seconds';
             secondInput.addEventListener('input',()=>{
+              let hours = Number(minuteInput.value);
+              let minutes = Number(minuteInput.value);              
               let seconds = Number(secondInput.value);
-              if (seconds>=60){
-                okayButton.disabled=true;
-              }
-              else{
-                okayButton.disabled=false;
-              }
-              if(isNaN(seconds)){
+              if (isNaN(hours)|| isNaN(minutes) || isNaN(seconds) || minutes >= 60 || seconds >= 60){
                 okayButton.disabled=true;
               }
               else{
