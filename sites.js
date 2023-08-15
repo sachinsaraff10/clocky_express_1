@@ -231,7 +231,7 @@ body.style.display='flex';
                       timer:timer,url:url
                     })})
                   }
-                elif (message.action==='scram'){
+                else if (message.action==='scram'){
                   timerDiv.remove();
                 }
                   // return timerDiv;
