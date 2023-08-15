@@ -255,14 +255,7 @@ body.style.display='flex';
                 timerDiv.appendChild(document.createTextNode(':'));
                 timerDiv.appendChild(secondInput);
                
-                container3.appendChild(timerDiv);
-                const timer = {
-                    tabId:tabId,
-                    hourInput: hourInput,
-                    minuteInput: minuteInput,
-                    secondInput: secondInput,
-                    urlId:null
-                    intervalId:null};
+                container3.appendChild(timerDiv)
     
-                timers.push(timer);
+                
             }
