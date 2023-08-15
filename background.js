@@ -163,7 +163,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         let timer_overwrite=result.overwritten;
         chrome.tabs.get(currenttabId,(currentTab)=>{
             let currentdomain=currentTab.url.hostname;
-        if (releurl && releurl.includes(currentdomain)) {
+          if (releurl){
+        if ( releurl.includes(currentdomain)) {
 
                       if (visited.has(currentdomain)){
                         if (running_url){
@@ -290,7 +291,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           });
 
         } 
-    } }
+    } 
+          }  }
     )
 })}
 })
