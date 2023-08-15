@@ -92,11 +92,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
          running:running_url},()=>{
         console.log('Data stored in local storage.')
           })
-        })
+        }})
         
       // Get the monitored URL from the message and add it to your monitoring list
       
-    }) 
+    } 
     
     // const MonitoredURL = monitoredURL;
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -139,7 +139,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           
     } 
       })
-}});
+});
      
   
   // Other background script logic and tasks...
