@@ -58,16 +58,9 @@ body.style.display='flex';
       
       okbtn.addEventListener('click',()=>{setok(okbtn,inpp,container3);
         addtimer();
-        let serializedtimer=JSON.stringify(timer);
         let url=inpp.value;        
         chrome.runtime.sendMessage({ action: 'set-timer',url:url,timer:serializedtimer});
     });
-      // okbtn.addEventListener('click',()=>{disappear(dbox)});
-      
-        
-      // document.body.appendChild(dbox);
-       // dbox.showModal();}
-  
       function setok(button,input,div){
         // const listcontainer=document.getElementById('listcontainer');
     const label=document.createElement('label');
@@ -83,11 +76,6 @@ body.style.display='flex';
         radio.name = 'radioGroup';
       radio.value=input.value;
      label.setAttribute('for','radio');   
-     // listcontainer.style.gap='1px';
-     // listcontainer.style.listStyle='Disc';
-     // listcontainer.style.justifyContent='space-even';
-    //  listcontainer.style.justifyContent='left';
-    // let lists=document.createElement('li');
     label.textContent=radio.value;
     let unique=label.textContent;
     
@@ -111,8 +99,8 @@ body.style.display='flex';
       if (event.key === 'Delete' && radio.checked) {
         const selectedText = radiocontainer.querySelector('input:checked + label').textContent;
     lst = lst.filter((item) => item !== selectedText);
+        chrome.runtime.sendMessage({action:'scram'});
         radiocontainer.remove();
-        
       }})
    div.appendChild(radiocontainer);     
    // listcontainer.appendChild(removebtn);
@@ -163,12 +151,16 @@ body.style.display='flex';
             timerDiv.classList.add('container');
             const okayButton=document.createElement('button');
             okayButton.textContent='Okay';
+            okayButton.disabled=true;
             const hourInput = document.createElement('input');
             hourInput.type = 'text';
             hourInput.addEventListener('input',()=>{
               let hours = Number(minuteInput.value);
               if (isNaN(hours)){
                 okayButton.disabled=true;
+              }
+              else{
+                okayButton.disabled=false;
               }
             })
             hourInput.placeholder='hours';
@@ -183,8 +175,13 @@ body.style.display='flex';
               if (minutes>=60){
                 okayButton.disabled=true;
               }
+              else{
+                okayButton.disabled=false;
+              }
               if (isNaN(minutes)){
                 okayButton.disabled=true;
+              }else{
+                okayButton.disabled=false;
               }
             })
             minuteInput.classList.add('minutes');
@@ -197,8 +194,14 @@ body.style.display='flex';
               if (seconds>=60){
                 okayButton.disabled=true;
               }
+              else{
+                okayButton.disabled=false;
+              }
               if(isNaN(seconds)){
                 okayButton.disabled=true;
+              }
+              else{
+                okayButton.disabled=false;
               }
             })
             secondInput.classList.add('seconds');
@@ -212,20 +215,26 @@ body.style.display='flex';
             container3.appendChild(timerDiv);
             const timer = {
                 
-                hourInput: hourInput,
-                minuteInput: minuteInput,
-                secondInput: secondInput,
+                hourInput: hourInput.value,
+                minuteInput: minuteInput.value,
+                secondInput: secondInput.value,
                 urlId:null,
                 intervalId:null};
-                timers.push(timer);
+                
+                
                 chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
                   if (message.action==="set-timer"){
                     let url=message.url;
+                    let timer=JSON.stringify(timer);
                       okayButton.addEventListener('click',
                       ()=>{chrome.runtime.sendMessage({action:"monitorURL",
-                      timer:serializedtimer,
+                      timer:timer
                     url:url})})
                   }
+                elif (message.action==='scram'){
+                  timerDiv.remove();
+                }
+                  // return timerDiv;
               })
         }
 
