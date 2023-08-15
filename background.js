@@ -13,9 +13,9 @@ chrome.action.onClicked.addListener(()=>{
     let domains =result.urls;
     chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
       if (message.action==='storageplease'){
-        sendResponse({object:domains})
+        sendResponse({object:domains});
       }
-    })
+    });
     
         let popupURL=`sites.html?domainId=${domains}`
         // chrome.tabs.reload(tabId,{bypassCache:false});
@@ -29,8 +29,10 @@ chrome.action.onClicked.addListener(()=>{
        
 
     });
-    } )}
-  else{chrome.windows.create({
+    });
+  }
+  else{
+    chrome.windows.create({
     url:'sites.html',
     type:'popup',
     width:300,
@@ -39,10 +41,11 @@ chrome.action.onClicked.addListener(()=>{
     top: 70
    
 
-})}
-        ;
-    } )
-    
+});
+}
+        
+    } );
+
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
