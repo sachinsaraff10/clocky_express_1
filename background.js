@@ -53,28 +53,9 @@ chrome.action.onClicked.addListener(()=>{
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
-        if(urls.length===0)
-        {
-      // Get the monitored URL from the message and add it to your monitoring list
-      let monitoredURL = message.url;
-      let sent_timer=message.timer;
-      let timerId=sent_timer.urlId;
-      
-    //   let urlId=uuidv4();
-    //   timer_overwrite[urlId]=sent_timer;
-      urls.push(monitoredURL);
-      urltimer[monitoredURL]=sent_timer;
-
-      timers_url[timerId]=sent_timer;
-      timer_toid[sent_timer]=timerId;
-      timer_overwrite[monitoredURL]=sent_timer;
-      chrome.storage.local.set({urls:urls,timers:timers_url,
-        urltotimer:urltimer,timertoid:timer_toid,visitedDomain:visitedDomain,overwritten:timer_overwrite,
-         running:running_url},()=>{
-        console.log('Data stored in local storage.')
-    })} 
-    else{
-        chrome.storage.local.get(['urls','timers','urltotimer',
+        chrome.storage.local.getBytesInUse(['urls'],(bytesInUse)=>{
+          if(bytesInUse>0){
+            chrome.storage.local.get(['urls','timers','urltotimer',
             'timertoid','overwritten'],(result)=>{
                 
                 let urls = result.urls;
@@ -91,8 +72,32 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                   urltotimer:urltimer,timertoid:timer_toid,overwritten:timer_overwrite},()=>{
                   console.log('Data stored in local storage.')
               })            })
+          }
+          else{
+            let monitoredURL = message.url;
+      let sent_timer=message.timer;
+      let timerId=sent_timer.urlId;
+      
+    //   let urlId=uuidv4();
+    //   timer_overwrite[urlId]=sent_timer;
+      urls.push(monitoredURL);
+      urltimer[monitoredURL]=sent_timer;
+
+      timers_url[timerId]=sent_timer;
+      timer_toid[sent_timer]=timerId;
+      timer_overwrite[monitoredURL]=sent_timer;
+      chrome.storage.local.set({urls:urls,timers:timers_url,
+        urltotimer:urltimer,timertoid:timer_toid,visitedDomain:visitedDomain,
+        overwritten:timer_overwrite,
+         running:running_url},()=>{
+        console.log('Data stored in local storage.')
+          })
+        })
         
-    }
+      // Get the monitored URL from the message and add it to your monitoring list
+      
+    }) 
+    
     // const MonitoredURL = monitoredURL;
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         for (let i = 0; i < tabs.length; i++) {
