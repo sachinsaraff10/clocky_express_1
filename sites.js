@@ -59,7 +59,7 @@ body.style.display='flex';
       okbtn.addEventListener('click',()=>{setok(okbtn,inpp,container3);
         addtimer();
         let url=inpp.value;        
-        chrome.runtime.sendMessage({ action: 'set-timer',url:url,timer:serializedtimer});
+        chrome.runtime.sendMessage({ action: 'set-timer',url:url});
     });
       function setok(button,input,div){
         // const listcontainer=document.getElementById('listcontainer');
@@ -228,8 +228,8 @@ body.style.display='flex';
                     let timer=JSON.stringify(timer);
                       okayButton.addEventListener('click',
                       ()=>{chrome.runtime.sendMessage({action:"monitorURL",
-                      timer:timer
-                    url:url})})
+                      timer:timer,url:url
+                    })})
                   }
                 elif (message.action==='scram'){
                   timerDiv.remove();
