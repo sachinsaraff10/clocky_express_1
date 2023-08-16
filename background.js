@@ -1,11 +1,4 @@
-// chrome.runtime.getBackgroundPage();
-let urls=[];
-let timers_url={};
-let urltimer={};
-let timer_toid={};
-let visitedDomain=new Set();
-let timer_overwrite={};
-let running_url=[];
+
 
 chrome.action.onClicked.addListener(()=>{
   
@@ -50,6 +43,13 @@ chrome.action.onClicked.addListener(()=>{
  
   } );
 
+  let urls=[];
+  let timers_url={};
+  let urltimer={};
+  let timer_toid={};
+  let visitedDomain=new Set();
+  let timer_overwrite={};
+  let running_url=[];
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
