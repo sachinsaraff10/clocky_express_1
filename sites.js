@@ -60,7 +60,7 @@ body.style.display='flex';
      // dbox.appendChild(cancelbtn);
       
       okbtn.addEventListener('click',()=>{setok(okbtn,inpp,container3);
-        addtimer();
+        
         let url=inpp.value;        
         chrome.runtime.sendMessage({ action: 'set-timer',url:url});
     });
