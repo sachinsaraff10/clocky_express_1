@@ -1,3 +1,22 @@
+let urls=[];
+  let timers_url={};
+  let urltimer={};
+  let timer_toid={};
+  let visitedDomain=new Set();
+  let timer_overwrite={};
+  let running_url=[];
+
+  chrome.storage.local.get(['urls','overwritten','visitedDomain',
+'timertoid','running','timers','urltotimer'],(result)=>{
+  urls=result.urls || [];
+  timers_url=result.timers || {};
+  urltimer=result.urltotimer || {};
+  timer_toid=result.timertoid || {};
+  visitedDomain=result.visitedDomain || new Set();
+  running_url=result.running || [];
+  timer_overwrite=result.overwritten || {};
+})
+
 
 
 chrome.action.onClicked.addListener(()=>{
@@ -43,25 +62,7 @@ chrome.action.onClicked.addListener(()=>{
  
   } );
 
-  let urls=[];
-  let timers_url={};
-  let urltimer={};
-  let timer_toid={};
-  let visitedDomain=new Set();
-  let timer_overwrite={};
-  let running_url=[];
-
-  chrome.storage.local.get(['urls','overwritten','visitedDomain',
-'timertoid','running','timers','urltotimer'],(result)=>{
-  urls=result.urls || [];
-  timers_url=result.timers || {};
-  urltimer=result.urltotimer || {};
-  timer_toid=result.timertoid || {};
-  visitedDomain=result.visitedDomain || new Set();
-  running_url=result.running || [];
-  timer_overwrite=result.overwritten || {};
-})
-
+  
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
         chrome.storage.local.getBytesInUse(['urls'],(bytesInUse)=>{
