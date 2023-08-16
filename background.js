@@ -108,10 +108,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         
       // Get the monitored URL from the message and add it to your monitoring list
       
-    } 
-    
-    // const MonitoredURL = monitoredURL;
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         for (let i = 0; i < tabs.length; i++) {
           let curr_url = tabs[i].url;
           let tabId=tabs[i].id;
@@ -149,9 +146,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                  }
                }})
           
-    } 
-      })
-});
+    }     }) } 
+    
+    // const MonitoredURL = monitoredURL;
+  
+
+  });
      
   
   // Other background script logic and tasks...
