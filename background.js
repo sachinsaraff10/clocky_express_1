@@ -57,10 +57,11 @@ chrome.action.onClicked.addListener(()=>{
   timers_url=result.timers || {};
   urltimer=result.urltotimer || {};
   timer_toid=result.timertoid || {};
-  visitedDomain=result.visitedDomain || Set();
+  visitedDomain=result.visitedDomain || new Set();
   running_url=result.running || [];
   timer_overwrite=result.overwritten || {};
 })
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
         chrome.storage.local.getBytesInUse(['urls'],(bytesInUse)=>{
