@@ -51,6 +51,16 @@ chrome.action.onClicked.addListener(()=>{
   let timer_overwrite={};
   let running_url=[];
 
+  chrome.storage.local.get(['urls','overwritten','visitedDomain',
+'timertoid','running','timers','urltotimer'],(result)=>{
+  urls=result.urls || [];
+  timers_url=result.timers || {};
+  urltimer=result.urltotimer || {};
+  timer_toid=result.timertoid || {};
+  visitedDomain=result.visitedDomain || Set();
+  running_url=result.running || [];
+  timer_overwrite=result.overwritten || {};
+})
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
         chrome.storage.local.getBytesInUse(['urls'],(bytesInUse)=>{
@@ -58,10 +68,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             chrome.storage.local.get(['urls','timers','urltotimer',
             'timertoid','overwritten'],(result)=>{
                 
-                let urls = result.urls;
-                let urltimer=result.urltotimer;
+                 urls = result.urls;
+                 urltimer=result.urltotimer;
                 
-                let timer_overwrite=result.overwritten;
+                 timer_overwrite=result.overwritten;
               //   let urlId=uuidv4();
               //   timer_overwrite[urlId]=sent_timer;
                 urls.push(monitoredURL);
@@ -105,13 +115,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           let tabId=tabs[i].id;
           let curr_domain=curr_url.hostname
           chrome.storage.local.get(['urls'],(result)=>{
-            let urls=result.urls;
+             urls=result.urls;
             for(let i=0;i<urls.length;i++){
                 if (curr_domain===urls[i]) { 
                  chrome.storage.local.get(['visitedDomain','running','overwritten'],(result)=>{
-                   let visitedDomain=result.visitedDomain;
-                   let running_url=result.running;
-                   let timer_overwrite=result.overwritten;
+                    visitedDomain=result.visitedDomain;
+                    running_url=result.running;
+                   timer_overwrite=result.overwritten;
                    
                    running_url.push(curr_domain);
                    visitedDomain.add(curr_domain);
@@ -152,7 +162,7 @@ chrome.runtime.onMessage.addListener((message,sender,
 if (message.action==='timer_please'){
     let domID=message.domainId;
     chrome.storage.local.get(['overwritten'],(result)=>{
-        let timer_overwrite=result.overwritten;
+         timer_overwrite=result.overwritten;
         let timerObject=timer_overwrite[domID];
 
         sendResponse({timer:timerObject})
@@ -169,9 +179,9 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
       if (bytesInUse>0){
         chrome.storage.local.get(['urls','visitedDomain','overwritten','running'],(result)=>{
           let releurl=result.urls;
-          let running_url=result.running;
+          running_url=result.running;
           let visited=result.visitedDomain;
-          let timer_overwrite=result.overwritten;
+           timer_overwrite=result.overwritten;
           chrome.tabs.get(currenttabId,(currentTab)=>{
               let currentdomain=currentTab.url.hostname;
             if (releurl){
@@ -321,10 +331,10 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             let currentdomain=taburl.hostname;
          chrome.storage.local.get(['urls',
          'visitedDomain','overwritten','running'],(result)=> {
-            const urls=result.urls;
+             urls=result.urls;
             let visited=result.visitedDomain;
-            let timer_overwrite=result.overwritten;
-            let running_url=result.running;
+             timer_overwrite=result.overwritten;
+            running_url=result.running;
             if (urls){
             for (let i=0;i<urls.length;i++)
             {if (currentdomain===urls[i]){
