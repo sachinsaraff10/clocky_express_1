@@ -212,8 +212,7 @@ body.style.display='flex';
             timerDiv.appendChild(document.createTextNode(':'));
             timerDiv.appendChild(secondInput);
             // timerContainer.appendChild(timerDiv);
-            container3.appendChild(okayButton);
-            container3.appendChild(timerDiv);
+            timerDiv.appendChild(okayButton);
             const timer = {
                 
                 hourInput: hourInput.value,
