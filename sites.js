@@ -213,7 +213,7 @@ body.style.display='flex';
             timerDiv.appendChild(secondInput);
             // timerContainer.appendChild(timerDiv);
             timerDiv.appendChild(okayButton);
-            const timer = {
+            let timer = {
                 
                 hourInput: hourInput.value,
                 minuteInput: minuteInput.value,
@@ -222,15 +222,18 @@ body.style.display='flex';
                 intervalId:null};
                 
                 
+                      okayButton.addEventListener('click',
+                      ()=>{timer=JSON.stringify(timer);
+                        
                 chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
                   if (message.action==="set-timer"){
                     let url=message.url;
-                    let timer=JSON.stringify(timer);
-                      okayButton.addEventListener('click',
-                      ()=>{chrome.runtime.sendMessage({action:"monitorURL",
-                      timer:timer,url:url
-                    })})
+                    chrome.runtime.sendMessage({action:"monitorURL",
+                      timer:timer,url:url})
                   }})
+                        
+                      })
+                  
    return timerDiv;     }
 
 
