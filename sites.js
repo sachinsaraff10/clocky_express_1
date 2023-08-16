@@ -68,8 +68,12 @@ body.style.display='flex';
         // const listcontainer=document.getElementById('listcontainer');
     const label=document.createElement('label');
     const radiocontainer=document.createElement('div');
-    
+    const maincontainer=document.createElement('div');
     // listcontainer.classList.add('listbox');
+    maincontainer.style.height='fit-content';
+    maincontainer.style.width='fit-content';
+    maincontainer.style.display='flex';
+    maincontainer.style.flexDirection='column';
     radiocontainer.style.height='fit-content';
      radiocontainer.style.width='fit-content';
      radiocontainer.style.display='flex';
@@ -79,6 +83,7 @@ body.style.display='flex';
         radio.name = 'radioGroup';
       radio.value=input.value;
      label.setAttribute('for','radio');   
+     
     label.textContent=radio.value;
     let unique=label.textContent;
     
@@ -102,16 +107,12 @@ body.style.display='flex';
       if (event.key === 'Delete' && radio.checked) {
         const selectedText = radiocontainer.querySelector('input:checked + label').textContent;
     lst = lst.filter((item) => item !== selectedText);
-        chrome.runtime.sendMessage({action:'scram'});
         radiocontainer.remove();
       }})
-   div.appendChild(radiocontainer);     
-   // listcontainer.appendChild(removebtn);
-   // radio.addEventListener('click',(event)=>{if(event.key==='Delete'){
-   //   remover(div,radiocontainer);
-   
-   
-  // 
+  let timercontainer=addtimer();
+  maincontainer.appendChild(radiocontainer);
+  maincontainer.appendChild(timercontainer);
+   div.appendChild(maincontainer);     
       }
       function presetok(input,div,timer){
         const label=document.createElement('label');
@@ -143,7 +144,7 @@ body.style.display='flex';
       if (event.key === 'Delete' && radio.checked) {
         const selectedText = radiocontainer.querySelector('input:checked + label').textContent;
     lst = lst.filter((item) => item !== selectedText);
-        radiocontainer.remove();
+        maincontainer.remove();
         
       }})
    div.appendChild(radiocontainer);     
@@ -230,13 +231,8 @@ body.style.display='flex';
                       ()=>{chrome.runtime.sendMessage({action:"monitorURL",
                       timer:timer,url:url
                     })})
-                  }
-                else if (message.action==='scram'){
-                  timerDiv.remove();
-                }
-                  // return timerDiv;
-              })
-        }
+                  }})
+   return timerDiv;     }
 
 
         function storedtimer(timer){
