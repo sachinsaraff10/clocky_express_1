@@ -107,7 +107,7 @@ body.style.display='flex';
       if (event.key === 'Delete' && radio.checked) {
         const selectedText = radiocontainer.querySelector('input:checked + label').textContent;
     lst = lst.filter((item) => item !== selectedText);
-        radiocontainer.remove();
+        maincontainer.remove();
       }})
   let timercontainer=addtimer();
   maincontainer.appendChild(radiocontainer);
