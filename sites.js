@@ -4,9 +4,12 @@ let lst=[];
 const urlParams = new URLSearchParams(window.location.search);
 let domains = urlParams.get('domainId');
 
-chrome.runtime.sendMessage({action:"storageplease"},(response)=>{
-let domains=response.object;
-if (domains){chrome.storage.local.get(['urltotimer'],(result)=>{
+chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
+if (message.action==='getready'){
+  sendResponse({action:'storageplease'})}
+if(message.action==='hereyougo'){
+  let domains=message.object;
+  chrome.storage.local.get(['urltotimer'],(result)=>{
   let urltimer=result.urltotimer;
   for (let i=0;i<domains.length;i++){
       presetok(domains[i],container3,urltimer[domains[i]])
@@ -243,15 +246,15 @@ body.style.display='flex';
                 const hourInput = document.createElement('input');
                 hourInput.type = 'text';
                 hourInput.classList.add('hours');
-                hourInput.value=timer.hourInput.value;
+                hourInput.value=timer.hourInput;
                 const minuteInput = document.createElement('input');
                 minuteInput.type = 'text';
-                minuteInput.value=timer.minuteInput.value;
+                minuteInput.value=timer.minuteInput;
                 minuteInput.classList.add('minutes');
     
                 const secondInput = document.createElement('input');
                 secondInput.type = 'text';
-                secondInput.value=timer.secondInput.value;
+                secondInput.value=timer.secondInput;
                 secondInput.classList.add('seconds');
     
                 // const playButton = document.createElement('button');

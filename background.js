@@ -14,9 +14,9 @@ chrome.action.onClicked.addListener(()=>{
     {
       chrome.storage.local.get(['urls'],(result)=>{ 
         let domains =result.urls;
-        chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
-          if (message.action==='storageplease'){
-            sendResponse({object:domains});
+        chrome.runtime.sendMessage({action:'getready'},(response)=>{
+          if (response.action==='storageplease'){
+            chrome.runtime.sendMessage({action:'hereyougo',object:domains});
           }
         });
         
