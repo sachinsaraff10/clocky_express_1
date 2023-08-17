@@ -3,7 +3,8 @@
   chrome.runtime.onInstalled.addListener(() => {
     console.log('Extension installed or updated!');
      });
-
+console.log('initialized');
+// initializes arrays that contain domains and timers sent from settings popup
   let urls=[];
   let timers_url={};
   let urltimer={};
@@ -12,7 +13,9 @@
   let timer_overwrite={};
   let running_url=[];
 
+// first event post installation that occurs once extension icon gets clicked
 chrome.action.onClicked.addListener(()=>{
+  // 
   chrome.storage.local.get(
     ['urls', 'overwritten', 'visitedDomain', 'timertoid', 'running', 'timers', 'urltotimer'],
     (result) => {
@@ -24,7 +27,7 @@ chrome.action.onClicked.addListener(()=>{
       running_url = result.running || [];
       timer_overwrite = result.overwritten || [];
     }
-  );
+  );  
   chrome.storage.local.getBytesInUse(['urls'],(bytesInUse)=>{
     if(bytesInUse>0)
     {
