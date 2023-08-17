@@ -84,7 +84,7 @@ body.style.display='flex';
         radio.name = 'radioGroup';
       radio.value=input.value;
      label.setAttribute('for','radio');   
-     
+     console.log('radio button set');
     label.textContent=radio.value;
     let unique=label.textContent;
     
@@ -236,6 +236,7 @@ body.style.display='flex';
                   timer=JSON.stringify(timer);
                   chrome.storage.local.get(['url'],(result)=>{
                     let url=result.url;
+                    console.log(url);
                     chrome.runtime.sendMessage({action:"monitorURL",
                     timer:timer,url:url})
                     okayButton.disabled=true;
