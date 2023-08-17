@@ -14,13 +14,11 @@ console.log('initialized');
   let timer_overwrite={};
   let running_url=[];
 
-// first event post installation that occurs once extension icon gets clicked
-chrome.action.onClicked.addListener(()=>{
-  // 
   chrome.storage.local.get(
     ['urls', 'overwritten', 'visitedDomain', 'timertoid', 'running', 'timers', 'urltotimer'],
     (result) => {
       urls = result.urls || [];
+      console.log(urls);
       timers_url = result.timers || {};
       urltimer = result.urltotimer || {};
       timer_toid = result.timertoid || {};
@@ -28,7 +26,11 @@ chrome.action.onClicked.addListener(()=>{
       running_url = result.running || [];
       timer_overwrite = result.overwritten || [];
     }
-  );  
+  );
+// first event post installation that occurs once extension icon gets clicked
+chrome.action.onClicked.addListener(()=>{
+  // 
+    
   chrome.storage.local.getBytesInUse(['urls'],(bytesInUse)=>{
     if(bytesInUse>0)
     {
@@ -95,12 +97,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           }
           else{
             let monitoredURL = message.url;
+            console.log(monitoredURL);
       let sent_timer=message.timer;
+      console.log(sent_timer);
       let timerId=sent_timer.urlId;
       
     //   let urlId=uuidv4();
     //   timer_overwrite[urlId]=sent_timer;
-      urls.push(monitoredURL);
+    chrome.storage.local.get(
+      ['urls', 'overwritten', 'visitedDomain', 'timertoid', 'running', 'timers', 'urltotimer'],
+      (result) => {
+        urls = result.urls || [];
+        // console.log(urls);
+        timers_url = result.timers || {};
+        urltimer = result.urltotimer || {};
+        timer_toid = result.timertoid || {};
+        visitedDomain = result.visitedDomain || new Set();
+        running_url = result.running || [];
+        timer_overwrite = result.overwritten || [];
+        urls.push(monitoredURL);
       urltimer[monitoredURL]=sent_timer;
 
       timers_url[timerId]=sent_timer;
@@ -112,6 +127,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
          running:running_url},()=>{
         console.log('Data stored in local storage.')
           })
+      }
+    )
+
         }})
         
       // Get the monitored URL from the message and add it to your monitoring list
