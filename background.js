@@ -141,6 +141,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           let curr_domain=curr_url.hostname
           chrome.storage.local.get(['urls'],(result)=>{
              urls=result.urls;
+             console.log(urls);
             for(let i=0;i<urls.length;i++){
                 if (curr_domain===urls[i]) { 
                  chrome.storage.local.get(['visitedDomain','running','overwritten'],(result)=>{
