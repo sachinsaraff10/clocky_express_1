@@ -221,7 +221,7 @@ body.style.display='flex';
                 let url=message.url;
                 console.log(url);
                 chrome.storage.local.set({url:url})
-                chrome.runtime.onMessage.removeListener(handlesettimer); 
+                // chrome.runtime.onMessage.removeListener(handlesettimer); 
               }}
             chrome.runtime.onMessage.addListener(handlesettimer);
             okayButton.addEventListener('click',
