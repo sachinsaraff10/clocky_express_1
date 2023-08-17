@@ -6,6 +6,7 @@
 console.log('initialized');
 // initializes arrays that contain domains and timers sent from settings popup
   let urls=[];
+  console.log(urls.length);
   let timers_url={};
   let urltimer={};
   let timer_toid={};
