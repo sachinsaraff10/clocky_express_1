@@ -61,7 +61,8 @@ body.style.display='flex';
       
       okbtn.addEventListener('click',()=>{setok(okbtn,inpp,container3);
         
-        let url=inpp.value;        
+        let url=inpp.value; 
+        console.log(url);       
         chrome.runtime.sendMessage({ action: 'set-timer',url:url});
     });
       function setok(button,input,div){
@@ -218,6 +219,7 @@ body.style.display='flex';
             {
               if (message.action==="set-timer"){
                 let url=message.url;
+                console.log(url);
                 chrome.storage.local.set({url:url})
                 chrome.runtimer.onMessage.removeListener(handlesettimer); 
               }}
