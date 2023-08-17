@@ -213,12 +213,15 @@ body.style.display='flex';
             timerDiv.appendChild(secondInput);
             // timerContainer.appendChild(timerDiv);
             timerDiv.appendChild(okayButton);
-            chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
+            
+            function handlesettimer(message, sender, sendResponse)
+            {
               if (message.action==="set-timer"){
                 let url=message.url;
                 chrome.storage.local.set({url:url})
-                
-              }})
+                chrome.runtimer.onMessage.removeListener(handlesettimer); 
+              }}
+            chrome.runtime.onMessage.addListener(handlesettimer);
             okayButton.addEventListener('click',
                 ()=>{
                   let timer = {
@@ -233,8 +236,9 @@ body.style.display='flex';
                     let url=result.url;
                     chrome.runtime.sendMessage({action:"monitorURL",
                     timer:timer,url:url})
+                    okayButton.disabled=true;
                   })
-                      })
+                     })
                   
    return timerDiv;     }
 
