@@ -75,6 +75,13 @@ chrome.action.onClicked.addListener(()=>{
   
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
+      if (!urls){
+        console.log('hello');
+
+      }
+      else{
+        console.log('nah');
+      }
         chrome.storage.local.getBytesInUse(['urls'],(bytesInUse)=>{
           if(bytesInUse>0){
             chrome.storage.local.get(['urls','timers','urltotimer',
