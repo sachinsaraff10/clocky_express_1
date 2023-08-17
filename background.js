@@ -105,10 +105,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     //   let urlId=uuidv4();
     //   timer_overwrite[urlId]=sent_timer;
     chrome.storage.local.get(
-      ['urls', 'overwritten', 'visitedDomain', 'timertoid', 'running', 'timers', 'urltotimer'],
+      ['urls', 'overwritten', 'visitedDomain', 
+      'timertoid', 'running', 'timers', 'urltotimer'],
       (result) => {
         urls = result.urls || [];
-        // console.log(urls);
+        console.log('get called');
         timers_url = result.timers || {};
         urltimer = result.urltotimer || {};
         timer_toid = result.timertoid || {};
@@ -140,7 +141,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           let tabId=tabs[i].id;
           let curr_domain=curr_url.hostname
           chrome.storage.local.get(['urls'],(result)=>{
-             urls=result.urls;
+              urls=result.urls;
              console.log(urls);
             for(let i=0;i<urls.length;i++){
                 if (curr_domain===urls[i]) { 
