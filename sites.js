@@ -63,8 +63,7 @@ body.style.display='flex';
         
         let url=inpp.value; 
         console.log(url);       
-        chrome.runtime.sendMessage({ action: 'set-timer',url:url});
-    });
+        chrome.storage.local.set({url:url})});
       function setok(button,input,div){
         // const listcontainer=document.getElementById('listcontainer');
     const label=document.createElement('label');
@@ -215,15 +214,15 @@ body.style.display='flex';
             // timerContainer.appendChild(timerDiv);
             timerDiv.appendChild(okayButton);
             
-            function handlesettimer(message, sender, sendResponse)
-            {
-              if (message.action==="set-timer"){
-                let url=message.url;
-                console.log(url);
-                chrome.storage.local.set({url:url})
-                // chrome.runtime.onMessage.removeListener(handlesettimer); 
-              }}
-            chrome.runtime.onMessage.addListener(handlesettimer);
+            // function handlesettimer(message, sender, sendResponse)
+            // {
+            //   if (message.action==="set-timer"){
+            //     let url=message.url;
+            //     console.log(url);
+            //     chrome.storage.local.set({url:url})
+            //     // chrome.runtime.onMessage.removeListener(handlesettimer); 
+            //   }}
+            // chrome.runtime.onMessage.addListener(handlesettimer);
             okayButton.addEventListener('click',
                 ()=>{
                   let timer = {
