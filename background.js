@@ -6,6 +6,19 @@ let urls=[];
   let timer_overwrite={};
   let running_url=[];
 
+  chrome.runtime.onInstalled.addListener(() => {
+    console.log('Extension installed or updated!');
+    chrome.storage.local.get(['urls','overwritten','visitedDomain',
+'timertoid','running','timers','urltotimer'],(result)=>{
+  urls=result.urls || [];
+  timers_url=result.timers || {};
+  urltimer=result.urltotimer || {};
+  timer_toid=result.timertoid || {};
+  visitedDomain=result.visitedDomain || new Set();
+  running_url=result.running || [];
+  timer_overwrite=result.overwritten || {};
+}) });
+
 //   chrome.storage.local.get(['urls','overwritten','visitedDomain',
 // 'timertoid','running','timers','urltotimer'],(result)=>{
 //   urls=result.urls || [];
@@ -154,20 +167,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   });
      
   
-  // Other background script logic and tasks...
-  chrome.runtime.onInstalled.addListener(() => {
-    console.log('Extension installed or updated!');
-    chrome.storage.local.get(['urls','overwritten','visitedDomain',
-'timertoid','running','timers','urltotimer'],(result)=>{
-  urls=result.urls || [];
-  timers_url=result.timers || {};
-  urltimer=result.urltotimer || {};
-  timer_toid=result.timertoid || {};
-  visitedDomain=result.visitedDomain || new Set();
-  running_url=result.running || [];
-  timer_overwrite=result.overwritten || {};
-}) });
-
 
 chrome.runtime.onMessage.addListener((message,sender,
     sendResponse)=>{
