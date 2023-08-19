@@ -18,7 +18,7 @@ console.log('initialized');
     ['urls', 'overwritten', 'visitedDomain', 'timertoid', 'running', 'timers', 'urltotimer'],
     (result) => {
       urls = result.urls || [];
-      console.log(urls);
+      // console.log(urls);
       timers_url = result.timers || {};
       urltimer = result.urltotimer || {};
       timer_toid = result.timertoid || {};
@@ -72,36 +72,56 @@ chrome.action.onClicked.addListener(()=>{
  
   } );
 
+async function storethenget(){
+  const data= await new Promise((resolve)=>{
+    
+chrome.storage.local.set({urls:urls,timers:timers_url,
+  urltotimer:urltimer,timertoid:timer_toid,overwritten:timer_overwrite}
+  ,()=>{chrome.storage.local.get(['urls', 'overwritten', 'visitedDomain', 'timertoid', 'running', 'timers', 'urltotimer'],
+  (result)=>{
+    urls = result.urls;
+    timers_url = result.timers  ;
+    urltimer = result.urltotimer ;
+    timer_toid = result.timertoid;
+    visitedDomain = result.visitedDomain;
+    running_url = result.running;
+    timer_overwrite = result.overwritten;
+
+  });
+chrome.runtime.sendMessage({action:'setting_over'});
+  });
+
+  })
+  return data;
+}
+
   
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL') {
-      if (!urls){
-        console.log('hello');
+    //   if (!urls){
+    //     console.log('hello');
 
-      }
-      else{
-        console.log('nah');
-      }
+    //   }
+    //   else{
+    //     console.log('nah');
+    //   }
         chrome.storage.local.getBytesInUse(['urls'],(bytesInUse)=>{
           if(bytesInUse>0){
-            chrome.storage.local.get(['urls','timers','urltotimer',
-            'timertoid','overwritten'],(result)=>{
-                
-                 urls = result.urls;
-                 urltimer=result.urltotimer;
-                
-                 timer_overwrite=result.overwritten;
-              //   let urlId=uuidv4();
+            
+                storethenget();
+                 //   let urlId=uuidv4();
               //   timer_overwrite[urlId]=sent_timer;
                 urls.push(monitoredURL);
                 urltimer[monitoredURL]=sent_timer;
-                
+                console.log(urls);
+
                 timer_overwrite[monitoredURL]=sent_timer;
-                chrome.storage.local.set({urls:urls,timers:timers_url,
-                  urltotimer:urltimer,timertoid:timer_toid,overwritten:timer_overwrite},()=>{
-                  console.log('Data stored in local storage.')
-              })            })
-          }
+              //   chrome.storage.local.set({urls:urls,timers:timers_url,
+              //     urltotimer:urltimer,timertoid:timer_toid,overwritten:timer_overwrite},()=>{
+              //     console.log('Data stored in local storage.')
+              // })            
+          storethenget();
+            }
           else{
             let monitoredURL = message.url;
             console.log(monitoredURL);
@@ -129,17 +149,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       timers_url[timerId]=sent_timer;
       timer_toid[sent_timer]=timerId;
       timer_overwrite[monitoredURL]=sent_timer;
-      chrome.storage.local.set({urls:urls,timers:timers_url,
-        urltotimer:urltimer,timertoid:timer_toid,visitedDomain:visitedDomain,
-        overwritten:timer_overwrite,
-         running:running_url},()=>{
-        console.log('Data stored in local storage.')
-          })
+      // chrome.storage.local.set({urls:urls,timers:timers_url,
+      //   urltotimer:urltimer,timertoid:timer_toid,visitedDomain:visitedDomain,
+      //   overwritten:timer_overwrite,
+      //    running:running_url},()=>{
+      //   console.log('Data stored in local storage.')
+      //     })
       }
     )
 
         }})
-        
+
       // Get the monitored URL from the message and add it to your monitoring list
       
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -147,21 +167,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           let curr_url = tabs[i].url;
           let tabId=tabs[i].id;
           let curr_domain=curr_url.hostname
-          chrome.storage.local.get(['urls'],(result)=>{
-              urls=result.urls;
+          // chrome.storage.local.get(['urls'],(result)=>{
+          //     urls=result.urls;
              console.log(urls);
             for(let i=0;i<urls.length;i++){
                 if (curr_domain===urls[i]) { 
-                 chrome.storage.local.get(['visitedDomain','running','overwritten'],(result)=>{
-                    visitedDomain=result.visitedDomain;
-                    running_url=result.running;
-                   timer_overwrite=result.overwritten;
+                //  chrome.storage.local.get(['visitedDomain','running','overwritten'],(result)=>{
+                //     visitedDomain=result.visitedDomain;
+                //     running_url=result.running;
+                //    timer_overwrite=result.overwritten;
                    
                    running_url.push(curr_domain);
                    visitedDomain.add(curr_domain);
                    chrome.storage.local.set({visitedDomain:visitedDomain,running:running_url},
                      ()=>{
-                         console.log('Data stored in local storage.')
+                         console.log('Data stored in local storage.');
+                         chrome.runtime.sendMessage({action:'setting_over'})
                      })  
                    let popupURL = `timers.html?domainId=${curr_domain}`
                    chrome.tabs.reload(tabId,{bypassCache:false});
@@ -173,13 +194,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                        left: 950, // Adjust the position to the bottom right
                        top: 520,
                        tabId:tabId
-                     },()=>{
-                      
-                      // chrome.storage.local.set({overwritten:timer_overwrite})
-                     })})  
+                     })
+                    // })  
                  
                  }
-               }})
+               }
+              // })
           
     }     }) } 
     
