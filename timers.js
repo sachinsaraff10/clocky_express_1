@@ -2,14 +2,13 @@ const timerContainer = document.getElementById('timerContainer');
    
 const addTimerButton = document.getElementById('addTimerButton');
       let intervalID;
-      const urlParams = new URLSearchParams(window.location.search);
-let domainId = urlParams.get('domainId');
-chrome.runtime.sendMessage({ action: 'timer_please', domainId }, (response) => {
-    // Response contains the timer object, use it as needed
-    let timerObject = response.timer;
+      chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
+        if (message.action==='launch_now'){
+            let timerObject = message.object;
     // Use the timerObject in your popup window
     createTimer(timerObject);
     setTimer(timerObject);
+        sendResponse({action:"good_to_go"})}
     })
          function createTimer(timer) {
             const timerDiv = document.createElement('div');
