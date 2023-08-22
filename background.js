@@ -30,15 +30,13 @@ console.log('initialized');
 // first event post installation that occurs once extension icon gets clicked
 chrome.action.onClicked.addListener(()=>{
   // 
-    
-  chrome.storage.local.getBytesInUse(['urls'],(bytesInUse)=>{
-    if(bytesInUse>0)
+  console.log(urls)
+    if(urls)
     {
-      chrome.storage.local.get(['urls'],(result)=>{ 
-        let domains =result.urls;
         chrome.runtime.sendMessage({action:'getready'},(response)=>{
           if (response.action==='storageplease'){
-            chrome.runtime.sendMessage({action:'hereyougo',object:domains});
+            chrome.runtime.sendMessage({action:'hereyougo',object:urls});
+          // message_responsesender({action:})
           }
         });
         
@@ -54,7 +52,8 @@ chrome.action.onClicked.addListener(()=>{
            
     
         });
-        });
+        
+        ;
     }
     else{
       chrome.windows.create({
@@ -68,7 +67,7 @@ chrome.action.onClicked.addListener(()=>{
     
     });
     }
-  })
+  
  
   } );
 
@@ -414,8 +413,9 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                       chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},
                         ()=>{
 
-                          message_responsesender({action:'launch_now',object:timer_overwrite[currentdomain]}).then((response)=> 
-                          {chrome.tabs.reload(tabId,{bypassCache:false});
+                          message_responsesender({action:'launch_now',object:new_timer}).then((response)=> 
+                          {consolge.log('')
+                            chrome.tabs.reload(tabId,{bypassCache:false});
                            chrome.windows.create({
                               url: 'timers.html',
                               type: 'popup',
