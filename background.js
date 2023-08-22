@@ -31,6 +31,12 @@ console.log('initialized');
 chrome.action.onClicked.addListener(()=>{
   // 
   console.log(urls)
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs.length > 0) {
+      const activeTabId = tabs[0].id;
+      console.log("Active tab ID:", activeTabId);
+    }
+  });
     if(urls.length>0)
     {
         chrome.runtime.sendMessage({action:'getready'},(response)=>{
@@ -244,7 +250,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 chrome.tabs.onActivated.addListener((activeInfo)=>{
     
     let currenttabId=activeInfo.tabId;
-    
+    console.log(currenttabId);
     // chrome.storage.local.getBytesInUse(['urls'],(bytesInUse)=>{
     //   if (bytesInUse>0){
     //     chrome.storage.local.get(['urls','visitedDomain','overwritten','running'],(result)=>{
