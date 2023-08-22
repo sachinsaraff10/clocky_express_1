@@ -31,7 +31,7 @@ console.log('initialized');
 chrome.action.onClicked.addListener(()=>{
   // 
   console.log(urls)
-    if(urls)
+    if(urls.length>0)
     {
         chrome.runtime.sendMessage({action:'getready'},(response)=>{
           if (response.action==='storageplease'){
