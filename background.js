@@ -138,7 +138,7 @@ async function message_responsesender(message){
 
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
-    if (message.action === 'monitorURL') {
+    if (message.action === 'monitorURL' && !urls.includes(message.url)) {
             let monitoredURL = message.url;
             console.log(monitoredURL);
       let sent_timer=message.timer;
@@ -358,6 +358,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         //      timer_overwrite=result.overwritten;
         //     running_url=result.running;
             if (urls){
+              console.log('lets go')
             for (let i=0;i<urls.length;i++)
             {if (currentdomain===urls[i]){
               if(visitedDomain.has(currentdomain)){
