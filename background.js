@@ -210,7 +210,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         let currentdomain=currentTab.url.hostname;
       if (urls){
     if ( urls.includes(currentdomain)) {
-
+                  console.log('were here');
                   if (visitedDomain.has(currentdomain)){
                     if (running_url){
                       if(running_url[0]===currentdomain){
