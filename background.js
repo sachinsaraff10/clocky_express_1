@@ -208,7 +208,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
     {
       chrome.tabs.get(currenttabId,(currentTab)=>{
         let currentdomain=currentTab.url.hostname;
-      if (urls){
+      if (urls.length>0){
     if ( urls.includes(currentdomain)) {
                   console.log('yeahhh')
                   console.log('were here');
@@ -281,7 +281,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                     }
                 
     }  else
-    {if(running_url)
+    {if(running_url.length>0)
       
       {let running_timer=timer_overwrite[running_url[0]];
       chrome.runtime.sendMessage({action:'pausetimer',object:running_timer},(response)=>{
@@ -326,8 +326,9 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
 }
       
 else{
-    if (running_url){
+    if (running_url.length>0){
       console.log('oh')
+      console.log(running_url);
       let running_timer=timer_overwrite[running_url[0]];
       chrome.runtime.sendMessage({action:'pausetimer',
       object:running_timer},(response)=>{
@@ -357,12 +358,12 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         //     let visited=result.visitedDomain;
         //      timer_overwrite=result.overwritten;
         //     running_url=result.running;
-            if (urls){
+            if (urls.length>0){
               console.log('lets go')
             for (let i=0;i<urls.length;i++)
             {if (currentdomain===urls[i]){
               if(visitedDomain.has(currentdomain)){
-                if(running_url){
+                if(running_url.length>0){
                   if(running_url[0]===currentdomain){
                     chrome.runtime.sendMessage(
                       {action:'store_current_timer'},(response)=>{
@@ -440,7 +441,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                 }
               }
               else{
-                if(running_url)
+                if(running_url.length>0)
                   {let running_timer=timer_overwrite[running_url[0]];
                     chrome.runtime.sendMessage({action:'pausetimer',object:running_timer},(response)=>{
                       let pausedtimer=response.object;
@@ -486,7 +487,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                 )}
                   
               }}
-              else {if (running_url){
+              else {if (running_url.length>0){
                 let running_timer=timer_overwrite[running_url[0]];
                 chrome.runtime.sendMessage({action:'pausetimer',
                 object:running_timer},(response)=>{
