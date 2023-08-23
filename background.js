@@ -214,7 +214,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
       }
     })
     if(activeTabId===currenttabId)
-    {
+    {chrome.tabs.reload(currenttabId,{bypassCache:true})
       chrome.tabs.get(currenttabId,(currentTab)=>{
         let currentdomain=new URL(currentTab.url).hostname;
       if (urls.length>0){
@@ -374,10 +374,10 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
               console.log('lets go')
               console.log(urls)
             for (let i=0;i<urls.length;i++)
-            {if (currentdomain===urls[i]){
-              if(visitedDomain.has(currentdomain)){
+            {if (currentdomain.includes(urls[i])){
+              if(visitedDomain.has(urls[i])){
                 if(running_url.length>0){
-                  if(running_url[0]===currentdomain){
+                  if(currentdomain.includes(running_url[0])){
                     chrome.runtime.sendMessage(
                       {action:'store_current_timer'},(response)=>{
 
