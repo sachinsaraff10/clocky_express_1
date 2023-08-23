@@ -47,25 +47,25 @@ chrome.action.onClicked.addListener(()=>{
   });
     if(urls.length>0)
     {
-        chrome.runtime.sendMessage({action:'getready'},(response)=>{
-          if (response.action==='storageplease'){
-            chrome.runtime.sendMessage({action:'hereyougo',object:urls});
-          // message_responsesender({action:})
+        message_responsesender({action:'hereyougo',object:urls}).then(
+          (response)=>{
+            chrome.windows.create({
+              url:'sites.html',
+              type:'popup',
+              width:300,
+              height:300,
+              left: 900, // Adjust the position to the bottom right
+              top: 70
+             
+          
+          })
           }
-        });
+        )
+        ;
         
             // let popupURL=`sites.html?domainId=${domains}`
             // chrome.tabs.reload(tabId,{bypassCache:false});
-            chrome.windows.create({
-            url:'sites.html',
-            type:'popup',
-            width:300,
-            height:300,
-            left: 900, // Adjust the position to the bottom right
-            top: 70
-           
-    
-        });
+            ;
         
         ;
     }

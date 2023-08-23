@@ -19,16 +19,14 @@
     "http://*/*"
   ],
 
-    // Add other permissions as needed for your extension
-  
+    
 
   "action":{
     "default_icon":{
         "16": "icon-16.png",
         "32":"icon-32.png"},
     "default_title":"Clocky"
-    // "default_popup": "sites.html"
-  }
+    }
 
 
 

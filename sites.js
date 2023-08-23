@@ -1,12 +1,10 @@
 let lst=[];
 
         // let x=0;
-const urlParams = new URLSearchParams(window.location.search);
-let domains = urlParams.get('domainId');
+// const urlParams = new URLSearchParams(window.location.search);
+// let domains = urlParams.get('domainId');
 
 chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
-if (message.action==='getready'){
-  sendResponse({action:'storageplease'})}
 if(message.action==='hereyougo'){
   let domains=message.object;
   chrome.storage.local.get(['urltotimer'],(result)=>{
@@ -14,9 +12,12 @@ if(message.action==='hereyougo'){
   for (let i=0;i<domains.length;i++){
       presetok(domains[i],container3,urltimer[domains[i]])
   }
-  })}
+  sendResponse({action:'all_done'})
+  })}})
 
-})
+
+
+
 const body=document.querySelector('body');
 body.style.display='flex';
         const maincontainer=document.getElementById('maincontainer')
