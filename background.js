@@ -9,19 +9,18 @@ console.log('initialized');
   console.log(urls.length);
   let timers_url={};
   let urltimer={};
-  let timer_toid={};
+  
   let visitedDomain=new Set();
   let timer_overwrite={};
   let running_url=[];
 
   chrome.storage.local.get(
-    ['urls', 'overwritten', 'visitedDomain', 'timertoid', 'running', 'timers', 'urltotimer'],
+    ['urls', 'overwritten', 'visitedDomain', 'running', 'timers', 'urltotimer'],
     (result) => {
       urls = result.urls || [];
       // console.log(urls);
       timers_url = result.timers || {};
       urltimer = result.urltotimer || {};
-      timer_toid = result.timertoid || {};
       visitedDomain = result.visitedDomain || new Set();
       running_url = result.running || [];
       timer_overwrite = result.overwritten || [];
@@ -39,6 +38,7 @@ let activeTabId;
 chrome.action.onClicked.addListener(()=>{
   // 
   console.log(urls)
+  console.log(urltimer[urls[0]]);
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs.length > 0) {
          activeTabId = tabs[0].id;
@@ -46,7 +46,8 @@ chrome.action.onClicked.addListener(()=>{
     }
   });
     if(urls.length>0)
-    {
+    {   console.log(urls)
+      console.log(urltimer[urls[0]]);
         message_responsesender({action:'hereyougo',object:urls,urltotimer:urltimer}).then(
           (response)=>{
             chrome.windows.create({
@@ -89,14 +90,13 @@ async function storethenget(){
   const data= await new Promise((resolve)=>{
     
 chrome.storage.local.set({urls:urls,timers:timers_url,
-  urltotimer:urltimer,timertoid:timer_toid,overwritten:timer_overwrite,
+  urltotimer:urltimer,overwritten:timer_overwrite,
 running:running_url,visitedDomain:visitedDomain}
   ,()=>{chrome.storage.local.get(['urls', 'overwritten', 'visitedDomain', 'timertoid', 'running', 'timers', 'urltotimer'],
   (result)=>{
     urls = result.urls;
     timers_url = result.timers  ;
     urltimer = result.urltotimer ;
-    timer_toid = result.timertoid;
     visitedDomain = result.visitedDomain;
     running_url = result.running;
     timer_overwrite = result.overwritten;
@@ -150,7 +150,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // /timer_toid[sent_timer]=timerId;
       timer_overwrite[monitoredURL]=sent_timer;
       chrome.storage.local.set({urls:urls,timers:timers_url,
-        urltotimer:urltimer,timertoid:timer_toid,visitedDomain:visitedDomain,
+        urltotimer:urltimer,visitedDomain:visitedDomain,
         overwritten:timer_overwrite,
          running:running_url},()=>{
         console.log('Data stored in local storage.')
@@ -160,13 +160,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               let curr_url = tabs[i].url;
               let tabId=tabs[i].id;
               let curr_domain=curr_url.hostname
+              console.log(curr_domain);
+              console.log()
                 for(let i=0;i<urls.length;i++){
                     if (curr_domain===urls[i]) { 
                        
                        running_url.push(curr_domain);
                        visitedDomain.add(curr_domain);
                        chrome.storage.local.set({visitedDomain:visitedDomain,running:running_url},
-                         ()=>{
+                         ()=>{console.log('nice to see')
                              console.log('Data stored in local storage.');
                             //  let popupURL = `timers.html?domainId=${curr_domain}`
                              message_responsesender({action:'launch_now',object:timer_overwrite[curr_domain]}).then((response)=> 
@@ -204,10 +206,12 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
     
     let currenttabId=activeInfo.tabId;
     console.log(currenttabId);
+    console.log(activeTabId);
+    // chrome.tabs.query()
     if(activeTabId===currenttabId)
     {
       chrome.tabs.get(currenttabId,(currentTab)=>{
-        let currentdomain=currentTab.url.hostname;
+        let currentdomain=new URL(currentTab.url).hostname;
       if (urls.length>0){
     if ( urls.includes(currentdomain)) {
                   console.log('yeahhh')
@@ -349,10 +353,12 @@ else{
 
    
 chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
-        if (changeInfo.status==="complete" && changeInfo.url){
+        if (changeInfo.url){
             const taburl=tab.url;
-            let currentdomain=taburl.hostname;
+            let currentdomain=new URL(taburl).hostname;
             console.log(currentdomain);
+            console.log(tabId);
+            console.log(taburl);
         //  chrome.storage.local.get(['urls',
         //  'visitedDomain','overwritten','running'],(result)=> {
         //      urls=result.urls;
