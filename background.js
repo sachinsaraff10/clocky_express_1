@@ -47,7 +47,7 @@ chrome.action.onClicked.addListener(()=>{
   });
     if(urls.length>0)
     {
-        message_responsesender({action:'hereyougo',object:urls}).then(
+        message_responsesender({action:'hereyougo',object:urls,urltotimer:urltimer}).then(
           (response)=>{
             chrome.windows.create({
               url:'sites.html',
@@ -352,6 +352,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         if (changeInfo.status==="complete" && changeInfo.url){
             const taburl=tab.url;
             let currentdomain=taburl.hostname;
+            console.log(currentdomain);
         //  chrome.storage.local.get(['urls',
         //  'visitedDomain','overwritten','running'],(result)=> {
         //      urls=result.urls;
@@ -360,6 +361,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
         //     running_url=result.running;
             if (urls.length>0){
               console.log('lets go')
+              console.log(urls)
             for (let i=0;i<urls.length;i++)
             {if (currentdomain===urls[i]){
               if(visitedDomain.has(currentdomain)){
@@ -375,7 +377,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                         ()=>{
 
                           message_responsesender({action:'launch_now',object:new_timer}).then((response)=> 
-                          {consolge.log('')
+                          {
                             chrome.tabs.reload(tabId,{bypassCache:false});
                            chrome.windows.create({
                               url: 'timers.html',

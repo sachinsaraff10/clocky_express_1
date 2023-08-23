@@ -7,13 +7,13 @@ let lst=[];
 chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
 if(message.action==='hereyougo'){
   let domains=message.object;
-  chrome.storage.local.get(['urltotimer'],(result)=>{
-  let urltimer=result.urltotimer;
+  let urltimer=message.urltotimer;
   for (let i=0;i<domains.length;i++){
       presetok(domains[i],container3,urltimer[domains[i]])
   }
   sendResponse({action:'all_done'})
-  })}})
+  
+}})
 
 
 
