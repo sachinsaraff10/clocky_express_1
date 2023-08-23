@@ -207,7 +207,12 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
     let currenttabId=activeInfo.tabId;
     console.log(currenttabId);
     console.log(activeTabId);
-    // chrome.tabs.query()
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs.length > 0) {
+           activeTabId = tabs[0].id;
+        console.log("Active tab ID:", activeTabId);
+      }
+    })
     if(activeTabId===currenttabId)
     {
       chrome.tabs.get(currenttabId,(currentTab)=>{
