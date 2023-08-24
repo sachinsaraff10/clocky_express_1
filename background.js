@@ -1,11 +1,4 @@
-
-
-  chrome.runtime.onInstalled.addListener(() => {
-    console.log('Extension installed or updated!');
-     });
-console.log('initialized');
-// initializes arrays that contain domains and timers sent from settings popup
-  let urls=[];
+let urls=[];
   console.log(urls.length);
   let timers_url={};
   let urltimer={};
@@ -13,19 +6,27 @@ console.log('initialized');
   let visitedDomain=new Set();
   let timer_overwrite={};
   let running_url=[];
+  let testset=new Set();
 
-  chrome.storage.local.get(
-    ['urls', 'overwritten', 'visitedDomain', 'running', 'timers', 'urltotimer'],
-    (result) => {
-      urls = result.urls || [];
-      // console.log(urls);
-      timers_url = result.timers || {};
-      urltimer = result.urltotimer || {};
-      visitedDomain = result.visitedDomain || new Set();
-      running_url = result.running || [];
-      timer_overwrite = result.overwritten || [];
-    }
-  );
+  chrome.runtime.onInstalled.addListener(() => {
+    console.log('Extension installed or updated!');
+    chrome.storage.local.get(
+      ['urls', 'overwritten', 'visitedDomain', 'running', 'timers', 'urltotimer'],
+      (result) => {
+        urls = result.urls || [];
+        console.log(urls);
+        timers_url = result.timers || {};
+        urltimer = result.urltotimer || {};
+        visitedDomain = result.visitedDomain || new Set();
+        running_url = result.running || [];
+        timer_overwrite = result.overwritten || [];
+      }
+    )
+  });
+console.log('initialized');
+// console.log(urls.length);
+// initializes arrays that contain domains and timers sent from settings popup
+
 
 let activeTabId;
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -37,6 +38,7 @@ let activeTabId;
 // first event post installation that occurs once extension icon gets clicked
 chrome.action.onClicked.addListener(()=>{
   // 
+  console.log(visitedDomain);
   console.log(urls)
   console.log(urltimer[urls[0]]);
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -351,14 +353,14 @@ else{
 } 
       }  }
 )
-    }
+    } 
           
   })
   
 
    
 chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
-        if (changeInfo.url){
+        if (changeInfo.url || changeInfo.status==='complete'){
             const taburl=tab.url;
             let currentdomain=new URL(taburl).hostname;
             console.log(currentdomain);
@@ -375,6 +377,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
               console.log(urls)
             for (let i=0;i<urls.length;i++)
             {if (currentdomain.includes(urls[i])){
+              console.log(urls[i]);
+              console.log(visitedDomain);
               if(visitedDomain.has(urls[i])){
                 if(running_url.length>0){
                   if(currentdomain.includes(running_url[0])){
