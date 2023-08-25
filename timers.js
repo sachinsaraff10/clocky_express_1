@@ -4,11 +4,17 @@ const addTimerButton = document.getElementById('addTimerButton');
       let intervalID;
       chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
         if (message.action==='launch_now'){
+            console.log('received');
             let timerObject = message.object;
     // Use the timerObject in your popup window
     createTimer(timerObject);
     setTimer(timerObject);
         sendResponse({action:"good_to_go"})}
+        
+        if (message.action==='chopchop'){
+            let running_timer=message.object;
+            setTimer(running_timer)
+        }
     })
          function createTimer(timer) {
             const timerDiv = document.createElement('div');
@@ -17,17 +23,17 @@ const addTimerButton = document.getElementById('addTimerButton');
             const hourInput = document.createElement('input');
             hourInput.type = 'text';
             hourInput.readOnly=true
-            hourInput.value=timer.hourInput.value
+            hourInput.value=timer.hourInput
             hourInput.classList.add('hours');
 
             const minuteInput = document.createElement('input');
             minuteInput.type = 'text';
             minuteInput.readOnly=true
-            minuteInput.value=timer.minuteInput.value
+            minuteInput.value=timer.minuteInput
             const secondInput = document.createElement('input');
             secondInput.type = 'text';
             secondInput.readOnly=true
-            secondInput.value=timer.secondInput.value;
+            secondInput.value=timer.secondInput;
             secondInput.classList.add('seconds');
 
             timerDiv.appendChild(hourInput);
@@ -118,9 +124,9 @@ const addTimerButton = document.getElementById('addTimerButton');
 
 
         function setTimer(timer){
-            let hours = Number(timer.hourInput.value);
-            let minutes = Number(timer.minuteInput.value);
-            let seconds = Number(timer.secondInput.value);
+            let hours = Number(timer.hourInput);
+            let minutes = Number(timer.minuteInput);
+            let seconds = Number(timer.secondInput);
 
             let totalSeconds = hours * 3600 + minutes * 60 + seconds;
 
@@ -128,29 +134,30 @@ const addTimerButton = document.getElementById('addTimerButton');
     hours = Math.floor(totalSeconds / 3600);
     minutes = Math.floor((totalSeconds % 3600) / 60);
     seconds = totalSeconds % 60;
-    timer.hourInput.value=hours;
-    timer.minuteInput.value=minutes;
-    timer.secondInput.value=seconds;
+    timer.hourInput=hours;
+    timer.minuteInput=minutes;
+    timer.secondInput=seconds;
 
     if (totalSeconds <= 0) {
-      clearInterval(intervalId);
+      clearInterval(timer.intervalId);
     }
     chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>
     {
-        if(message.action==='store_current_timer'){
-            chrome.storage.local.set({updatedtimer:timer},()=>{
-                sendResponse({action:'returned_timer',object:timer})
-            })
+        // if(message.action==='store_current_timer'){
+        //     chrome.storage.local.set({updatedtimer:timer},()=>{
+        //         sendResponse({action:'returned_timer',object:timer})
+        //     })
 
         }
         if (message.action==='pausetimer'){
-            timer = message.object;
+            
             clearInterval(timer.intervalId)
             chrome.storage.local.set({pausedtimer:timer},()=>{
                 sendResponse({action:'returned_timer',object:timer})
             })
         }
     })
+chrome.runtime.sendMessage({action:'live_timer',object:timer})
     totalSeconds--;
   }, 1000);
 
