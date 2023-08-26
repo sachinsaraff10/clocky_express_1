@@ -171,7 +171,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 for(let i=0;i<urls.length;i++){
                     if (curr_domain===urls[i]) { 
                        
-                       running_url.push(curr_domain);
+                       
                        addToArrayIfNotExists(visitedDomain,curr_domain);
                        chrome.storage.local.set({visitedDomain:visitedDomain,running:running_url},
                          ()=>{console.log('nice to see')
@@ -188,7 +188,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                                  top: 520,
     
                                  tabId:tabId
-                               })})
+                               },()=>{
+                                running_url.push(curr_domain);
+                               }
+                               )})
                               })
                      
                      }
@@ -256,14 +259,12 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                       }
                       else{
                         let running_timer=timer_overwrite[running_url[0]];
-      message_responsesender({acttion:'chopchop',object:running_timer}).then((response)=>{
         chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
         let pausedtimer=response.object;
         timer_overwrite[running_url[0]]=pausedtimer;
         chrome.storage.local.set({overwritten:timer_overwrite})})
       running_url=[];
-      running_url.push(currentdomain);
-      chrome.storage.local.set({running:running_url,visitedDomain:visitedDomain},()=>{
+      chrome.storage.local.set({visitedDomain:visitedDomain},()=>{
         message_responsesender({action:'launch_now',object:timer_overwrite[currentdomain]}).then((response)=> 
         {chrome.tabs.reload(tabId,{bypassCache:false});
          chrome.windows.create({
@@ -275,13 +276,19 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             top: 520,
 
             tabId:tabId
-          })})
-    }
-      )})
-                      }
-                    }else{
+          },()=>{
+            
       running_url.push(currentdomain);
       chrome.storage.local.set({running:running_url});
+          }
+          )})
+    }
+      )
+    
+                      }
+                    }else{
+      
+      
       message_responsesender({action:'launch_now',object:timer_overwrite[currentdomain]}).then((response)=> 
         {chrome.tabs.reload(tabId,{bypassCache:false});
          chrome.windows.create({
@@ -293,7 +300,12 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             top: 520,
 
             tabId:tabId
-          })})
+          },
+          ()=>{
+         running_url.push(currentdomain);  
+         chrome.storage.local.set({running:running_url}); 
+          })
+        })
                     }
                 
     }  else
@@ -301,16 +313,13 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
       
       {let running_timer=timer_overwrite[running_url[0]];
       
-        message_responsesender({action:'chopchop',object:running_timer}).then((response)=>{
-          chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
+        chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
         let pausedtimer=response.object;
         timer_overwrite[running_url[0]]=pausedtimer;
         chrome.storage.local.set({overwritten:timer_overwrite})})          
       addToArrayIfNotExists(visitedDomain,currentdomain);
       running_url=[]
-      running_url.push(currentdomain);
-      chrome.storage.local.set({running:running_url,visitedDomain:visitedDomain});
-
+      
       message_responsesender({action:'launch_now',
       object:timer_overwrite[currentdomain]}).then((response)=> 
         {chrome.tabs.reload(tabId,{bypassCache:false});
@@ -323,11 +332,16 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             top: 520,
 
             tabId:tabId
-          })}) })
+          },
+          ()=>{
+          running_url.push(currentdomain);
+      chrome.storage.local.set({running:running_url,visitedDomain:visitedDomain});
+  
+          })}) 
+        
     }else{
       addToArrayIfNotExists(visitedDomain,currentdomain)
-      running_url.push(currentdomain);
-      chrome.storage.local.set({running:running_url,visitedDomain:visitedDomain});
+      chrome.storage.local.set({visitedDomain:visitedDomain});
 
       message_responsesender({action:'launch_now',
       object:timer_overwrite[currentdomain]}).then((response)=> 
@@ -341,6 +355,10 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             top: 520,
 
             tabId:tabId
+          },
+          ()=>{
+            running_url.push(currentdomain);
+            chrome.storage.local.set({running:running_url})
           })})
       }}
 }
@@ -351,13 +369,12 @@ else{
       console.log(running_url);
       let running_timer=timer_overwrite[running_url[0]];
       
-      message_responsesender({action:'chopchop',object:running_timer}).then((response)=>{
-        chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
+      chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
         let pausedtimer=response.object;
         timer_overwrite[running_url[0]]=pausedtimer;
         chrome.storage.local.set({overwritten:timer_overwrite})
       });
-    })
+    
 
     } 
 } 
@@ -398,7 +415,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
               if(visitedDomain.includes(urls[i])){
                 if(running_url.length>0){
                   if(currentdomain.includes(running_url[0])){
-                    message_responsesender({action:'chopchop',object:timer_overwrite[running_url[0]]}).then((response)=>{chrome.runtime.sendMessage(
+                    chrome.runtime.sendMessage(
                       {action:'store_current_timer'},(response)=>{
 
                   if(response.action==='returned_timer'){
@@ -423,18 +440,19 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
 
                       })
               
-            }})})
+            }})
+          
                   }
                   else{
 
                     let running_timer=timer_overwrite[running_url[0]];
-          chrome.runtime.sendMessage({action:'pausetimer',object:running_timer},(response)=>{
+          chrome.runtime.sendMessage({action:'pausetimer',
+          object:running_timer},(response)=>{
             let pausedtimer=response.object;
             timer_overwrite[running_url[0]]=pausedtimer;
             chrome.storage.local.set({overwritten:timer_overwrite})})
           running_url=[];
-          running_url.push(currentdomain);
-          chrome.storage.local.set({running:running_url,visitedDomain:visitedDomain},
+          chrome.storage.local.set({visitedDomain:visitedDomain},
             ()=>{
 
               message_responsesender({action:'launch_now',object:timer_overwrite[currentdomain]}).then((response)=> 
@@ -448,14 +466,17 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   top: 520,
 
                   tabId:tabId
+                },
+                ()=>{
+                  
+          running_url.push(currentdomain);
+          chrome.storage.local.set({running:running_url});
                 })})
         }
           )
 
                   }
                 }else{
-                  running_url.push(currentdomain);
-                  chrome.storage.local.set({running:running_url},()=>{
                     message_responsesender({action:'launch_now',object:timer_overwrite[currentdomain]}).then((response)=> 
                     {chrome.tabs.reload(tabId,{bypassCache:false});
                      chrome.windows.create({
@@ -467,8 +488,13 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                         top: 520,
       
                         tabId:tabId
+                      },
+                      ()=>{
+                        
+                  running_url.push(currentdomain);
+                  chrome.storage.local.set({running:running_url})
                       })}) 
-                })
+                
 
 
                 }
@@ -476,17 +502,13 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
               else{
                 if(running_url.length>0)
                   {let running_timer=timer_overwrite[running_url[0]];
-                    
-                    message_responsesender({action:'chopchop',object:running_timer}).then((response)=>{
-                      chrome.runtime.sendMessage({action:'pausetimer',
-                    object:running_timer},(response)=>{
+                    chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
                       let pausedtimer=response.object;
                       timer_overwrite[running_url[0]]=pausedtimer;
                       running_url=[];
-                      running_url.push(currentdomain);
-                      chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},
-                       ()=>{console.log("done w storage")} );
-                    })})
+                      chrome.storage.local.set({overwritten:timer_overwrite});
+                    })
+                  
           
                     message_responsesender({action:'launch_now',object:timer_overwrite[currentdomain]}).then((response)=> 
               {chrome.tabs.reload(tabId,{bypassCache:false});
@@ -499,12 +521,17 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   top: 520,
 
                   tabId:tabId
-                })})
+                },
+                ()=>{
+                  running_url.push[currentdomain];
+                  chrome.storage.local.set({running:running_url});
+                })
+              })
                 }
                 else{
                   addToArrayIfNotExists(visitedDomain,currentdomain);
-          running_url.push(currentdomain);
-          chrome.storage.local.set({running:running_url,visitedDomain:visitedDomain},()=>{
+          
+          chrome.storage.local.set({visitedDomain:visitedDomain},()=>{
 
           message_responsesender({action:'launch_now',object:timer_overwrite[currentdomain]}).then((response)=> 
               {chrome.tabs.reload(tabId,{bypassCache:false});
@@ -517,6 +544,10 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   top: 520,
 
                   tabId:tabId
+                },
+                ()=>{
+                  running_url.push(currentdomain);
+                  chrome.storage.local.set({running:running_url})
                 })})
           
               }

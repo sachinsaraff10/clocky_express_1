@@ -8,13 +8,13 @@ const addTimerButton = document.getElementById('addTimerButton');
             let timerObject = message.object;
     // Use the timerObject in your popup window
     createTimer(timerObject);
-    setTimer(timerObject);
+    // setTimer(timerObject);
         sendResponse({action:"good_to_go"})}
         
-        if (message.action==='chopchop'){
-            let running_timer=message.object;
-            setTimer(running_timer)
-        }
+        // if (message.action==='chopchop'){
+        //     let running_timer=message.object;
+        //     setTimer(running_timer)
+        // }
     })
          function createTimer(timer) {
             const timerDiv = document.createElement('div');
@@ -42,6 +42,7 @@ const addTimerButton = document.getElementById('addTimerButton');
             timerDiv.appendChild(document.createTextNode(':'));
             timerDiv.appendChild(secondInput);
             timerContainer.appendChild(timerDiv);
+            setTimer(timer);
         }
 
         function handleTimerClick(timer) {
@@ -106,6 +107,11 @@ const addTimerButton = document.getElementById('addTimerButton');
             }
 
             })}
+
+        function pauser(timer){
+            clearInterval(timer.intervalId);
+
+        }
             // if (timer.button.textContent === 'Play') {
             //     timer.button.textContent = 'Pause';
                 // timer.hourInput.readOnly = true;
@@ -143,23 +149,23 @@ const addTimerButton = document.getElementById('addTimerButton');
     }
     chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>
     {
-        // if(message.action==='store_current_timer'){
-        //     chrome.storage.local.set({updatedtimer:timer},()=>{
-        //         sendResponse({action:'returned_timer',object:timer})
-        //     })
+        if(message.action==='store_current_timer'){
+            chrome.storage.local.set({updatedtimer:timer},()=>{
+                sendResponse({action:'returned_timer',object:timer})
+            })
 
-        }
-        if (message.action==='pausetimer'){
+        
+        if(message.action==='pausetimer'){
             
             clearInterval(timer.intervalId)
             chrome.storage.local.set({pausedtimer:timer},()=>{
                 sendResponse({action:'returned_timer',object:timer})
             })
-        }
-    })
+    } }})
+    
 chrome.runtime.sendMessage({action:'live_timer',object:timer})
     totalSeconds--;
-  }, 1000);
+  }, 1000)
 
   
 }
