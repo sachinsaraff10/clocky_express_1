@@ -21,8 +21,8 @@
 
   "content_scripts": [
     {
-      "matches": ["*://*/*"],
-      "js": ["timers.js","sites.js"]
+      "matches": ["<all_urls>"],
+      "js": ["timers.js","sites.js "]
     }
   ],
     
