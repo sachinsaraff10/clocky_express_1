@@ -1,20 +1,23 @@
 const timerContainer = document.getElementById('timerContainer');
    
-const addTimerButton = document.getElementById('addTimerButton');
+// const addTimerButton = document.getElementById('addTimerButton');
       let intervalID;
 chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
         if (message.action==='launch_now'){
             console.log('received');
             let timerObject = message.object;
-    // Use the timerObject in your popup window
-    createTimer(timerObject);
-    // setTimer(timerObject);
-        sendResponse({action:"good_to_go"})}
-        
-        if (message.action==='chopchop'){
-            let running_timer=message.object;
-            setTimer(running_timer)
+            createTimer(timerObject);
+            sendResponse({action:"good_to_go"})
         }
+    
+    
+    // setTimer(timerObject);
+        
+        
+        // if (message.action==='chopchop'){
+        //     let running_timer=message.object;
+        //     setTimer(running_timer)
+        // }
     })
          function createTimer(timer) {
             const timerDiv = document.createElement('div');
