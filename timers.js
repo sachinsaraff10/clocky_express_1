@@ -2,7 +2,7 @@ const timerContainer = document.getElementById('timerContainer');
    
 const addTimerButton = document.getElementById('addTimerButton');
       let intervalID;
-      chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
+chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
         if (message.action==='launch_now'){
             console.log('received');
             let timerObject = message.object;
@@ -11,10 +11,10 @@ const addTimerButton = document.getElementById('addTimerButton');
     // setTimer(timerObject);
         sendResponse({action:"good_to_go"})}
         
-        // if (message.action==='chopchop'){
-        //     let running_timer=message.object;
-        //     setTimer(running_timer)
-        // }
+        if (message.action==='chopchop'){
+            let running_timer=message.object;
+            setTimer(running_timer)
+        }
     })
          function createTimer(timer) {
             const timerDiv = document.createElement('div');
@@ -169,4 +169,4 @@ chrome.runtime.sendMessage({action:'live_timer',object:timer})
 
   
 }
-    addTimerButton.addEventListener('click', createTimer);
+    // addTimerButton.addEventListener('click', createTimer);
