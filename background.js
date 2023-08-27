@@ -17,7 +17,7 @@ let urls=[];
         console.log(urls);
         timers_url = result.timers || {};
         urltimer = result.urltotimer || {};
-        visitedDomain = result.visitedDomain || new Set();
+        visitedDomain = result.visitedDomain || [];
         running_url = result.running || [];
         timer_overwrite = result.overwritten || [];
       }
@@ -393,7 +393,7 @@ chrome.runtime.onMessage.addListener((message,sendResponse)=>{
 })
    
 chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
-        if (changeInfo.url || changeInfo.status==='complete'){
+        if (changeInfo.url ){
             const taburl=tab.url;
             let currentdomain=new URL(taburl).hostname;
             console.log(currentdomain);

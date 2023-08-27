@@ -19,6 +19,12 @@
     "http://*/*"
   ],
 
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["timers.js","sites.js"]
+    }
+  ],
     
 
   "action":{
