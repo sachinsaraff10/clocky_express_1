@@ -7,6 +7,7 @@ let urls=[];
   let timer_overwrite={};
   let running_url=[];
   let testset=new Set();
+  let activeTaburl;
   
   chrome.runtime.onInstalled.addListener(() => {
     console.log('Extension installed or updated!');
@@ -223,7 +224,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
       }
     })
     if(activeTabId===currenttabId)
-    // {chrome.tabs.reload(currenttabId,{bypassCache:true})
+    {
+      chrome.tabs.reload(currenttabId,{bypassCache:true});
       chrome.tabs.get(currenttabId,(currentTab)=>{
         let currentdomain=new URL(currentTab.url).hostname;
       if (urls.length>0){
@@ -381,7 +383,7 @@ else{
       }  }
 )
     } 
-          
+  } 
   )
   
 chrome.runtime.onMessage.addListener((message,sendResponse)=>{
@@ -399,6 +401,11 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             console.log(currentdomain);
             console.log(tabId);
             console.log(taburl);
+            chrome.tabs.query({active:true, currentWindow:true},(tabs)=>{
+               activeTaburl=new URL(tabs[0].url).hostname
+
+              
+            })
         //  chrome.storage.local.get(['urls',
         //  'visitedDomain','overwritten','running'],(result)=> {
         //      urls=result.urls;
@@ -409,10 +416,13 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
               console.log('lets go')
               console.log(urls)
             for (let i=0;i<urls.length;i++)
-            {if (currentdomain.includes(urls[i])){
+            {
+              if (currentdomain.includes(urls[i])){
               console.log(urls[i]);
+              let releurl=urls[i];
               console.log(visitedDomain);
-              if(visitedDomain.includes(urls[i])){
+              console.log(running_url);
+              if(visitedDomain.includes(releurl)){
                 if(running_url.length>0){
                   if(currentdomain.includes(running_url[0])){
                     chrome.runtime.sendMessage(
@@ -554,18 +564,25 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                 )}
                   
               }}
-              else {if (running_url.length>0){
+              else {
+                console.log(currentdomain);
+                // console.log(releurl);
+                console.log(running_url);
+                if (running_url.length>0 && currentdomain===activeTaburl){
                 let running_timer=timer_overwrite[running_url[0]];
 
-                message_responsesender({action:'chopchop',object:running_timer}).then((response)=>{
-                  chrome.runtime.sendMessage({action:'pausetimer',
-                object:running_timer},(response)=>{
+                  chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
+                 let receipt=response.object;
+                  timer_overwrite[running_url[0]]=receipt;
+                  running_url=[];
+                  chrome.storage.local.set({running:running_url,overwritten:timer_overwrite})
                   let pausedtimer=response.object;
                   timer_overwrite[running_url[0]]=pausedtimer;
                   running_url=[];
                   chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},
                    ()=>{console.log("done w storage")} );
-                })})
+                })
+              
       
               }
             }
