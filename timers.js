@@ -6,6 +6,8 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
         if (message.action==='launch_now'){
             console.log('received');
             let timerObject = message.object;
+            console.log(timerObject);
+            console.log(timerObject.hourInput);
             createTimer(timerObject);
             sendResponse({action:"good_to_go"})
         }
@@ -20,31 +22,19 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
         // }
     })
          function createTimer(timer) {
-            const timerDiv = document.createElement('div');
-            timerDiv.classList.add('container');
 
-            const hourInput = document.createElement('input');
-            hourInput.type = 'text';
+            const hourInput = document.getElementById('hourInput');
             hourInput.readOnly=true
             hourInput.value=timer.hourInput
             hourInput.classList.add('hours');
 
-            const minuteInput = document.createElement('input');
-            minuteInput.type = 'text';
+            const minuteInput = document.getElementById('minuteInput');
             minuteInput.readOnly=true
             minuteInput.value=timer.minuteInput
-            const secondInput = document.createElement('input');
-            secondInput.type = 'text';
+            const secondInput = document.getElementById('secondInput');
             secondInput.readOnly=true
             secondInput.value=timer.secondInput;
             secondInput.classList.add('seconds');
-
-            timerDiv.appendChild(hourInput);
-            timerDiv.appendChild(document.createTextNode(':'));
-            timerDiv.appendChild(minuteInput);
-            timerDiv.appendChild(document.createTextNode(':'));
-            timerDiv.appendChild(secondInput);
-            timerContainer.appendChild(timerDiv);
             setTimer(timer);
         }
 
