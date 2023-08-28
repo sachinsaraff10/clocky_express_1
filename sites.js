@@ -4,16 +4,7 @@ let lst=[];
 // const urlParams = new URLSearchParams(window.location.search);
 // let domains = urlParams.get('domainId');
 
-chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
-if(message.action==='hereyougo'){
-  let domains=message.object;
-  let urltimer=message.urltotimer;
-  for (let i=0;i<domains.length;i++){
-      presetok(domains[i],container3,urltimer[domains[i]])
-  }
-  sendResponse({action:'all_done'})
-  
-}})
+
 
 
 
@@ -35,6 +26,19 @@ body.style.display='flex';
         function remover(parent,child){
          parent.removeChild(child);
           }
+
+  chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
+if(message.action==='hereyougo'){
+  let domains=message.object;
+  let urltimer=message.urltotimer;
+  console.log(urltimer);
+  for (let i=0;i<domains.length;i++){
+      console.log(urltimer[domains[i]].hourInput);
+      presetok(domains[i],container3,urltimer[domains[i]])
+  }
+  sendResponse({action:'all_done'})
+  
+}})
  
   let inpp=document.getElementById('urlId');
      // inpp.type='text';
@@ -151,6 +155,8 @@ body.style.display='flex';
    div.appendChild(radiocontainer);     
     
       }
+
+      
       function addtimer(){
       const timerDiv = document.createElement('div');
             timerDiv.classList.add('container');

@@ -53,12 +53,12 @@ chrome.action.onClicked.addListener(()=>{
     }
   });
     if(urls.length>0)
-    {   console.log(urls)
-      console.log(urltimer[urls[0]]);
-        message_responsesender({action:'hereyougo',object:urls,urltotimer:urltimer}).then(
-          (response)=>{
+    {
+        chrome.storage.local.get(['sites'],
+          (result)=>{
+            let popupURL=result.sites;
             chrome.windows.create({
-              url:'sites.html',
+              url:popupURL,
               type:'popup',
               width:300,
               height:300,
@@ -159,7 +159,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       chrome.storage.local.set({urls:urls,timers:timers_url,
         urltotimer:urltimer,visitedDomain:visitedDomain,
         overwritten:timer_overwrite,
-         running:running_url},()=>{
+         running:running_url,sites:'sites.html'},()=>{
         console.log('Data stored in local storage.')
           })
           chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
