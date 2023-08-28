@@ -159,7 +159,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       chrome.storage.local.set({urls:urls,timers:timers_url,
         urltotimer:urltimer,visitedDomain:visitedDomain,
         overwritten:timer_overwrite,
-         running:running_url,sites:'sites.html'},()=>{
+         running:running_url,sites:currenttabId.url},()=>{
         console.log('Data stored in local storage.')
           })
           chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -210,11 +210,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
      
   
     
-
+let currenttabId
 
 chrome.tabs.onActivated.addListener((activeInfo)=>{
     
-    let currenttabId=activeInfo.tabId;
+    currenttabId=activeInfo.tabId;
     console.log(currenttabId);
     console.log(activeTabId);
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
