@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             console.log('received');
             let timerObject = message.object;
             console.log(timerObject);
-            console.log(timerObject.hourInput);
+            console.log(timerObject["hourInput"]);
             createTimer(timerObject);
             setTimer(timer);
             sendResponse({action:"good_to_go"})
@@ -17,16 +17,16 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
 
             const hourInput = document.getElementById('hourInput');
             hourInput.readOnly=true
-            hourInput.value=timer.hourInput
-            hourInput.classList.add('hours');
+            hourInput.value=timer['hourInput']
+            
 
             const minuteInput = document.getElementById('minuteInput');
             minuteInput.readOnly=true
-            minuteInput.value=timer.minuteInput
+            minuteInput.value=timer['minuteInput']
             const secondInput = document.getElementById('secondInput');
             secondInput.readOnly=true
-            secondInput.value=timer.secondInput;
-            secondInput.classList.add('seconds');
+            secondInput.value=timer['secondInput']
+            
             
         }
 
