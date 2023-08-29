@@ -20,7 +20,7 @@ let urls=[];
         urltimer = result.urltotimer || {};
         visitedDomain = result.visitedDomain || [];
         running_url = result.running || [];
-        timer_overwrite = result.overwritten || [];
+        timer_overwrite = result.overwritten || {};
       }
     )
   });
@@ -156,6 +156,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // timers_url[timerId]=sent_timer;
       // /timer_toid[sent_timer]=timerId;
       timer_overwrite[monitoredURL]=sent_timer;
+      console.log(timer_overwrite)
       chrome.storage.local.set({urls:urls,timers:timers_url,
         urltotimer:urltimer,visitedDomain:visitedDomain,
         overwritten:timer_overwrite,
@@ -210,7 +211,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
      
   
     
-let currenttabId
+let currenttabId;
 
 chrome.tabs.onActivated.addListener((activeInfo)=>{
     
@@ -514,6 +515,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
               else{
                 if(running_url.length>0)
                   {running_timer=timer_overwrite[running_url[0]];
+                    console.log(timer_overwrite);
                     chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
                       let pausedtimer=response.object;
                       timer_overwrite[running_url[0]]=pausedtimer;
@@ -542,7 +544,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                 }
                 else{
                   addToArrayIfNotExists(visitedDomain,currentdomain);
-          
+          console.log(timer_overwrite[currentdomain]);
+          console.log(visitedDomain);
           chrome.storage.local.set({visitedDomain:visitedDomain},()=>{
 
           message_responsesender({action:'launch_now',object:timer_overwrite[currentdomain]}).then((response)=> 
