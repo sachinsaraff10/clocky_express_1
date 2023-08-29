@@ -9,17 +9,9 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             console.log(timerObject);
             console.log(timerObject.hourInput);
             createTimer(timerObject);
+            setTimer(timer);
             sendResponse({action:"good_to_go"})
         }
-    
-    
-    // setTimer(timerObject);
-        
-        
-        // if (message.action==='chopchop'){
-        //     let running_timer=message.object;
-        //     setTimer(running_timer)
-        // }
     })
          function createTimer(timer) {
 
@@ -35,7 +27,7 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             secondInput.readOnly=true
             secondInput.value=timer.secondInput;
             secondInput.classList.add('seconds');
-            setTimer(timer);
+            
         }
 
         function handleTimerClick(timer) {
