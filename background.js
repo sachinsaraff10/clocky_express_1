@@ -54,11 +54,11 @@ chrome.action.onClicked.addListener(()=>{
   });
     if(urls.length>0)
     {
-        chrome.storage.local.get(['sites'],
-          (result)=>{
-            let popupURL=result.sites;
+        // chrome.storage.local.get(['sites'],
+        //   (result)=>{
+            // let popupURL=result.sites;
             chrome.windows.create({
-              url:popupURL,
+              url:'sites.html',
               type:'popup',
               width:300,
               height:300,
@@ -67,8 +67,7 @@ chrome.action.onClicked.addListener(()=>{
              
           
           })
-          }
-        )
+          
         ;
         
             // let popupURL=`sites.html?domainId=${domains}`
