@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             console.log('received');
             let timerObject = message.object;
             console.log(timerObject);
-            console.log(timerObject.hourInput);
+            console.log(timerObject.hourinput);
             createTimer(timerObject);
             setTimer(timerObject);
             if(timerObject.intervalId)
