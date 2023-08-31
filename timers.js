@@ -10,7 +10,10 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             console.log(timerObject.hourInput);
             createTimer(timerObject);
             setTimer(timerObject);
-            sendResponse({action:"good_to_go"})
+            if(timerObject.intervalId)
+            {
+                sendResponse({action:"good_to_go"})
+        }
         }
     })
          function createTimer(timer) {
