@@ -11,7 +11,7 @@ let lst=[];
 
 const body=document.querySelector('body');
 body.style.display='flex';
-        const maincontainer=document.getElementById('maincontainer')
+const maincontainer=document.getElementById('maincontainer');
   maincontainer.style.display='flex';
   maincontainer.style.flexDirection='column';
 
@@ -47,8 +47,8 @@ if(message.action==='hereyougo'){
      // dbox.appendChild(inpp);
       const okbtn=document.getElementById('okbutton');
      // okbtn.textContent="okay";
-      okbtn.disabled=true;
-      inpp.addEventListener('input', () => {
+     
+     inpp.addEventListener('input', () => {
         const urlPattern = /^(https?:\/\/)?([a-z0-9-]+\.)?[a-z0-9-]+\.[a-z]{2,}\/?.*$/i;
         const urlInput = inpp.value.trim();
         if (urlPattern.test(urlInput)) {
@@ -234,9 +234,9 @@ if(message.action==='hereyougo'){
                 ()=>{
                   let timer = {
                 
-                    hourInput: hourInput.value,
-                    minuteInput: minuteInput.value,
-                    secondInput: secondInput.value,
+                    hourinput: hourInput.value,
+                    minuteinput: minuteInput.value,
+                    secondinput: secondInput.value,
                     urlId:null,
                     intervalId:null};
                   timer=JSON.stringify(timer);
@@ -259,15 +259,15 @@ if(message.action==='hereyougo'){
                 const hourInput = document.createElement('input');
                 hourInput.type = 'text';
                 hourInput.classList.add('hours');
-                hourInput.value=timer.hourInput;
+                hourInput.value=timer.hourinput;
                 const minuteInput = document.createElement('input');
                 minuteInput.type = 'text';
-                minuteInput.value=timer.minuteInput;
+                minuteInput.value=timer.minuteinput;
                 minuteInput.classList.add('minutes');
     
                 const secondInput = document.createElement('input');
                 secondInput.type = 'text';
-                secondInput.value=timer.secondInput;
+                secondInput.value=timer.secondinput;
                 secondInput.classList.add('seconds');
     
                 // const playButton = document.createElement('button');
