@@ -239,7 +239,7 @@ if(message.action==='hereyougo'){
                     secondinput: secondInput.value,
                     urlId:null,
                     intervalId:null};
-                  timer=JSON.stringify(timer);
+                  // timer=JSON.stringify(timer);
                   chrome.storage.local.get(['url'],(result)=>{
                     let url=result.url;
                     console.log(url);

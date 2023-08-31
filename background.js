@@ -234,7 +234,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                   console.log('yeahhh')
                   console.log('were here');
                   if (visitedDomain.includes(releurl)){
-                    if (running_url.length>0){
+                    if (running_url.length>0){x 
                       if(running_url[0]===releurl){
                         chrome.runtime.sendMessage(
                           {action:'store_current_timer'},(response)=>{
@@ -463,7 +463,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
           chrome.runtime.sendMessage({action:'pausetimer',
           object:running_timer},(response)=>{
             let pausedtimer=response.object;
-            timer_overwrite[running_url[0]]=pausedtimer;
+            running_timer=pausedtimer;
             chrome.storage.local.set({overwritten:timer_overwrite})})
           running_url=[];
           chrome.storage.local.set({visitedDomain:visitedDomain},
@@ -520,11 +520,11 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                     console.log(timer_overwrite[releurl]);
                     chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
                       let pausedtimer=response.object;
-                      timer_overwrite[running_url[0]]=pausedtimer;
-                      running_url=[];
+                      running_timer=pausedtimer;
+                      // running_url=[];
                       chrome.storage.local.set({overwritten:timer_overwrite});
                     })
-                  
+                  running_url=[]
           
                     message_responsesender({action:'launch_now',object:timer_overwrite[releurl]}).then((response)=> 
               {chrome.tabs.reload(tabId,{bypassCache:false});
@@ -583,11 +583,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   timer_overwrite[running_url[0]]=receipt;
                   running_url=[];
                   chrome.storage.local.set({running:running_url,overwritten:timer_overwrite})
-                  let pausedtimer=response.object;
-                  timer_overwrite[running_url[0]]=pausedtimer;
-                  running_url=[];
-                  chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},
-                   ()=>{console.log("done w storage")} );
+                  
                 })
               
       

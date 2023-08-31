@@ -6,6 +6,8 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
         if (message.action==='launch_now'){
             console.log('received');
             let timerObject = message.object;
+            // JSON.parse(timerObject);
+            // JSON.parse(timerObject);
             console.log(timerObject);
             console.log(timerObject.hourinput);
             createTimer(timerObject);
