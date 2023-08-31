@@ -11,9 +11,9 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             console.log(timerObject);
             console.log(timerObject.hourinput);
             createTimer(timerObject);
-            setTimer(timerObject);
-            if(timerObject.intervalId)
-            {
+            // setTimer(timerObject);
+            if(timerObject.intervalId!==null)
+            {   console.log('goodtogo!!')
                 sendResponse({action:"good_to_go"})
         }
         }
@@ -31,6 +31,7 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             const secondInput = document.getElementById('secondInput');
             secondInput.readOnly=true
             secondInput.value=timer.secondinput;
+            setTimer(timer);
             
             
         }
@@ -153,7 +154,7 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             })
     } }})
     
-chrome.runtime.sendMessage({action:'live_timer',object:timer})
+// chrome.runtime.sendMessage({action:'live_timer',object:timer})
     totalSeconds--;
   }, 1000)
 
