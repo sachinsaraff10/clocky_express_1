@@ -216,18 +216,19 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
     
     currenttabId=activeInfo.tabId;
     console.log(currenttabId);
-    console.log(activeTabId);
+    // console.log(activeTabId);
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length > 0) {
            activeTabId = tabs[0].id;
         console.log("Active tab ID:", activeTabId);
-      }
-    })
+      
+    // console.log(activeTabId);
     if(activeTabId===currenttabId)
     {
-      chrome.tabs.reload(currenttabId,{bypassCache:true});
+      // chrome.tabs.reload(currenttabId,{bypassCache:true});
       chrome.tabs.get(currenttabId,(currentTab)=>{
         let currentdomain=new URL(currentTab.url).hostname;
+        console.log(currentdomain);
       for (let i=0;i<urls.length;i++){
     if (currentdomain.includes(urls[i])) {
                   releurl=urls[i]
@@ -386,6 +387,8 @@ else{
       }  }
 )
     } 
+  }
+})
   } 
   )
   
@@ -466,6 +469,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             running_timer=pausedtimer;
             chrome.storage.local.set({overwritten:timer_overwrite})})
           running_url=[];
+
           chrome.storage.local.set({visitedDomain:visitedDomain},
             ()=>{
 

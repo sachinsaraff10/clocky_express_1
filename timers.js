@@ -1,5 +1,8 @@
 const timerContainer = document.getElementById('timerContainer');
-   
+const hourInput = document.getElementById('hourInput');
+const minuteInput = document.getElementById('minuteInput');
+const secondInput = document.getElementById('secondInput');
+           
 // const addTimerButton = document.getElementById('addTimerButton');
       let intervalID;
 chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
@@ -11,7 +14,7 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             console.log(timerObject);
             console.log(timerObject.hourinput);
             createTimer(timerObject);
-            // setTimer(timerObject);
+            setTimer(timerObject);
             if(timerObject.intervalId!==null)
             {   console.log('goodtogo!!')
                 sendResponse({action:"good_to_go"})
@@ -20,18 +23,14 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
     })
          function createTimer(timer) {
 
-            const hourInput = document.getElementById('hourInput');
             hourInput.readOnly=true
             hourInput.value=timer.hourinput;
             
-
-            const minuteInput = document.getElementById('minuteInput');
             minuteInput.readOnly=true
             minuteInput.value=timer.minuteinput;
-            const secondInput = document.getElementById('secondInput');
             secondInput.readOnly=true
             secondInput.value=timer.secondinput;
-            setTimer(timer);
+            // setTimer(timer);
             
             
         }
@@ -121,9 +120,10 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
 
 
         function setTimer(timer){
-            let hours = Number(timer.hourinput);
-            let minutes = Number(timer.minuteinput);
-            let seconds = Number(timer.secondinput);
+            console.log('now running')
+            let hours = Number(hourInput.value);
+            let minutes = Number(minuteInput.value);
+            let seconds = Number(secondInput.value);
 
             let totalSeconds = hours * 3600 + minutes * 60 + seconds;
 
@@ -131,9 +131,9 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
     hours = Math.floor(totalSeconds / 3600);
     minutes = Math.floor((totalSeconds % 3600) / 60);
     seconds = totalSeconds % 60;
-    timer.hourinput=hours;
-    timer.minuteinput=minutes;
-    timer.secondinput=seconds;
+    hourInput.value=hours;
+    minuteInput.value=minutes;
+    secondInput.value=seconds;
 
     if (totalSeconds <= 0) {
       clearInterval(timer.intervalId);
