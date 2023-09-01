@@ -225,7 +225,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
     // console.log(activeTabId);
     if(activeTabId===currenttabId)
     {
-      // chrome.tabs.reload(currenttabId,{bypassCache:true});
+      chrome.tabs.reload(currenttabId,{bypassCache:true});
       chrome.tabs.get(currenttabId,(currentTab)=>{
         let currentdomain=new URL(currentTab.url).hostname;
         console.log(currentdomain);
@@ -247,7 +247,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                   // let popupURL=`timers.html`;
                   
                   message_responsesender({action:'launch_now',object:timer_overwrite[releurl]}).then((response)=> 
-                   {chrome.tabs.reload(tabId,{bypassCache:false});;
+                   {  console.log('checking');
+                    // chrome.tabs.reload(tabId,{bypassCache:false});;
                     chrome.windows.create({
                        url: 'timers.html',
                        type: 'popup',
@@ -271,7 +272,9 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
       running_url=[];
       chrome.storage.local.set({visitedDomain:visitedDomain},()=>{
         message_responsesender({action:'launch_now',object:timer_overwrite[releurl]}).then((response)=> 
-        {chrome.tabs.reload(tabId,{bypassCache:false});
+        {
+          // chrome.tabs.reload(tabId,{bypassCache:false});
+          console.log('checking');
          chrome.windows.create({
             url: 'timers.html',
             type: 'popup',
@@ -282,7 +285,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
 
             tabId:tabId
           },()=>{
-            
+            console.log('checking');
       running_url.push(releurl);
       chrome.storage.local.set({running:running_url});
           }
@@ -295,7 +298,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
       
       
       message_responsesender({action:'launch_now',object:timer_overwrite[releurl]}).then((response)=> 
-        {chrome.tabs.reload(tabId,{bypassCache:false});
+        {console.log('checking');
+          // chrome.tabs.reload(tabId,{bypassCache:false});
          chrome.windows.create({
             url: 'timers.html',
             type: 'popup',
@@ -306,7 +310,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
 
             tabId:tabId
           },
-          ()=>{
+          ()=>{console.log('checking');
          running_url.push(releurl);  
          chrome.storage.local.set({running:running_url}); 
           })
@@ -327,7 +331,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
       
       message_responsesender({action:'launch_now',
       object:timer_overwrite[releurl]}).then((response)=> 
-        {chrome.tabs.reload(tabId,{bypassCache:false});
+        {console.log('checking');
+          // chrome.tabs.reload(tabId,{bypassCache:false});
          chrome.windows.create({
             url: 'timers.html',
             type: 'popup',
@@ -338,7 +343,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
 
             tabId:tabId
           },
-          ()=>{
+          ()=>{console.log('checking');
           running_url.push(releurl);
       chrome.storage.local.set({running:running_url,visitedDomain:visitedDomain});
   
@@ -350,7 +355,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
 
       message_responsesender({action:'launch_now',
       object:timer_overwrite[releurl]}).then((response)=> 
-        {chrome.tabs.reload(tabId,{bypassCache:false});
+        {console.log('checking');
+          // chrome.tabs.reload(tabId,{bypassCache:false});
          chrome.windows.create({
             url: 'timers.html',
             type: 'popup',
@@ -361,7 +367,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
 
             tabId:tabId
           },
-          ()=>{
+          ()=>{console.log('checking');
             running_url.push(releurl);
             chrome.storage.local.set({running:running_url})
           })})
@@ -441,8 +447,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                         ()=>{
 
                           message_responsesender({action:'launch_now',object:new_timer}).then((response)=> 
-                          {
-                            chrome.tabs.reload(tabId,{bypassCache:false});
+                          {console.log('checking');
+                            // chrome.tabs.reload(tabId,{bypassCache:false});
                            chrome.windows.create({
                               url: 'timers.html',
                               type: 'popup',
@@ -474,7 +480,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             ()=>{
 
               message_responsesender({action:'launch_now',object:timer_overwrite[releurl]}).then((response)=> 
-              {chrome.tabs.reload(tabId,{bypassCache:false});
+              {console.log('checking');
+                // chrome.tabs.reload(tabId,{bypassCache:false});
                chrome.windows.create({
                   url: 'timers.html',
                   type: 'popup',
@@ -485,7 +492,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
 
                   tabId:tabId
                 },
-                ()=>{
+                ()=>{console.log('checking');
                   
           running_url.push(releurl);
           chrome.storage.local.set({running:running_url});
@@ -496,7 +503,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   }
                 }else{
                     message_responsesender({action:'launch_now',object:timer_overwrite[releurl]}).then((response)=> 
-                    {chrome.tabs.reload(tabId,{bypassCache:false});
+                    {console.log('checking');
+                      // chrome.tabs.reload(tabId,{bypassCache:false});
                      chrome.windows.create({
                         url: 'timers.html',
                         type: 'popup',
@@ -508,7 +516,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                         tabId:tabId
                       },
                       ()=>{
-                        
+                        console.log('checking');
                   running_url.push(releurl);
                   chrome.storage.local.set({running:running_url})
                       })}) 
@@ -531,7 +539,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   running_url=[]
           
                     message_responsesender({action:'launch_now',object:timer_overwrite[releurl]}).then((response)=> 
-              {chrome.tabs.reload(tabId,{bypassCache:false});
+              {console.log('checking');
+                // chrome.tabs.reload(tabId,{bypassCache:false});
                chrome.windows.create({
                   url: 'timers.html',
                   type: 'popup',
@@ -542,7 +551,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
 
                   tabId:tabId
                 },
-                ()=>{
+                ()=>{console.log('checking');
                   running_url.push(releurl);
                   chrome.storage.local.set({running:running_url});
                 })
@@ -555,7 +564,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
           chrome.storage.local.set({visitedDomain:visitedDomain},()=>{
 
           message_responsesender({action:'launch_now',object:timer_overwrite[releurl]}).then((response)=> 
-              {chrome.tabs.reload(tabId,{bypassCache:false});
+              {console.log('checking');
+                // chrome.tabs.reload(tabId,{bypassCache:false});
                chrome.windows.create({
                   url: 'timers.html',
                   type: 'popup',
@@ -566,7 +576,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
 
                   tabId:tabId
                 },
-                ()=>{
+                ()=>{console.log('checking');
                   running_url.push(releurl);
                   chrome.storage.local.set({running:running_url})
                 })})
