@@ -66,7 +66,7 @@ chrome.action.onClicked.addListener(()=>{
               left: 900, // Adjust the position to the bottom right
               top: 70},()=>{
                 chrome.runtime.sendMessage({action:
-                'hereyougo',object:domains,urltotimer:urltimer})
+                'hereyougo',object:urls,urltotimer:urltimer})
               })
       
           
