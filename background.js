@@ -64,10 +64,11 @@ chrome.action.onClicked.addListener(()=>{
               width:300,
               height:300,
               left: 900, // Adjust the position to the bottom right
-              top: 70
-             
-          
-          })
+              top: 70},()=>{
+                chrome.runtime.sendMessage({action:
+                'hereyougo',object:domains,urltotimer:urltimer})
+              })
+      
           
         ;
         
@@ -163,7 +164,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       chrome.storage.local.set({urls:urls,timers:timers_url,
         urltotimer:urltimer,visitedDomain:visitedDomain,
         overwritten:timer_overwrite,
-         running:running_url,sites:currenttabId.url},()=>{
+         running:running_url,},()=>{
         console.log('Data stored in local storage.')
           })
           chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -221,7 +222,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   chrome.storage.local.set({urls:urls,timers:timers_url,
     urltotimer:urltimer,visitedDomain:visitedDomain,
     overwritten:timer_overwrite,
-     running:running_url,sites:currenttabId.url},()=>{
+     running:running_url},()=>{
     console.log('Data stored in local storage.')
       })
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
