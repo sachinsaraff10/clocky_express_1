@@ -280,7 +280,7 @@ let currenttabId;
 
 chrome.tabs.onActivated.addListener((activeInfo)=>{
   chrome.tabs.get(activeInfo.tabId, (tab) => {
-    if(tab.windowType==='normal'){
+    if(tab.WindowType==='normal'){
       if(window1){
         console.log('window should close');
       chrome.windows.remove(window1.id,()=>{
@@ -294,7 +294,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           
         // console.log(activeTabId);
         if(activeTabId===currenttabId)
-        {
+        {chrome.tabs.reload(currenttabId,{bypassCache:true});
           chrome.tabs.get(currenttabId,(currentTab)=>{
             console.log(currentTab.url);
             console.log(currentTab);
@@ -302,7 +302,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             console.log(currentdomain);
           for (let i=0;i<urls.length;i++){
         if (currentdomain.includes(urls[i])) {
-          chrome.tabs.reload(currenttabId,{bypassCache:true});
+          
           
                       releurl=urls[i]
                       console.log('yeahhh')
@@ -648,7 +648,7 @@ chrome.runtime.onMessage.addListener((message,sendResponse)=>{
 })
    
 chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
-        if ((changeInfo.url || changeInfo.status==='complete') && tab.windowType === 'normal'  ){
+        if ((changeInfo.url || changeInfo.status==='complete') && tab.WindowType === 'normal'  ){
           if(window1){
             chrome.windows.remove(window1.id,()=>{
 
