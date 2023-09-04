@@ -189,7 +189,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                               width: 100,
                               height: 100,
                               left: 950, // Adjust the position to the bottom right
-                              top: 520
+                              top: 520,
+                              focused:false
                             },
                             (window)=>{
                               window1=window;
@@ -247,7 +248,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                           width: 100,
                           height: 100,
                           left: 950, // Adjust the position to the bottom right
-                          top: 520
+                          top: 520,
+                          focused:false
                         },
                         (window)=>{
                           window1=window;
@@ -279,8 +281,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 let currenttabId;
 
 chrome.tabs.onActivated.addListener((activeInfo)=>{
-  chrome.tabs.get(activeInfo.tabId, (tab) => {
-    if(tab.WindowType==='normal'){
+  
       if(window1){
         console.log('window should close');
       chrome.windows.remove(window1.id,()=>{
@@ -325,7 +326,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                         width: 100,
                         height: 100,
                         left: 950, // Adjust the position to the bottom right
-                        top: 520
+                        top: 520,
+                        focused:false
                       },
                       (window)=>{
                         window1=window;
@@ -352,7 +354,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
               width: 100,
               height: 100,
               left: 950, // Adjust the position to the bottom right
-              top: 520
+              top: 520,
+              focused:false
             },
             (window)=>{
               window1=window;
@@ -374,7 +377,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                             width: 100,
                             height: 100,
                             left: 950, // Adjust the position to the bottom right
-                            top: 520
+                            top: 520,
+                            focused:false
                           },
                           (window)=>{
                             window1=window;
@@ -403,7 +407,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             width: 100,
             height: 100,
             left: 950, // Adjust the position to the bottom right
-            top: 520
+            top: 520,
+            focused:false
           },
           (window)=>{
             window1=window;
@@ -423,7 +428,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             width: 100,
             height: 100,
             left: 950, // Adjust the position to the bottom right
-            top: 520
+            top: 520,
+            focused:false
           },
           (window)=>{
             window1=window;
@@ -500,7 +506,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                         width: 100,
                         height: 100,
                         left: 950, // Adjust the position to the bottom right
-                        top: 520
+                        top: 520,
+                        focused:false
                       },
                       (window)=>{
                         window1=window;
@@ -527,7 +534,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
               width: 100,
               height: 100,
               left: 950, // Adjust the position to the bottom right
-              top: 520
+              top: 520,
+              focused:false
             },
             (window)=>{
               window1=window;
@@ -549,7 +557,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                             width: 100,
                             height: 100,
                             left: 950, // Adjust the position to the bottom right
-                            top: 520
+                            top: 520,
+                            focused:false
                           },
                           (window)=>{
                             window1=window;
@@ -578,7 +587,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             width: 100,
             height: 100,
             left: 950, // Adjust the position to the bottom right
-            top: 520
+            top: 520,
+            focused:false
           },
           (window)=>{
             window1=window;
@@ -598,7 +608,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             width: 100,
             height: 100,
             left: 950, // Adjust the position to the bottom right
-            top: 520
+            top: 520,
+            focused:false
           },
           (window)=>{
             window1=window;
@@ -634,8 +645,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
       }
     
     
-    }
-  })
+   
     
 } )
   
@@ -648,7 +658,7 @@ chrome.runtime.onMessage.addListener((message,sendResponse)=>{
 })
    
 chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
-        if ((changeInfo.url || changeInfo.status==='complete') && tab.WindowType === 'normal'  ){
+        if ((changeInfo.url || changeInfo.status==='complete')  ){
           if(window1){
             chrome.windows.remove(window1.id,()=>{
 
@@ -697,7 +707,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                               width: 100,
                               height: 100,
                               left: 950, // Adjust the position to the bottom right
-                              top: 520
+                              top: 520,
+                              focused:false
                             },
                             ()=>{
                               console.log('checking');
@@ -730,7 +741,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   width: 100,
                   height: 100,
                   left: 950, // Adjust the position to the bottom right
-                  top: 520
+                  top: 520,
+                  focused:false
                 },
                 (window)=>{
                   window1=window;
@@ -752,7 +764,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                           width: 100,
                           height: 100,
                           left: 950, // Adjust the position to the bottom right
-                          top: 520
+                          top: 520,
+                          focused:false
                         },
                         (window)=>{
                           window1=window;
@@ -786,7 +799,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                       width: 100,
                       height: 100,
                       left: 950, // Adjust the position to the bottom right
-                      top: 520
+                      top: 520,
+                      focused:false
                     },
                     (window)=>{
                       window1=window;
@@ -808,7 +822,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                 width: 100,
                 height: 100,
                 left: 950, // Adjust the position to the bottom right
-                top: 520
+                top: 520,
+                focused:false
               },
               (window)=>{
                 window1=window;
@@ -889,7 +904,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                             width: 100,
                             height: 100,
                             left: 950, // Adjust the position to the bottom right
-                            top: 520
+                            top: 520,
+                            focused:false
                           },
                           ()=>{
                             console.log('checking');
@@ -922,7 +938,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                 width: 100,
                 height: 100,
                 left: 950, // Adjust the position to the bottom right
-                top: 520
+                top: 520,
+                focused:false
               },
               (window)=>{
                 window1=window;
@@ -944,7 +961,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                         width: 100,
                         height: 100,
                         left: 950, // Adjust the position to the bottom right
-                        top: 520
+                        top: 520,
+                        focused:false
                       },
                       (window)=>{
                         window1=window;
@@ -978,7 +996,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                     width: 100,
                     height: 100,
                     left: 950, // Adjust the position to the bottom right
-                    top: 520
+                    top: 520,
+                    focused:false
                   },
                   (window)=>{
                     window1=window;
@@ -1000,7 +1019,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
               width: 100,
               height: 100,
               left: 950, // Adjust the position to the bottom right
-              top: 520
+              top: 520,
+              focused:false
             },
             (window)=>{
               window1=window;
