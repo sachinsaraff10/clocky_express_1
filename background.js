@@ -358,7 +358,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         {if(running_url.length>0)
           
           {running_timer=timer_overwrite[running_url[0]];
-           addtoarrayIfNotExists(visitedDomain,releurl);
+           addToArrayIfNotExists(visitedDomain,releurl);
             chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
             let pausedtimer=response.object;
             timer_overwrite[running_url[0]]=pausedtimer;
@@ -387,7 +387,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         })
             
         }else{
-          addtoarrayIfNotExists(visitedDomain,releurl)
+          addToArrayIfNotExists(visitedDomain,releurl)
           chrome.windows.create({
             url: 'timers.html',
             type: 'popup',
@@ -591,7 +591,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   
                 }
                 else{
-                  addtoarrayIfNotExists(visitedDomain,releurl);
+                  addToArrayIfNotExists(visitedDomain,releurl);
           console.log(timer_overwrite[releurl]);
           console.log(visitedDomain);
 
