@@ -418,7 +418,6 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           
           chrome.windows.remove(window1.id,()=>{
           chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
-            running_url=[];
             let pausedtimer=response.object;
             timer_overwrite[running_url[0]]=pausedtimer;
             running_url=[];
@@ -623,7 +622,6 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
 
                 chrome.windows.remove(window1.id,()=>{
                   chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
-                    running_url=[];
                     let pausedtimer=response.object;
                     timer_overwrite[running_url[0]]=pausedtimer;
                     running_url=[];
