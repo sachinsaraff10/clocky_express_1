@@ -358,13 +358,11 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         {if(running_url.length>0)
           
           {running_timer=timer_overwrite[running_url[0]];
-          
+           addtoarrayIfNotExists(visitedDomain,releurl);
             chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
             let pausedtimer=response.object;
             timer_overwrite[running_url[0]]=pausedtimer;
-            chrome.storage.local.set({overwritten:timer_overwrite})})          
-          addToArrayIfNotExists(visitedDomain,currentdomain);
-          
+            chrome.storage.local.set({overwritten:timer_overwrite})
             chrome.windows.remove(window1.id,
             ()=>{
               running_url=[];
@@ -386,10 +384,10 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
               })
         }
           )
-           
+        })
             
         }else{
-          addToArrayIfNotExists(visitedDomain,currentdomain)
+          addtoarrayIfNotExists(visitedDomain,releurl)
           chrome.windows.create({
             url: 'timers.html',
             type: 'popup',
@@ -560,12 +558,13 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                 if(running_url.length>0)
                   {running_timer=timer_overwrite[running_url[0]];
                     console.log(timer_overwrite);
+                    addToArrayIfNotExists(visitedDomain,releurl);
                     chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
                       let pausedtimer=response.object;
                       running_timer=pausedtimer;
                       // running_url=[];
                       chrome.storage.local.set({overwritten:timer_overwrite});
-                    })
+                    
           
                     chrome.windows.remove(window1.id,
                     ()=>{
@@ -588,10 +587,11 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                       })
                 }
                   )
+                })
                   
                 }
                 else{
-                  addToArrayIfNotExists(visitedDomain,currentdomain);
+                  addtoarrayIfNotExists(visitedDomain,releurl);
           console.log(timer_overwrite[releurl]);
           console.log(visitedDomain);
 
