@@ -15,10 +15,6 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             console.log(timerObject.hourinput);
             createTimer(timerObject);
             setTimer(timerObject);
-            if(timerObject.intervalId!==null)
-            {   console.log('goodtogo!!')
-                sendResponse({action:"good_to_go"})
-        }
         }
     })
          function createTimer(timer) {
@@ -35,88 +31,6 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             
         }
 
-        // function handleTimerClick(timer) {
-        //     let hours = Number(timer.hourInput.value);
-        //     let minutes = Number(timer.minuteInput.value);
-        //     let seconds = Number(timer.secondInput.value);
-
-        //     if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
-        //         console.log('Invalid, enter a number');
-        //         return;
-        //     }
-
-        //     if (minutes >= 60 || seconds >= 60) {
-        //         console.log('Invalid, enter number below 60');
-        //         return;
-        //     }
-
-        //     if (timer.button.textContent === 'Play') {
-        //         timer.button.textContent = 'Pause';
-        //         timer.hourInput.readOnly = true;
-        //         timer.minuteInput.readOnly = true;
-        //         timer.secondInput.readOnly = true;
-
-        //         timer.intervalId = setTimer(hours, minutes, seconds, timer)
-        //     } else {
-        //         timer.button.textContent = 'Play';
-        //         clearInterval(intervalId);
-        //         timer.hourInput.readOnly = false;
-        //         timer.minuteInput.readOnly = false;
-        //         timer.secondInput.readOnly = false;
-        //     }
-        // }
-        // function handletabstatus(timer) {
-        //     let hours = Number(timer.hourInput.value);
-        //     let minutes = Number(timer.minuteInput.value);
-        //     let seconds = Number(timer.secondInput.value);
-
-        //     if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
-        //         console.log('Invalid, enter a number');
-        //         return;
-        //     }
-
-        //     if (minutes >= 60 || seconds >= 60) {
-        //         console.log('Invalid, enter number below 60');
-        //         return;
-        //     }
-        //     chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab)=>{if (
-        //         !changeInfo.url
-        //     ){
-        //         timer.hourInput.readOnly = true;
-        //         timer.minuteInput.readOnly = true;
-        //         timer.secondInput.readOnly = true;
-
-        //         timer.intervalId = setTimer(timer);
-                
-        //     }else{
-        //         clearInterval(intervalId);
-        //         timer.hourInput.readOnly = true;
-        //         timer.minuteInput.readOnly = true;
-        //         timer.secondInput.readOnly = true;
-   
-        //     }
-
-        //     })}
-
-        // function pauser(timer){
-        //     clearInterval(timer.intervalId);
-
-        // }
-            // if (timer.button.textContent === 'Play') {
-            //     timer.button.textContent = 'Pause';
-                // timer.hourInput.readOnly = true;
-                // timer.minuteInput.readOnly = true;
-                // timer.secondInput.readOnly = true;
-
-                // timer.intervalId = setTimer(hours, minutes, seconds, timer)
-            // else {
-            //     timer.button.textContent = 'Play';
-            //     clearInterval(intervalId);
-            //     timer.hourInput.readOnly = false;
-            //     timer.minuteInput.readOnly = false;
-            //     timer.secondInput.readOnly = false;
-            // }
-        
 
 
         function setTimer(timer){
