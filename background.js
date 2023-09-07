@@ -67,8 +67,10 @@ chrome.action.onClicked.addListener(()=>{
       console.log("Active tab ID:", activeTabId);
     }
   ;
-chrome.tabs.executeScript(activeTabId,{file:'sites.js'})
-    if(urls.length>0)
+  chrome.scripting.executeScript({
+    target: {tabId:activeTabId, allFrames: true},
+    files: ['sites.js']
+ });    if(urls.length>0)
     {
         // chrome.storage.local.get(['sites'],
         //   (result)=>{
@@ -163,7 +165,6 @@ async function message_responsesender(message){
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL' && !urls.includes(message.url)) {
             
-          chrome.tabs.executeScript(currenttabId,{file:'timers.js'})
             let monitoredURL = message.url;
             console.log(monitoredURL);
       let sent_timer=message.timer;
@@ -189,8 +190,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               console.log(curr_domain);
                 for(let i=0;i<urls.length;i++){
                     if (curr_domain===urls[i]) { 
-                      
-                      chrome.tabs.executeScript(activeTabId,{file:'timers.js'})  
+                      chrome.scripting.executeScript({
+                        target: {tabId:tabId, allFrames: true},
+                        files: ['timers.js']
+                     })
                        addToArrayIfNotExists(visitedDomain,curr_domain);
                        chrome.storage.local.set({visitedDomain:visitedDomain
                         },
@@ -269,7 +272,10 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             console.log(currentdomain);
           for (let i=0;i<urls.length;i++){
         if (currentdomain.includes(urls[i])) {
-                    chrome.tabs.executeScript(activeTabId,{file:'timers.js'})
+          chrome.scripting.executeScript({
+            target: {tabId:activeTabId, allFrames: true},
+            files: ['timers.js']
+         })
                       releurl=urls[i]
                       console.log('yeahhh')
                       console.log('were here');
@@ -459,8 +465,10 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             for (let i=0;i<urls.length;i++)
             {
               if (currentdomain.includes(urls[i])){
-              
-              chrome.tabs.executeScript(tabId,{file:'timers.js'})
+                chrome.scripting.executeScript({
+                  target: {tabId:tabId, allFrames: true},
+                  files: ['timers.js']
+               })
               console.log(urls[i]);
               releurl=urls[i];
               console.log(visitedDomain);
