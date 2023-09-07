@@ -33,7 +33,7 @@ let urls=[];
         console.log(urls);
         timers_url = result.timers || {};
         urltimer = result.urltotimer || {};
-        visitedDomain = result.visitedDomain || [];
+        visitedDomain = [];
         running_url = [];
         timer_overwrite = result.overwritten || {};
       }
@@ -66,7 +66,8 @@ chrome.action.onClicked.addListener(()=>{
          activeTabId = tabs[0].id;
       console.log("Active tab ID:", activeTabId);
     }
-  });
+  ;
+chrome.tabs.executeScript(activeTabId,{file:'sites.js'})
     if(urls.length>0)
     {
         // chrome.storage.local.get(['sites'],
@@ -104,7 +105,7 @@ chrome.action.onClicked.addListener(()=>{
     
     });
     }
-  
+  })
  
   } );
 
@@ -161,7 +162,8 @@ async function message_responsesender(message){
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
     if (message.action === 'monitorURL' && !urls.includes(message.url)) {
-      
+            
+          chrome.tabs.executeScript(currenttabId,{file:'timers.js'})
             let monitoredURL = message.url;
             console.log(monitoredURL);
       let sent_timer=message.timer;
@@ -187,6 +189,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               console.log(curr_domain);
                 for(let i=0;i<urls.length;i++){
                     if (curr_domain===urls[i]) { 
+                      
+                      chrome.tabs.executeScript(activeTabId,{file:'timers.js'})  
                        addToArrayIfNotExists(visitedDomain,curr_domain);
                        chrome.storage.local.set({visitedDomain:visitedDomain
                         },
@@ -265,7 +269,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             console.log(currentdomain);
           for (let i=0;i<urls.length;i++){
         if (currentdomain.includes(urls[i])) {
-          //  chrome.tabs.reload(currenttabId,{bypassCache:true});
+                    chrome.tabs.executeScript(activeTabId,{file:'timers.js'})
                       releurl=urls[i]
                       console.log('yeahhh')
                       console.log('were here');
@@ -398,6 +402,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           },
           (window)=>{
             window1=window;
+            console.log(window1.id);
+            console.log(timer_overwrite);
             console.log('checking');
       running_url.push(releurl);
       
@@ -409,6 +415,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           
     else{
         if (running_url.length>0){
+          
+          chrome.tabs.executeScript(activeTabId,{file:'timers.js'})
           console.log('oh')
           console.log(running_url);
           
@@ -451,6 +459,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             for (let i=0;i<urls.length;i++)
             {
               if (currentdomain.includes(urls[i])){
+              
+              chrome.tabs.executeScript(tabId,{file:'timers.js'})
               console.log(urls[i]);
               releurl=urls[i];
               console.log(visitedDomain);
@@ -460,6 +470,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   if(releurl===running_url[0]){
                     chrome.runtime.sendMessage(
                       {action:'store_current_timer'},(response)=>{
+                      
                       let new_timer=response.object;
                       console.log('received')
                       timer_overwrite[releurl]=new_timer;
@@ -599,6 +610,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             running_url.push(releurl);
             
             chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
+              console.log(timer_overwrite);
               chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
                 })
           
@@ -607,6 +619,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
               }}
               else {
                 console.log(running_url);
+                console.log(window1.id);
                 if (running_url.length>0){
                 running_timer=timer_overwrite[running_url[0]];
 
