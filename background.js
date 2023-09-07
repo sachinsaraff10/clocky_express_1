@@ -192,7 +192,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     if (curr_domain===urls[i]) { 
                       chrome.scripting.executeScript({
                         target: {tabId:tabId, allFrames: true},
-                        files: ['timers.js']
+                        files: ['timers.js'],
                      })
                        addToArrayIfNotExists(visitedDomain,curr_domain);
                        chrome.storage.local.set({visitedDomain:visitedDomain
@@ -274,8 +274,10 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         if (currentdomain.includes(urls[i])) {
           chrome.scripting.executeScript({
             target: {tabId:activeTabId, allFrames: true},
-            files: ['timers.js']
-         })
+            files: ['timers.js'],
+         },()=>{
+          console.log('injected');
+         
                       releurl=urls[i]
                       console.log('yeahhh')
                       console.log('were here');
@@ -417,14 +419,16 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
           })
           }}
-    }
+        }) }
           
     else{
         if (running_url.length>0){
           
-          chrome.tabs.executeScript(activeTabId,{file:'timers.js'})
-          console.log('oh')
-          console.log(running_url);
+          chrome.scripting.executeScript({
+            target: {tabId:activeTabId, allFrames: true},
+            files: ['timers.js'],
+         },()=>{console.log('oh')
+       console.log(running_url);
           
           running_timer=timer_overwrite[running_url[0]];
           
@@ -433,8 +437,11 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             let pausedtimer=response.object;
             timer_overwrite[running_url[0]]=pausedtimer;
             running_url=[];
-            chrome.storage.local.set({overwritten:timer_overwrite})
-          })});
+            chrome.storage.local.set({overwritten:timer_overwrite});
+          })}); 
+        });
+          
+          
         
     
         } 
@@ -467,142 +474,59 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
               if (currentdomain.includes(urls[i])){
                 chrome.scripting.executeScript({
                   target: {tabId:tabId, allFrames: true},
-                  files: ['timers.js']
-               })
-              console.log(urls[i]);
-              releurl=urls[i];
-              console.log(visitedDomain);
-              console.log(running_url);
-              if(visitedDomain.includes(releurl)){
-                if(running_url.length>0){
-                  if(releurl===running_url[0]){
-                    chrome.runtime.sendMessage(
-                      {action:'store_current_timer'},(response)=>{
-                      
-                      let new_timer=response.object;
-                      console.log('received')
-                      timer_overwrite[releurl]=new_timer;
-                      chrome.windows.remove(window1.id,
-                        ()=>{running_url=[];
-                          chrome.windows.create({
-                            url: 'timers.html',
-                            type: 'popup',
-                            width: 100,
-                            height: 100,
-                            left: 950, // Adjust the position to the bottom right
-                            top: 520,
-                            focused:false
-                          },
-                          (window)=>{
-                            window1=window;
-                            console.log('checking');
-                      running_url.push(releurl);
-                      chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
-                      chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
-                          })
-
-                      })
+                  files: ['timers.js'],
+               },
+               ()=>{
+                console.log(urls[i]);
+                releurl=urls[i];
+                console.log(visitedDomain);
+                console.log(running_url);
+                if(visitedDomain.includes(releurl)){
+                  if(running_url.length>0){
+                    if(releurl===running_url[0]){
+                      chrome.runtime.sendMessage(
+                        {action:'store_current_timer'},(response)=>{
+                        
+                        let new_timer=response.object;
+                        console.log('received')
+                        timer_overwrite[releurl]=new_timer;
+                        chrome.windows.remove(window1.id,
+                          ()=>{running_url=[];
+                            chrome.windows.create({
+                              url: 'timers.html',
+                              type: 'popup',
+                              width: 100,
+                              height: 100,
+                              left: 950, // Adjust the position to the bottom right
+                              top: 520,
+                              focused:false
+                            },
+                            (window)=>{
+                              window1=window;
+                              console.log('checking');
+                        running_url.push(releurl);
+                        chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
+                        chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
+                            })
+  
+                        })
+                
               
+            })
             
-          })
-          
-                  }
-                  else{
-
-                     running_timer=timer_overwrite[running_url[0]];
-          chrome.runtime.sendMessage({action:'pausetimer',
-          object:running_timer},(response)=>{
-            let pausedtimer=response.object;
-            timer_overwrite[running_url[0]]=pausedtimer;
-            chrome.storage.local.set({overwritten:timer_overwrite})})
-          
-
-            chrome.windows.remove(window1.id,
-            ()=>{running_url=[]
-              chrome.windows.create({
-                url: 'timers.html',
-                type: 'popup',
-                width: 100,
-                height: 100,
-                left: 950, // Adjust the position to the bottom right
-                top: 520,
-                focused:false
-              },
-              (window)=>{
-                window1=window;
-                console.log('checking');
-          running_url.push(releurl);
-          chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
-            chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
-    })
-        }
-          )
-          
-          
-
-                  }
-                }else{
-                    
-                          chrome.windows.create({
-                            url: 'timers.html',
-                            type: 'popup',
-                            width: 100,
-                            height: 100,
-                            left: 950, // Adjust the position to the bottom right
-                            top: 520,
-                            focused:false
-                          },
-                          (window)=>{
-                            window1=window;
-                            console.log('checking');
-                      running_url.push(releurl);
-                      
-                      chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
-                        chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})})
-                }
-              }
-              else{
-                if(running_url.length>0)
-                  {running_timer=timer_overwrite[running_url[0]];
-                    console.log(timer_overwrite);
-                    addToArrayIfNotExists(visitedDomain,releurl);
-                    chrome.runtime.sendMessage({action:'pausetimer'},
-                    (response)=>{
-                      let pausedtimer=response.object;
-                      running_timer=pausedtimer;
-                      // running_url=[];
-                      chrome.storage.local.set({overwritten:timer_overwrite});
-                    
-          
-                    chrome.windows.remove(window1.id,
-                    ()=>{
-                      running_url=[];
-                      chrome.windows.create({
-                        url: 'timers.html',
-                        type: 'popup',
-                        width: 100,
-                        height: 100,
-                        left: 950, // Adjust the position to the bottom right
-                        top: 520,
-                        focused:false
-                      },
-                      (window)=>{
-                        window1=window;
-                        console.log('checking');
-                  running_url.push(releurl);
-                  chrome.storage.local.set({running:running_url,visitedDomain:visitedDomain})
-                  chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
-                      })
-                }
-                  )
-                })
-                  
-                }
-                else{
-                  addToArrayIfNotExists(visitedDomain,releurl);
-          console.log(timer_overwrite[releurl]);
-          console.log(visitedDomain);
-
+                    }
+                    else{
+  
+                       running_timer=timer_overwrite[running_url[0]];
+            chrome.runtime.sendMessage({action:'pausetimer',
+            object:running_timer},(response)=>{
+              let pausedtimer=response.object;
+              timer_overwrite[running_url[0]]=pausedtimer;
+              chrome.storage.local.set({overwritten:timer_overwrite})})
+            
+  
+              chrome.windows.remove(window1.id,
+              ()=>{running_url=[]
                 chrome.windows.create({
                   url: 'timers.html',
                   type: 'popup',
@@ -616,30 +540,118 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   window1=window;
                   console.log('checking');
             running_url.push(releurl);
-            
             chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
-              console.log(timer_overwrite);
               chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
-                })
-          
-              }
-                  
-              }}
+      })
+          }
+            )
+            
+            
+  
+                    }
+                  }else{
+                      
+                            chrome.windows.create({
+                              url: 'timers.html',
+                              type: 'popup',
+                              width: 100,
+                              height: 100,
+                              left: 950, // Adjust the position to the bottom right
+                              top: 520,
+                              focused:false
+                            },
+                            (window)=>{
+                              window1=window;
+                              console.log('checking');
+                        running_url.push(releurl);
+                        
+                        chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
+                          chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})})
+                  }
+                }
+                else{
+                  if(running_url.length>0)
+                    {running_timer=timer_overwrite[running_url[0]];
+                      console.log(timer_overwrite);
+                      addToArrayIfNotExists(visitedDomain,releurl);
+                      chrome.runtime.sendMessage({action:'pausetimer'},
+                      (response)=>{
+                        let pausedtimer=response.object;
+                        running_timer=pausedtimer;
+                        // running_url=[];
+                        chrome.storage.local.set({overwritten:timer_overwrite});
+                      
+            
+                      chrome.windows.remove(window1.id,
+                      ()=>{
+                        running_url=[];
+                        chrome.windows.create({
+                          url: 'timers.html',
+                          type: 'popup',
+                          width: 100,
+                          height: 100,
+                          left: 950, // Adjust the position to the bottom right
+                          top: 520,
+                          focused:false
+                        },
+                        (window)=>{
+                          window1=window;
+                          console.log('checking');
+                    running_url.push(releurl);
+                    chrome.storage.local.set({running:running_url,visitedDomain:visitedDomain})
+                    chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
+                        })
+                  }
+                    )
+                  })
+                    
+                  }
+                  else{
+                    addToArrayIfNotExists(visitedDomain,releurl);
+            console.log(timer_overwrite[releurl]);
+            console.log(visitedDomain);
+  
+                  chrome.windows.create({
+                    url: 'timers.html',
+                    type: 'popup',
+                    width: 100,
+                    height: 100,
+                    left: 950, // Adjust the position to the bottom right
+                    top: 520,
+                    focused:false
+                  },
+                  (window)=>{
+                    window1=window;
+                    console.log('checking');
+              running_url.push(releurl);
+              
+              chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
+                console.log(timer_overwrite);
+                chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
+                  })
+            
+                }
+                    
+                }
+               })
+              
+            }
               else {
                 console.log(running_url);
                 console.log(window1.id);
                 if (running_url.length>0){
                 running_timer=timer_overwrite[running_url[0]];
-
-                chrome.windows.remove(window1.id,()=>{
+                chrome.scripting.executeScript({
+                  target: {tabId:activeTabId, allFrames: true},
+                  files: ['timers.js'],
+               },()=>{chrome.windows.remove(window1.id,()=>{
                   chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
                     let pausedtimer=response.object;
                     timer_overwrite[running_url[0]]=pausedtimer;
                     running_url=[];
                     chrome.storage.local.set({overwritten:timer_overwrite})
                   })})
-              
-      
+             })
               }
             }
             }}
