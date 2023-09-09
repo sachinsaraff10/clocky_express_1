@@ -190,10 +190,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               console.log(curr_domain);
                 for(let i=0;i<urls.length;i++){
                     if (curr_domain===urls[i]) { 
-                      chrome.scripting.executeScript({
-                        target: {tabId:tabId, allFrames: true,},
-                        files: ['timers.js'],
-                     })
+                      
                        addToArrayIfNotExists(visitedDomain,curr_domain);
                        chrome.storage.local.set({visitedDomain:visitedDomain
                         },
@@ -235,8 +232,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                                 console.log('checking');
                           running_url.push(releurl);
                           chrome.storage.local.set({running:running_url})
+                          chrome.scripting.executeScript({
+                            target: {tabId:tabId, allFrames: true,},
+                            files: ['timers.js'],
+                         },
+                         ()=>{
                           chrome.runtime.sendMessage({action:'launch_now',
                           object:timer_overwrite[releurl]})
+                         })
                               })
 
                             }
@@ -271,13 +274,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             let currentdomain=new URL(currentTab.url).hostname;
             console.log(currentdomain);
           for (let i=0;i<urls.length;i++){
-        if (currentdomain.includes(urls[i])) {
-          chrome.scripting.executeScript({
-            target: {tabId:activeTabId, allFrames: true,},
-            files: ['timers.js'],
-         },()=>{
-          console.log('injected');
-         
+        if (currentdomain.includes(urls[i]))  {
                       releurl=urls[i]
                       console.log('yeahhh')
                       console.log('were here');
@@ -306,12 +303,17 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                           },
                           (window)=>{
                             window1=window;
+                            chrome.scripting.executeScript({
+                              target: {tabId:activeTabId, allFrames: true,},
+                              files: ['timers.js'],
+                           },()=>{
                             console.log('checking');
                       running_url.push(releurl);
                       chrome.storage.local.set({running:running_url,
                         visitedDomain:visitedDomain})
                       chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
-                          })
+                       })
+                               })
                     }
                       )
                       
@@ -339,10 +341,17 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             },
             (window)=>{
               window1=window;
+              chrome.scripting.executeScript({
+                target: {tabId:activeTabId, allFrames: true,},
+                files: ['timers.js'],
+             },()=>{
               console.log('checking');
         running_url.push(releurl);
-      chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
-          chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})})
+        chrome.storage.local.set({running:running_url,
+          visitedDomain:visitedDomain})
+        chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
+         })}
+          )
         }
           )})})
         
@@ -360,11 +369,17 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                           },
                           (window)=>{
                             window1=window;
+                            chrome.scripting.executeScript({
+                              target: {tabId:activeTabId, allFrames: true,},
+                              files: ['timers.js'],
+                           },()=>{
                             console.log('checking');
                       running_url.push(releurl);
-                      chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
-                        chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
-                          })
+                      chrome.storage.local.set({running:running_url,
+                        visitedDomain:visitedDomain})
+                      chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
+                       }) }
+                          )
                         }
                     
         }  else
@@ -390,11 +405,16 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
               },
               (window)=>{
                 window1=window;
+                chrome.scripting.executeScript({
+                  target: {tabId:activeTabId, allFrames: true,},
+                  files: ['timers.js'],
+               },()=>{
                 console.log('checking');
           running_url.push(releurl);
-          chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
-            chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
-              })
+          chrome.storage.local.set({running:running_url,
+            visitedDomain:visitedDomain})
+          chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
+           })})
         }
           )
         })
@@ -413,15 +433,19 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           (window)=>{
             window1=window;
             console.log(window1.id);
-            console.log(timer_overwrite);
+            chrome.scripting.executeScript({
+              target: {tabId:activeTabId, allFrames: true,},
+              files: ['timers.js'],
+           },()=>{
             console.log('checking');
       running_url.push(releurl);
-      
-      chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
-        chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
-          })
+      chrome.storage.local.set({running:running_url,
+        visitedDomain:visitedDomain})
+      chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
+       }) }
+          )
           }}
-        }) }
+         }
           
     else{
         if (running_url.length>0){
@@ -433,19 +457,18 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
        console.log(running_url);
           
           running_timer=timer_overwrite[running_url[0]];
-          
-          chrome.windows.remove(window1.id,()=>{
           chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
             let pausedtimer=response.object;
             timer_overwrite[running_url[0]]=pausedtimer;
             running_url=[];
-            chrome.storage.local.set({overwritten:timer_overwrite});
-          })}); 
+            chrome.storage.local.set({overwritten:timer_overwrite, running:running_url},()=>{
+            })
+            chrome.windows.remove(window1.id);
+          })
+        ; 
         });
           
           
-        
-    
         } 
     } 
           }  }
@@ -474,11 +497,6 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             for (let i=0;i<urls.length;i++)
             {
               if (currentdomain.includes(urls[i])){
-                chrome.scripting.executeScript({
-                  target: {tabId:tabId, allFrames: true,},
-                  files: ['timers.js'],
-               },
-               ()=>{
                 console.log(urls[i]);
                 releurl=urls[i];
                 console.log(visitedDomain);
@@ -505,10 +523,16 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                             },
                             (window)=>{
                               window1=window;
+                              chrome.scripting.executeScript({
+                                target: {tabId:activeTabId, allFrames: true,},
+                                files: ['timers.js'],
+                             },()=>{
                               console.log('checking');
                         running_url.push(releurl);
-                        chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
-                        chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
+                        chrome.storage.local.set({running:running_url,
+                          visitedDomain:visitedDomain})
+                        chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
+                         })
                             })
   
                         })
@@ -540,16 +564,19 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                 },
                 (window)=>{
                   window1=window;
+                  chrome.scripting.executeScript({
+                    target: {tabId:activeTabId, allFrames: true,},
+                    files: ['timers.js'],
+                 },()=>{
                   console.log('checking');
             running_url.push(releurl);
-            chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
-              chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
+            chrome.storage.local.set({running:running_url,
+              visitedDomain:visitedDomain})
+            chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
+             })
       })
           }
             )
-            
-            
-  
                     }
                   }else{
                       
@@ -564,11 +591,17 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                             },
                             (window)=>{
                               window1=window;
+                              chrome.scripting.executeScript({
+                                target: {tabId:activeTabId, allFrames: true,},
+                                files: ['timers.js'],
+                             },()=>{
                               console.log('checking');
                         running_url.push(releurl);
-                        
-                        chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
-                          chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})})
+                        chrome.storage.local.set({running:running_url,
+                          visitedDomain:visitedDomain})
+                        chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
+                         })
+                        })
                   }
                 }
                 else{
@@ -598,11 +631,16 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                         },
                         (window)=>{
                           window1=window;
+                          chrome.scripting.executeScript({
+                            target: {tabId:activeTabId, allFrames: true,},
+                            files: ['timers.js'],
+                         },()=>{
                           console.log('checking');
                     running_url.push(releurl);
-                    chrome.storage.local.set({running:running_url,visitedDomain:visitedDomain})
+                    chrome.storage.local.set({running:running_url,
+                      visitedDomain:visitedDomain})
                     chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
-                        })
+                     }) })
                   }
                     )
                   })
@@ -624,18 +662,20 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   },
                   (window)=>{
                     window1=window;
+                    chrome.scripting.executeScript({
+                      target: {tabId:activeTabId, allFrames: true,},
+                      files: ['timers.js'],
+                   },()=>{
                     console.log('checking');
               running_url.push(releurl);
-              
-              chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
-                console.log(timer_overwrite);
-                chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})})
-                  })
+              chrome.storage.local.set({running:running_url,
+                visitedDomain:visitedDomain})
+              chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
+               })})
             
                 }
                     
                 }
-               })
               
             }
               else {
@@ -646,14 +686,19 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                 chrome.scripting.executeScript({
                   target: {tabId:activeTabId, allFrames: true,},
                   files: ['timers.js'],
-               },()=>{chrome.windows.remove(window1.id,()=>{
-                  chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
-                    let pausedtimer=response.object;
-                    timer_overwrite[running_url[0]]=pausedtimer;
-                    running_url=[];
-                    chrome.storage.local.set({overwritten:timer_overwrite})
-                  })})
-             })
+               },()=>{console.log('oh')
+             console.log(running_url);
+                running_timer=timer_overwrite[running_url[0]];
+                chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
+                  let pausedtimer=response.object;
+                  timer_overwrite[running_url[0]]=pausedtimer;
+                  running_url=[];
+                  chrome.storage.local.set({overwritten:timer_overwrite, running:running_url},()=>{
+                  })
+                  chrome.windows.remove(window1.id);
+                })
+              ; 
+              })
               }
             }
             }}
