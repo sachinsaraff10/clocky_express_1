@@ -67,10 +67,7 @@ chrome.action.onClicked.addListener(()=>{
       console.log("Active tab ID:", activeTabId);
     }
   ;
-  chrome.scripting.executeScript({
-    target: {tabId:activeTabId, allFrames: true,},
-    files: ['sites.js']
- });    if(urls.length>0)
+  ;    if(urls.length>0)
     {
         // chrome.storage.local.get(['sites'],
         //   (result)=>{
@@ -82,8 +79,14 @@ chrome.action.onClicked.addListener(()=>{
               height:300,
               left: 900, // Adjust the position to the bottom right
               top: 70},()=>{
-                chrome.runtime.sendMessage({action:
+                chrome.scripting.executeScript({
+                  target: {tabId:activeTabId, allFrames: true,},
+                  files: ['sites.js']
+               },
+               ()=>{
+                  chrome.runtime.sendMessage({action:
                 'hereyougo',object:urls,urltotimer:urltimer})
+              })
               })
       
           
