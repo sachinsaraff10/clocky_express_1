@@ -68,7 +68,7 @@ chrome.action.onClicked.addListener(()=>{
     }
   ;
   chrome.scripting.executeScript({
-    target: {tabId:activeTabId, allFrames: true},
+    target: {tabId:activeTabId, allFrames: true,},
     files: ['sites.js']
  });    if(urls.length>0)
     {
@@ -191,7 +191,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 for(let i=0;i<urls.length;i++){
                     if (curr_domain===urls[i]) { 
                       chrome.scripting.executeScript({
-                        target: {tabId:tabId, allFrames: true},
+                        target: {tabId:tabId, allFrames: true,},
                         files: ['timers.js'],
                      })
                        addToArrayIfNotExists(visitedDomain,curr_domain);
@@ -273,7 +273,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           for (let i=0;i<urls.length;i++){
         if (currentdomain.includes(urls[i])) {
           chrome.scripting.executeScript({
-            target: {tabId:activeTabId, allFrames: true},
+            target: {tabId:activeTabId, allFrames: true,},
             files: ['timers.js'],
          },()=>{
           console.log('injected');
@@ -288,11 +288,13 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                               {action:'store_current_timer'},(response)=>{
                               let new_timer=response.object;
                               timer_overwrite[releurl]=new_timer;
+                              console.log('currently here')
                               chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
                       // let popupURL=`timers.html`;
                       
                         chrome.windows.remove(window1.id,
                         ()=>{running_url=[];
+                          console.log('removed')
                           chrome.windows.create({
                             url: 'timers.html',
                             type: 'popup',
@@ -425,7 +427,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         if (running_url.length>0){
           
           chrome.scripting.executeScript({
-            target: {tabId:activeTabId, allFrames: true},
+            target: {tabId:activeTabId, allFrames: true,},
             files: ['timers.js'],
          },()=>{console.log('oh')
        console.log(running_url);
@@ -473,7 +475,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
             {
               if (currentdomain.includes(urls[i])){
                 chrome.scripting.executeScript({
-                  target: {tabId:tabId, allFrames: true},
+                  target: {tabId:tabId, allFrames: true,},
                   files: ['timers.js'],
                },
                ()=>{
@@ -642,7 +644,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                 if (running_url.length>0){
                 running_timer=timer_overwrite[running_url[0]];
                 chrome.scripting.executeScript({
-                  target: {tabId:activeTabId, allFrames: true},
+                  target: {tabId:activeTabId, allFrames: true,},
                   files: ['timers.js'],
                },()=>{chrome.windows.remove(window1.id,()=>{
                   chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{

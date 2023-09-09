@@ -9,14 +9,14 @@
     "tabs",
     "activeTab",
     "storage",
+    "windows",
     "scripting"
 
     
   ],
 
   "host_permissions":[
-    "https://*/*",  
-    "http://*/*"
+    "<all_urls>"
   ],
 
     
