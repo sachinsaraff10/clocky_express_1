@@ -209,8 +209,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                                 width: 100,
                                 height: 100,
                                 left: 950, // Adjust the position to the bottom right
-                                top: 520,
-                                focused:false
+                                top: 520
                               },
                               (window)=>{
                                 window1=window;
@@ -227,8 +226,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                                 width: 100,
                                 height: 100,
                                 left: 950, // Adjust the position to the bottom right
-                                top: 520,
-                                focused:false
+                                top: 520
                               },
                               (window)=>{
                                 window1=window;
@@ -236,7 +234,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                           running_url.push(releurl);
                           chrome.storage.local.set({running:running_url})
                           chrome.scripting.executeScript({
-                            target: {tabId:tabId, allFrames: true,},
+                            target: {tabId:window1.tabs[0].id, allFrames: true,},
                             files: ['timers.js'],
                          },
                          ()=>{
@@ -301,13 +299,12 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                             width: 100,
                             height: 100,
                             left: 950, // Adjust the position to the bottom right
-                            top: 520,
-                            focused:false
+                            top: 520
                           },
                           (window)=>{
                             window1=window;
                             chrome.scripting.executeScript({
-                              target: {tabId:activeTabId, allFrames: true,},
+                              target: {tabId:window1.tabs[0].id, allFrames: true,},
                               files: ['timers.js'],
                            },()=>{
                             console.log('checking');
@@ -339,13 +336,12 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
               width: 100,
               height: 100,
               left: 950, // Adjust the position to the bottom right
-              top: 520,
-              focused:false
+              top: 520
             },
             (window)=>{
               window1=window;
               chrome.scripting.executeScript({
-                target: {tabId:activeTabId, allFrames: true,},
+                target: {tabId:window1.tabs[0].id, allFrames: true,},
                 files: ['timers.js'],
              },()=>{
               console.log('checking');
@@ -367,13 +363,12 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                             width: 100,
                             height: 100,
                             left: 950, // Adjust the position to the bottom right
-                            top: 520,
-                            focused:false
+                            top: 520
                           },
                           (window)=>{
                             window1=window;
                             chrome.scripting.executeScript({
-                              target: {tabId:activeTabId, allFrames: true,},
+                              target: {tabId:window1.tabs[0].id, allFrames: true,},
                               files: ['timers.js'],
                            },()=>{
                             console.log('checking');
@@ -403,13 +398,12 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                 width: 100,
                 height: 100,
                 left: 950, // Adjust the position to the bottom right
-                top: 520,
-                focused:false
+                top: 520
               },
               (window)=>{
                 window1=window;
                 chrome.scripting.executeScript({
-                  target: {tabId:activeTabId, allFrames: true,},
+                  target: {tabId:window1.tabs[0].id, allFrames: true,},
                   files: ['timers.js'],
                },()=>{
                 console.log('checking');
@@ -430,14 +424,13 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
             width: 100,
             height: 100,
             left: 950, // Adjust the position to the bottom right
-            top: 520,
-            focused:false
+            top: 520
           },
           (window)=>{
             window1=window;
             console.log(window1.id);
             chrome.scripting.executeScript({
-              target: {tabId:activeTabId, allFrames: true,},
+              target: {tabId:window1.tabs[0].id, allFrames: true,},
               files: ['timers.js'],
            },()=>{
             console.log('checking');
@@ -454,7 +447,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
         if (running_url.length>0){
           
           chrome.scripting.executeScript({
-            target: {tabId:activeTabId, allFrames: true,},
+            target: {tabId:window1.tabs[0].id, allFrames: true,},
             files: ['timers.js'],
          },()=>{console.log('oh')
        console.log(running_url);
@@ -484,7 +477,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
   
 
 chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
-        if ((changeInfo.status==='complete' && tabId===activeTabId)  )
+        if ((changeInfo.status==='complete')  )
         {   const taburl=tab.url;
             console.log(activeTabId);
             let currentdomain=new URL(taburl).hostname;
@@ -521,13 +514,12 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                               width: 100,
                               height: 100,
                               left: 950, // Adjust the position to the bottom right
-                              top: 520,
-                              focused:false
+                              top: 520
                             },
                             (window)=>{
                               window1=window;
                               chrome.scripting.executeScript({
-                                target: {tabId:activeTabId, allFrames: true,},
+                                target: {tabId:window1.tabs[0].id, allFrames: true,},
                                 files: ['timers.js'],
                              },()=>{
                               console.log('checking');
@@ -562,13 +554,12 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   width: 100,
                   height: 100,
                   left: 950, // Adjust the position to the bottom right
-                  top: 520,
-                  focused:false
+                  top: 520
                 },
                 (window)=>{
                   window1=window;
                   chrome.scripting.executeScript({
-                    target: {tabId:activeTabId, allFrames: true,},
+                    target: {tabId:window1.tabs[0].id, allFrames: true,},
                     files: ['timers.js'],
                  },()=>{
                   console.log('checking');
@@ -589,13 +580,12 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                               width: 100,
                               height: 100,
                               left: 950, // Adjust the position to the bottom right
-                              top: 520,
-                              focused:false
+                              top: 520
                             },
                             (window)=>{
                               window1=window;
                               chrome.scripting.executeScript({
-                                target: {tabId:activeTabId, allFrames: true,},
+                                target: {tabId:window1.tabs[0].id, allFrames: true,},
                                 files: ['timers.js'],
                              },()=>{
                               console.log('checking');
@@ -629,13 +619,12 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                           width: 100,
                           height: 100,
                           left: 950, // Adjust the position to the bottom right
-                          top: 520,
-                          focused:false
+                          top: 520
                         },
                         (window)=>{
                           window1=window;
                           chrome.scripting.executeScript({
-                            target: {tabId:activeTabId, allFrames: true,},
+                            target: {tabId:window1.tabs[0].id, allFrames: true,},
                             files: ['timers.js'],
                          },()=>{
                           console.log('checking');
@@ -660,13 +649,12 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                     width: 100,
                     height: 100,
                     left: 950, // Adjust the position to the bottom right
-                    top: 520,
-                    focused:false
+                    top: 520
                   },
                   (window)=>{
                     window1=window;
                     chrome.scripting.executeScript({
-                      target: {tabId:activeTabId, allFrames: true,},
+                      target: {tabId:window1.tabs[0].id, allFrames: true,},
                       files: ['timers.js'],
                    },()=>{
                     console.log('checking');
@@ -687,7 +675,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                 if (running_url.length>0){
                 running_timer=timer_overwrite[running_url[0]];
                 chrome.scripting.executeScript({
-                  target: {tabId:activeTabId, allFrames: true,},
+                  target: {tabId:window1.tabs[0].id, allFrames: true,},
                   files: ['timers.js'],
                },()=>{console.log('oh')
              console.log(running_url);
