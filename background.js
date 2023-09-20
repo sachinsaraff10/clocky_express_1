@@ -9,7 +9,9 @@ let urls=[];
   let testset=new Set();
   let activeTaburl;
   let releurl;
+  let pausedtimer;
   let window1;
+  let new_timer;
   chrome.runtime.onInstalled.addListener((details) => {
     console.log('Extension installed or updated!');
     if(details.reason==='install')
@@ -78,9 +80,10 @@ chrome.action.onClicked.addListener(()=>{
               width:300,
               height:300,
               left: 900, // Adjust the position to the bottom right
-              top: 70},()=>{
+              top: 70},(window)=>{
+                window1=window;
                 chrome.scripting.executeScript({
-                  target: {tabId:activeTabId, allFrames: true,},
+                  target: {tabId:window1.tabs[0].id, allFrames: true,},
                   files: ['sites.js']
                },
                ()=>{
@@ -284,7 +287,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                           if(running_url[0]===releurl){
                             chrome.runtime.sendMessage(
                               {action:'store_current_timer'},(response)=>{
-                              let new_timer=response.object;
+                              new_timer=response.object;
+                              console.log(new_timer)
                               timer_overwrite[releurl]=new_timer;
                               console.log('currently here')
                               chrome.storage.local.set({overwritten:timer_overwrite,running:running_url},()=>{
@@ -304,7 +308,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                           (window)=>{
                             window1=window;
                             chrome.scripting.executeScript({
-                              target: {tabId:window1.tabs[0].id, allFrames: true,},
+                              target: {tabId:window1.tabs[0].id, allFrames: true},
                               files: ['timers.js'],
                            },()=>{
                             console.log('checking');
@@ -324,7 +328,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                           else{
                              running_timer=timer_overwrite[running_url[0]];
             chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
-            let pausedtimer=response.object;
+            pausedtimer=response.object;
             running_timer=pausedtimer;
             chrome.storage.local.set({overwritten:timer_overwrite},()=>{
           
@@ -386,7 +390,7 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           {running_timer=timer_overwrite[running_url[0]];
            addToArrayIfNotExists(visitedDomain,releurl);
             chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
-            let pausedtimer=response.object;
+            pausedtimer=response.object;
             timer_overwrite[running_url[0]]=pausedtimer;
             chrome.storage.local.set({overwritten:timer_overwrite})
             chrome.windows.remove(window1.id,
@@ -454,13 +458,13 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
           
           running_timer=timer_overwrite[running_url[0]];
           chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
-            let pausedtimer=response.object;
+            pausedtimer=response.object;
             timer_overwrite[running_url[0]]=pausedtimer;
-            running_url=[];
+            console.log('check');
             chrome.storage.local.set({overwritten:timer_overwrite, running:running_url},()=>{
             })
             chrome.windows.remove(window1.id);
-          })
+         running_url=[]; })
         ; 
         });
           
@@ -503,7 +507,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                       chrome.runtime.sendMessage(
                         {action:'store_current_timer'},(response)=>{
                         
-                        let new_timer=response.object;
+                        new_timer=response.object;
                         console.log('received')
                         timer_overwrite[releurl]=new_timer;
                         chrome.windows.remove(window1.id,
@@ -541,7 +545,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                        running_timer=timer_overwrite[running_url[0]];
             chrome.runtime.sendMessage({action:'pausetimer',
             object:running_timer},(response)=>{
-              let pausedtimer=response.object;
+              pausedtimer=response.object;
               timer_overwrite[running_url[0]]=pausedtimer;
               chrome.storage.local.set({overwritten:timer_overwrite})})
             
@@ -604,7 +608,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                       addToArrayIfNotExists(visitedDomain,releurl);
                       chrome.runtime.sendMessage({action:'pausetimer'},
                       (response)=>{
-                        let pausedtimer=response.object;
+                        pausedtimer=response.object;
                         running_timer=pausedtimer;
                         // running_url=[];
                         chrome.storage.local.set({overwritten:timer_overwrite});
@@ -681,7 +685,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
              console.log(running_url);
                 running_timer=timer_overwrite[running_url[0]];
                 chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
-                  let pausedtimer=response.object;
+                  pausedtimer=response.object;
                   timer_overwrite[running_url[0]]=pausedtimer;
                   running_url=[];
                   chrome.storage.local.set({overwritten:timer_overwrite, running:running_url},()=>{

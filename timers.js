@@ -55,18 +55,19 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
     chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>
     {
         if(message.action==='store_current_timer'){
+            console.log('on it');
             chrome.storage.local.set({updatedtimer:timer},()=>{
-                sendResponse({action:'returned_timer',object:timer})
-            })
+                sendResponse({object:timer})
+            })}
 
         
         if(message.action==='pausetimer'){
-            
+            console.log('on it boss');
             clearInterval(timer.intervalId)
             chrome.storage.local.set({pausedtimer:timer},()=>{
-                sendResponse({action:'returned_timer',object:timer})
+                sendResponse({object:timer})
             })
-    } }})
+    } })
     
 // chrome.runtime.sendMessage({action:'live_timer',object:timer})
     totalSeconds--;
