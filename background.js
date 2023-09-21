@@ -12,6 +12,7 @@ let urls=[];
   let pausedtimer;
   let window1;
   let new_timer;
+  let response;
   chrome.runtime.onInstalled.addListener((details) => {
     console.log('Extension installed or updated!');
     if(details.reason==='install')
@@ -160,9 +161,9 @@ chrome.runtime.sendMessage({action:'setting_over'});
 
 async function message_responsesender(message){
   return new Promise((resolve)=>{
-    chrome.runtime.sendMessage(message,(response)=>
-    {
-      resolve(response)
+    chrome.runtime.sendMessage(message,(resp)=>
+    { response=resp;
+      resolve(response);
     })
   })
 }
