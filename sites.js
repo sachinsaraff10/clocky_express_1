@@ -39,12 +39,10 @@ if(message.action==='hereyougo'){
   sendResponse({action:'all_done'})
   
 }})
- 
+ //inpp is an input field
   let inpp=document.getElementById('urlId');
-     // inpp.type='text';
+     
      inpp.placeholder='www.example.com';
-     // inpp.id='urlID';
-     // dbox.appendChild(inpp);
       const okbtn=document.getElementById('okbutton');
      // okbtn.textContent="okay";
      
@@ -55,22 +53,17 @@ if(message.action==='hereyougo'){
           okbtn.disabled = lst.includes(urlInput);
         } else {
           okbtn.disabled = true;
-        }})
+        }}) 
         
-      // });
-      // const cancelbtn=document.createElement('button');
-     // cancelbtn.textContent=`cancel`;
-      // cancelbtn.addEventListener('click',()=>{disappear(dbox)});
-     // dbox.appendChild(okbtn);
-     // dbox.appendChild(cancelbtn);
-      
+      //okbtn is a button
       okbtn.addEventListener('click',()=>{setok(okbtn,inpp,container3);
         
         let url=inpp.value; 
         console.log(url);       
-        chrome.storage.local.set({url:url})});
-      function setok(button,input,div){
-        // const listcontainer=document.getElementById('listcontainer');
+        chrome.storage.local.set({url:url})
+      });
+     
+        function setok(button,input,div){
     const label=document.createElement('label');
     const radiocontainer=document.createElement('div');
     const maincontainer=document.createElement('div');
@@ -113,12 +106,14 @@ if(message.action==='hereyougo'){
         const selectedText = radiocontainer.querySelector('input:checked + label').textContent;
     lst = lst.filter((item) => item !== selectedText);
         maincontainer.remove();
-      }})
+      }
+    })
   let timercontainer=addtimer();
   maincontainer.appendChild(radiocontainer);
   maincontainer.appendChild(timercontainer);
    div.appendChild(maincontainer);     
       }
+      
       function presetok(input,div,timer){
         const label=document.createElement('label');
         const radiocontainer=document.createElement('div');
@@ -218,21 +213,10 @@ if(message.action==='hereyougo'){
             timerDiv.appendChild(minuteInput);
             timerDiv.appendChild(document.createTextNode(':'));
             timerDiv.appendChild(secondInput);
-            // timerContainer.appendChild(timerDiv);
             timerDiv.appendChild(okayButton);
-            
-            // function handlesettimer(message, sender, sendResponse)
-            // {
-            //   if (message.action==="set-timer"){
-            //     let url=message.url;
-            //     console.log(url);
-            //     chrome.storage.local.set({url:url})
-            //     // chrome.runtime.onMessage.removeListener(handlesettimer); 
-            //   }}
-            // chrome.runtime.onMessage.addListener(handlesettimer);
             okayButton.addEventListener('click',
                 ()=>{
-                  let timer = {
+                  let  timer = {
                 
                     hourinput: hourInput.value,
                     minuteinput: minuteInput.value,

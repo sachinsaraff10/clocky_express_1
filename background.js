@@ -12,12 +12,67 @@ let urls=[];
   let pausedtimer;
   let window1;
   let new_timer;
+
+let ws;
+
+function initializeWebSocket() {
+  ws = new WebSocket('ws://localhost:8081');
+
+  ws.onopen = () => {
+    console.log('WebSocket connection opened');
+  };
+
+  ws.onmessage = (event) => {
+    console.log('Message received:', event.data);
+    // Handle incoming messages
+  };
+
+  ws.onclose = () => {
+    console.log('WebSocket connection closed');
+    // Optionally, try to reconnect or handle the close event
+  };
+
+  ws.onerror = (error) => {
+    console.error('WebSocket error:', error);
+    // Handle error
+  };
+}
+
+initializeWebSocket();
+
+  function getUsername() {
+    // Retrieve the username from localStorage
+    const username = window.localStorage.getItem('username');
+    
+    if (!username) {
+      console.error('No username found in localStorage');
+      return null;
+    }
   
+    console.log('Username:', username);
+    return username;
+  }
+
+  // Function to send the username over WebSocket
+function sendUsername() {
+  const username = getUsername();
+  if (username && ws.readyState === WebSocket.OPEN) {
+    const message = { type: 'username', username: username };
+    ws.send(JSON.stringify(message));
+    console.log('Username sent:', username);
+  } else {
+    console.error('WebSocket is not open or username is not available');
+  }
+}
+
   chrome.runtime.onInstalled.addListener((details) => {
     console.log('Extension installed or updated!');
     if(details.reason==='install')
-    {chrome.storage.local.get(
-      ['urls', 'overwritten', 'visitedDomain', 'running', 'timers', 'urltotimer'],
+    {
+      
+      chrome.storage.local.get(
+      ['urls', 'overwritten', 'visitedDomain', 'running', 
+      'timers', 'urltotimer'],
       (result) => {
         urls = result.urls || [];
         console.log(urls);
@@ -42,6 +97,28 @@ let urls=[];
       }
     )}
   });
+
+ 
+  
+  ws.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    if (message.type === 'profileUpdate') {
+      console.log('Profile update received:', message.websites);
+      JSON.parse(message.websites);
+
+      // Update the extension UI or take necessary actions
+    }
+  };
+  
+ 
+  chrome.action.onClicked.addListener(() => {
+    if (ws.readyState === WebSocket.OPEN) {
+      sendUsername();
+    } else {
+      console.error('WebSocket is not open');
+    }
+  });
+  
 console.log('initialized');
 // console.log(urls.length);
 // initializes arrays that contain domains and timers sent from settings popup
@@ -257,6 +334,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               
         }     })
           }
+        if(message.action==='timesup'){
+          chrome.windows.remove(window1.id,()=>{
+          chrome.windows.create(
+            {
+              url: 'timeout.html',
+              type: 'popup',
+              width: 100,
+              height: 100,
+              left: 950, // Adjust the position to the bottom right
+              top: 520
+            }
+          )  
+          })
+          
+          }
       
   })
       
@@ -287,9 +379,10 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                         if (running_url.length>0){
                           if(running_url[0]===releurl){
                             chrome.runtime.sendMessage({action:'store_current_timer'},
-                              (response)=>{
+                              ()=>{
                                
-                                        new_timer=response.object;
+                                       
+                                new_timer=response.object;
                               console.log(new_timer)
                               timer_overwrite[releurl]=new_timer;
                               console.log('currently here')
@@ -690,6 +783,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                   console.log(pausedtimer)
                   timer_overwrite[running_url[0]]=pausedtimer;
                   running_url=[];
+                  console.log(running_url);
                   chrome.storage.local.set({overwritten:timer_overwrite, running:running_url},()=>{
                   })
                   chrome.windows.remove(window1.id);

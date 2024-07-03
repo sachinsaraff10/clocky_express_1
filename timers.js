@@ -51,11 +51,13 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
 
     if (totalSeconds <= 0) {
       clearInterval(timer.intervalId);
+      chrome.runtime.sendMessage({action:'timesup'});
     }
-    chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>
+    chrome.runtime.onMessage.addListener((message,sendResponse)=>
     {
         if(message.action==='store_current_timer'){
             console.log('on it');
+            clearInterval(timer.intervalId)
             sendResponse({action:'hereyougo',object:timer})
             chrome.storage.local.set({updatedtimer:timer})
                 
