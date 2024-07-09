@@ -2,6 +2,16 @@
   "manifest_version": 3,
   "name": "Clocky",
   "version": "1.0",
+  "externally_connectable": {
+    "ids": [
+    ],
+    "matches": [
+      "https://*.google.com/*",
+      "*://*.chromium.org/*",
+      "http://localhost:8080/*"
+    ],
+    "accepts_tls_channel_id": false
+  },
   "background": {
     "service_worker":"background.js"
   },

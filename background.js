@@ -1,4 +1,4 @@
-let urls=[];
+  let urls=[];
   console.log(urls.length);
   let timers_url={};
   let urltimer={};
@@ -16,16 +16,20 @@ let urls=[];
 let ws;
 
 function initializeWebSocket() {
-  ws = new WebSocket('ws://localhost:8081');
+  ws = new WebSocket('ws://localhost:8080 ');
 
   ws.onopen = () => {
     console.log('WebSocket connection opened');
+    console.log(window);
+    console.log(localStorage);
   };
 
   ws.onmessage = (event) => {
     console.log('Message received:', event.data);
     // Handle incoming messages
   };
+
+
 
   ws.onclose = () => {
     console.log('WebSocket connection closed');
@@ -42,7 +46,7 @@ initializeWebSocket();
 
   function getUsername() {
     // Retrieve the username from localStorage
-    const username = window.localStorage.getItem('username');
+    const username = chrome.storage.local.get('username');
     
     if (!username) {
       console.error('No username found in localStorage');
@@ -101,13 +105,13 @@ function sendUsername() {
  
   
   ws.onmessage = (event) => {
-    const message = JSON.parse(event.data);
-    if (message.type === 'profileUpdate') {
-      console.log('Profile update received:', message.websites);
-      JSON.parse(message.websites);
+    console.log(event);
+    // if (message.type === 'profileUpdate') {
+    //   console.log('Profile update received:', message.websites);
+    //   JSON.parse(message.websites);
 
-      // Update the extension UI or take necessary actions
-    }
+    //   Update the extension UI or take necessary actions
+    // }
   };
   
  
@@ -244,9 +248,20 @@ async function message_responsesender(message){
     })
   })
 }
+chrome.runtime.onMessageExternal.addListener((message,sender,sendResponse)=>{
+ if(message.action === 'token'){
+      let token1 = message.data;
+      console.log(token1);
+      chrome.storage.local.set({token:token1},()=>{
+        console.log(chrome.storage.local);
+      });
+    } 
+})
 
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {            
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => { 
+               
     if (message.action === 'monitorURL' && !urls.includes(message.url)) {
             
             let monitoredURL = message.url;
