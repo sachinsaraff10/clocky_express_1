@@ -12,6 +12,7 @@
   let pausedtimer;
   let window1;
   let new_timer;
+  let reconnectInterval = 1000; 
 
 let ws;
 
@@ -20,8 +21,7 @@ function initializeWebSocket() {
 
   ws.onopen = () => {
     console.log('WebSocket connection opened');
-    console.log(window);
-    console.log(localStorage);
+
   };
 
   ws.onmessage = (event) => {
@@ -34,6 +34,31 @@ function initializeWebSocket() {
   ws.onclose = () => {
     console.log('WebSocket connection closed');
     // Optionally, try to reconnect or handle the close event
+    setTimeout(() => {
+      reconnect();
+      chrome.storage.local.get('username', (result) => {
+        if (chrome.runtime.lastError) {
+          // An error occurred during the storage operation
+          console.error('Error retrieving username:', 
+            chrome.runtime.lastError.message);
+          return;
+        }
+      
+        const username = result.username;
+      
+        if (username) {
+          console.log('Username exists:', username);
+          // Continue with your logic
+          message = {credentials:username};
+          ws.send(JSON.stringify(message));
+        } else {
+          console.log('No username found in chrome.storage.local');
+          // Handle the absence of the username
+        }
+      })
+    }, reconnectInterval);
+    ;
+
   };
 
   ws.onerror = (error) => {
@@ -41,6 +66,15 @@ function initializeWebSocket() {
     // Handle error
   };
 }
+
+function reconnect() {
+  console.log(`Attempting to reconnect in ${reconnectInterval}ms`);
+  initializeWebSocket();
+  // Increase reconnect interval exponentially up to a maximum value
+  reconnectInterval = Math.min(reconnectInterval * 2, 60000);
+   // Maximum reconnect interval of 1 minute (60000ms)
+}
+
 
 initializeWebSocket();
 
@@ -61,12 +95,35 @@ initializeWebSocket();
 function sendUsername() {
   const username = getUsername();
   if (username && ws.readyState === WebSocket.OPEN) {
-    const message = { type: 'username', username: username };
+    // const username = chrome.storage.local.get('username');
+    message = {credentials:username};
     ws.send(JSON.stringify(message));
-    console.log('Username sent:', username);
+    console.log('Username sent:', message);
   } else {
     console.error('WebSocket is not open or username is not available');
   }
+}
+
+
+
+function checkUsernameExists(callback) {
+  chrome.storage.local.get('username', (result) => {
+    if (chrome.runtime.lastError) {
+      console.error('Error retrieving username:', chrome.runtime.lastError);
+      callback(false);
+      return;
+    }
+
+    const username = result.username;
+
+    if (username) {
+      console.log('Username exists:', username);
+      callback(true);
+    } else {
+      console.log('No username found in chrome.storage.local');
+      callback(false);
+    }
+  });
 }
 
   chrome.runtime.onInstalled.addListener((details) => {
@@ -249,10 +306,10 @@ async function message_responsesender(message){
   })
 }
 chrome.runtime.onMessageExternal.addListener((message,sender,sendResponse)=>{
- if(message.action === 'token'){
-      let token1 = message.data;
-      console.log(token1);
-      chrome.storage.local.set({token:token1},()=>{
+ if(message.action === 'username'){
+      let username1 = message.data;
+      console.log(username1);
+      chrome.storage.local.set({username:username1},()=>{
         console.log(chrome.storage.local);
       });
     } 
