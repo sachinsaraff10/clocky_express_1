@@ -50,7 +50,7 @@ function initializeWebSocket() {
           console.log('Username exists:', username);
           // Continue with your logic
           message = {credentials:username};
-          ws.send(JSON.stringify(message));
+          ws.send(message);
         } else {
           console.log('No username found in chrome.storage.local');
           // Handle the absence of the username
