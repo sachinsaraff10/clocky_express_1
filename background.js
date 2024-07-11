@@ -35,7 +35,7 @@ function initializeWebSocket() {
     console.log('WebSocket connection closed');
     // Optionally, try to reconnect or handle the close event
     setTimeout(() => {
-      reconnect();
+      initializeWebSocket();
       chrome.storage.local.get('username', (result) => {
         if (chrome.runtime.lastError) {
           // An error occurred during the storage operation
