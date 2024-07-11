@@ -1,5 +1,10 @@
 
 
+
+const db = require("./app/models");
+const User = db.user;
+const Sites=db.sites;
+const Website= db.website;
 const express = require("express");
 
 const cors = require("cors");
@@ -9,6 +14,7 @@ const dbConfig = require("./app/config/db.config");
 
 const WebSocket = require('ws');
 const http = require('http');
+
 
 const app = express();
 
@@ -46,7 +52,6 @@ app.use(
   })
 );
 
-const db = require("./app/models");
 const Role = db.role;
 
 db.mongoose
@@ -84,7 +89,47 @@ wss.on('connection', (ws) => {
   ws.on('message', (message) => {
     console.log('Received:', message);
     // Echo the message back to the client
+    const messageStr = message.toString();
+
+
+    // Parse the string as JSON
+    let parsedMessage;
+    try {
+      // parsedMessage = JSON.parse(messageStr);
+      console.log('Received:', messageStr);
+    } catch (e) {
+      console.error('Error parsing JSON:', e);
+    }
     ws.send(`Server received: ${message}`);
+    console.log(messageStr);
+    const user1=  User.findOne({username:messageStr}).exec(
+      (err,user)=>{
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+        if (!user) {
+          return res.status(404).send({ message: "User Not found." });
+        }
+        user.populate('websites',(err,populatedsites)=>{
+          if (err) {
+            res.status(500).send({ message: err });
+            return;
+        }
+        else{
+          console.log(populatedsites.websites);
+          const jsonwebsites = JSON.stringify({
+            message:"here are the user websites",
+            sites: populatedsites.websites});
+          
+          ws.send(jsonwebsites);
+        }
+        })
+        
+
+      }
+    )
+
   });
 
   ws.on('close', () => {

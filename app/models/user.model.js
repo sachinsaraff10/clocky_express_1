@@ -19,7 +19,11 @@ const User = mongoose.model(
 ,
 
 websites: [{type: mongoose.Schema.Types.ObjectId,
-  ref: 'Website'}]
+  ref: 'Website'}],
+temp_websites:
+ [{ URL: String, hours: Number, minutes: Number,
+   seconds: Number }] // Array of JSON objects
+
   })
 );
 module.exports = User;
