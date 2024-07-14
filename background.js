@@ -1,10 +1,10 @@
-  let urls = [];
-  let timers_url={};
-  let urltimer={};
-  let running_timer;
-  let visitedDomain=[];
-  let timer_overwrite={};
-  let running_url=[];
+  // let urls = [];
+  // let timers_url={};
+  // let urltimer={};
+  // let running_timer;
+  // let visitedDomain=[];
+  // let timer_overwrite={};
+  // let running_url=[];
   let testset=new Set();
   let activeTaburl;
   let releurl;
@@ -12,11 +12,27 @@
   let window1;
   let new_timer;
   let reconnectInterval = 1000; 
+  let previousTabId = null;
 
 let ws;
 
+function extractDomainFromTabId(tabId) {
+  chrome.tabs.get(tabId, (tab) => {
+      if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError.message);
+          return;
+      }
+
+      const url = new URL(tab.url);
+      const domain = url.hostname;
+      console.log(`Domain for tabId ${tabId}: ${domain}`);
+  });
+}
+
 function initializeWebSocket() {
   ws = new WebSocket('ws://localhost:8080 ');
+
+
 
   ws.onopen = () => {
     console.log('WebSocket connection opened');
@@ -175,10 +191,14 @@ function checkUsernameExists(callback) {
       console.log('Websites:', data.sites);
   
       try {
-        const result = await getFromStorage(['urls','urltotimer','overwritten']);
+        const result = await getFromStorage(['urls','urltotimer','overwritten',
+          'running','timers'
+        ]);
         urls = result.urls || [];
-        urltimer = result.urltotimer || {}
-        timer_overwrite = result.overwritten || {}
+        urltimer = result.urltotimer || {};
+        timer_overwrite = result.overwritten || {};
+        running_url = result.running || [];
+
         for (let i=0;i<data.sites.length;i++){
           urls.push(data.sites.website);
           let  timer = {
@@ -618,7 +638,8 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
                       running_url.push(releurl);
                       chrome.storage.local.set({running:running_url,
                         visitedDomain:visitedDomain})
-                      chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
+                      chrome.runtime.sendMessage({action:'launch_now',
+                        object:timer_overwrite[releurl]})
                        })
                                })
                     }
@@ -761,16 +782,35 @@ chrome.tabs.onActivated.addListener((activeInfo)=>{
          },()=>{console.log('oh')
        console.log(running_url);
           
+          chrome.storage.local.get('visitedDomain',(result)=>{
+            visitedDomain = result.visitedDomain;
+            
           running_timer=timer_overwrite[running_url[0]];
           chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
             pausedtimer=response.object;
             console.log(response);
             timer_overwrite[running_url[0]]=pausedtimer;
             console.log('check');
-            chrome.storage.local.set({overwritten:timer_overwrite, running:running_url},()=>{
+            let new_pausedtimer = {
+              Website :  running_url[0],
+              Hours: pausedtimer.hourinput,
+              Minutes: pausedtimer.minuteinput,
+              Seconds: pausedtimer.secondinput
+                    }
+              visitedDomain.push(new_pausedtimer);
+            let pausedjsonstring = JSON.stringify({message:"pausedtimer and visiteddomain",
+              sites:visitedDomain});
+            ws.send(pausedjsonstring);
+            chrome.storage.local.set({overwritten:timer_overwrite, 
+              running:running_url},()=>{
             })
             chrome.windows.remove(window1.id);
+            
          running_url=[]; })
+
+
+          })
+
         ; 
         });
           
