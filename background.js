@@ -239,6 +239,7 @@ ws.onmessage = (event)=>{
           };
             urltimer[data.sites.website]=timer;
             timer_overwrite[data.sites.website] = timer;
+            console.log(timer_overwrite);
     
         }
         
@@ -301,37 +302,37 @@ ws.send(message);
 
 
   chrome.action.onClicked.addListener(() => {
-    if (ws.readyState === WebSocket.OPEN) {
-      chrome.storage.local.get('username', (result) => {
-        if (chrome.runtime.lastError) {
-          // An error occurred during the storage operation
-          console.error('Error retrieving username:', 
-            chrome.runtime.lastError.message);
-          return;
-        }
+    // if (ws.readyState === WebSocket.OPEN) {
+    //   chrome.storage.local.get('username', (result) => {
+    //     if (chrome.runtime.lastError) {
+    //       // An error occurred during the storage operation
+    //       console.error('Error retrieving username:', 
+    //         chrome.runtime.lastError.message);
+    //       return;
+    //     }
       
-        const username = result.username;
+    //     const username = result.username;
       
-        if (username) {
-          console.log('Username exists:', username);
-          // Continue with your logic
-        //   message = JSON.stringify({
-        //     action: "username delivered"  ,
-        //     username:username
-        //   }
-        // )
-        //   ws.send(message);
+    //     if (username) {
+    //       console.log('Username exists:', username);
+    //       // Continue with your logic
+    //     //   message = JSON.stringify({
+    //     //     action: "username delivered"  ,
+    //     //     username:username
+    //     //   }
+    //     // )
+    //     //   ws.send(message);
 
 
-        } else {
-          console.log('No username found in chrome.storage.local');
-          // Handle the absence of the username
-        }
-      })
+    //     } else {
+    //       console.log('No username found in chrome.storage.local');
+    //       // Handle the absence of the username
+    //     }
+    //   })
   
-    } else {
-      console.error('WebSocket is not open');
-    }
+    // } else {
+    //   console.error('WebSocket is not open');
+    // }
   });
   
 console.log('initialized');
@@ -877,6 +878,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
 if (changeInfo.status === 'complete'){
   const taburl=tab.url;
   console.log(tabUrls);
+  console.log(timer_overwrite);
   let currentdomain=new URL(taburl).hostname;
   if (tabUrls[tabId] && tabUrls[tabId] !== currentdomain)
     {
@@ -918,6 +920,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                 console.log(urls[i]);
                 releurl=urls[i];
                 console.log(visitedDomain);
+                console.log(timer_overwrite);
                 console.log(running_url);
                 if(visitedDomain.includes(releurl)){
                   if(running_url.length>0){
@@ -1015,11 +1018,14 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                                 files: ['timers.js'],
                              },()=>{
                               console.log('checking');
+                              console.log(timer_overwrite);
                         running_url.push(releurl);
                         chrome.storage.local.set({running:running_url,
                           visitedDomain:visitedDomain})
-                        chrome.runtime.sendMessage({action:'launch_now',
-                          object:timer_overwrite[releurl]})
+                        chrome.runtime.sendMessage(
+                          {action:'launch_now',
+                          object:timer_overwrite[releurl]}
+                        )
                          })
                         })
                   }
@@ -1065,7 +1071,7 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                     
                   }
                   else{
-                    addToArrayIfNotExists(visitedDomain,releurl);
+              addToArrayIfNotExists(visitedDomain,releurl);
             console.log(timer_overwrite[releurl]);
             console.log(visitedDomain);
   
@@ -1087,7 +1093,8 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
               running_url.push(releurl);
               chrome.storage.local.set({running:running_url,
                 visitedDomain:visitedDomain})
-              chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
+              chrome.runtime.sendMessage({action:'launch_now',
+                object:timer_overwrite[releurl]})
                })})
             
                 }
