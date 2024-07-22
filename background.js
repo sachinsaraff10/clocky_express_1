@@ -49,7 +49,11 @@ function initializeWebSocket() {
       if (username) {
         console.log('Username exists:', username);
         // Continue with your logic
-        message = username;
+        message = JSON.stringify({
+          action: "username delivered"  ,
+          username:username
+        }
+      )
         ws.send(message);
       } else {
         console.log('No username found in chrome.storage.local');
@@ -284,10 +288,11 @@ ws.onmessage = (event)=>{
     }
  
 
-  function server_sender(temp_map){
+  function server_sender(temp_map,username){
 const message = JSON.stringify(
   {
     message : "paused timer from old tab",
+    username: username,
     timers: temp_map
   }
 )
@@ -310,8 +315,14 @@ ws.send(message);
         if (username) {
           console.log('Username exists:', username);
           // Continue with your logic
-          message = username;
-          ws.send(message);
+        //   message = JSON.stringify({
+        //     action: "username delivered"  ,
+        //     username:username
+        //   }
+        // )
+        //   ws.send(message);
+
+
         } else {
           console.log('No username found in chrome.storage.local');
           // Handle the absence of the username
@@ -1095,12 +1106,13 @@ chrome.tabs.onUpdated.addListener((tabId,changeInfo,tab)=>{
                },()=>{console.log('oh')
              console.log(running_url);
                 running_timer=timer_overwrite[running_url[0]];
-                chrome.runtime.sendMessage({action:'pausetimer'},(response)=>{
+                chrome.runtime.sendMessage({action:'pausetimer'},async (response)=>{
                   console.log(response);
                   pausedtimer=response.object;
                   console.log(pausedtimer)
                   timer_overwrite[running_url[0]]=pausedtimer;
-                  server_sender(timer_overwrite);
+                  const Username_1 = await getFromStorage('username');
+                  server_sender(timer_overwrite,Username_1);
                   running_url=[];
                   console.log(running_url);
                   // chrome.storage.local.set({overwritten:timer_overwrite, running:running_url},()=>{
