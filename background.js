@@ -231,14 +231,14 @@ ws.onmessage = (event)=>{
           urls.push(data.sites[i].website);
           let  timer = {
                   
-            hourinput: data.sites.hours,
-            minuteinput: data.sites.minutes,
-            secondinput: data.sites.seconds,
+            hourinput: data.sites[i].hours,
+            minuteinput: data.sites[i].minutes,
+            secondinput: data.sites[i].seconds,
             urlId:null,
             intervalId:null
           };
-            urltimer[data.sites.website]=timer;
-            timer_overwrite[data.sites.website] = timer;
+            urltimer[data.sites[i].website]=timer;
+            timer_overwrite[data.sites[i].website] = timer;
             console.log(timer_overwrite);
     
         }
