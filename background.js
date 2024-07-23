@@ -870,24 +870,24 @@ async function URLgetter(tabbb){
 }
 
 
-chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
-if (changeInfo.status === 'complete'){
-  const taburl=tab.url;
-  console.log(tabUrls);
-  console.log(timer_overwrite);
-  let currentdomain=new URL(taburl).hostname;
-  if (tabUrls[tabId] && tabUrls[tabId] !== currentdomain)
-    {
+// chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
+// if (changeInfo.status === 'complete'){
+//   const taburl=tab.url;
+//   console.log(tabUrls);
+//   console.log(timer_overwrite);
+//   let currentdomain=new URL(taburl).hostname;
+//   if (tabUrls[tabId] && tabUrls[tabId] !== currentdomain)
+//     {
       
-  }
-  // else if(){
+//   }
+//   // else if(){
 
-  // }
+//   // }
 
-  tabUrls[tabId] = currentdomain;
+//   tabUrls[tabId] = currentdomain;
 
-}
-})
+// }
+// })
 
 
 async function windowStatus(tab) {
@@ -913,7 +913,8 @@ async function windowStatus(tab) {
 
 
 chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
-        if ((changeInfo.status==='complete' && changeInfo.url)  ){
+      if(changeInfo.url){
+        if ((changeInfo.status==='complete')){
           try{
             await windowStatus(tab);
               const taburl=tab.url;
@@ -1166,10 +1167,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
         } catch (error) {
           console.warn('Exiting handler due to:', error); 
         }
-        } 
-          
-          
-        
-     
+        }}  
+   
       } )
               
