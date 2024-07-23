@@ -913,7 +913,7 @@ async function windowStatus(tab) {
 
 
 chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
-      if(changeInfo.url){
+      
         if ((changeInfo.status==='complete')){
           try{
             await windowStatus(tab);
@@ -1167,7 +1167,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
         } catch (error) {
           console.warn('Exiting handler due to:', error); 
         }
-        }}  
+        }  
    
       } )
               
