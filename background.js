@@ -915,6 +915,7 @@ async function windowStatus(tab) {
 chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
         if ((changeInfo.status==='complete' && changeInfo.url)  ){
           try{
+            await windowStatus(tab);
               const taburl=tab.url;
               console.log(activeTabId);
               let currentdomain=new URL(taburl).hostname;
