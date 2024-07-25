@@ -600,7 +600,9 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
     
         }
         }
-      }
+      
+      break;
+    }
       
       else {
         console.log(urls[i]);
