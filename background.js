@@ -526,6 +526,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
     console.log('received');
     timer_overwrite[releurl]=new_timer;
     await removeWindow(window1.id);
+    console.log(`Window ID: ${windowId} removed successfully`);
     running_url = [];
     window1 = await createWindow();
     console.log(window1.tabs[0].id);
@@ -543,6 +544,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         pausedtimer=responsetimer.object;
         timer_overwrite[running_url[0]]=pausedtimer;
         await removeWindow(window1.id);
+        console.log(`Window ID: ${windowId} removed successfully`);
         running_url = [];
         window1 = await createWindow();
         console.log(window1.tabs[0].id);
@@ -573,6 +575,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
               pausedtimer=responsetimer.object;
               timer_overwrite[running_url[0]]=pausedtimer;
               await removeWindow(window1.id);
+              console.log(`Window ID: ${windowId} removed successfully`);
               running_url = [];
               window1 = await createWindow();
               console.log(window1.tabs[0].id);
@@ -618,7 +621,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         server_sender(timer_overwrite,Username_1);
         running_url=[];
         await removeWindow(window1.id);
-      
+        console.log(`Window ID: ${windowId} removed successfully`);
       }
     }
     }}
@@ -724,14 +727,11 @@ async function executeScript(tabId) {
   });
 }
 
-
-
-
 chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
       
         if ((changeInfo.status==='complete')){
           try{
-            const status = await windowStatus(tab);
+            // const status = await windowStatus(tab);
               taburl=tab.url;
               console.log(activeTabId);
               let currentdomain=new URL(taburl).hostname;
@@ -765,6 +765,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
               console.log('received');
               timer_overwrite[releurl]=new_timer;
               await removeWindow(window1.id);
+              console.log(`Window ID: ${windowId} removed successfully`);
               running_url = [];
               window1 = await createWindow();
               console.log(window1.tabs[0].id);
@@ -782,6 +783,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   pausedtimer=responsetimer.object;
                   timer_overwrite[running_url[0]]=pausedtimer;
                   await removeWindow(window1.id);
+                  console.log(`Window ID: ${windowId} removed successfully`);
                   running_url = [];
                   window1 = await createWindow();
                   console.log(window1.tabs[0].id);
@@ -812,6 +814,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                         pausedtimer=responsetimer.object;
                         timer_overwrite[running_url[0]]=pausedtimer;
                         await removeWindow(window1.id);
+                        console.log(`Window ID: ${windowId} removed successfully`);
                         running_url = [];
                         window1 = await createWindow();
                         console.log(window1.tabs[0].id);
@@ -836,12 +839,11 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
               
                   }
                   }
+                break;
                 }
                 
                 else {
                   console.log(urls[i]);
-                  console.log(currentdomain.includes(urls[i]));
-                  console.log(currentdomain.includes(releurl));
                   console.log(currentdomain);
                   console.log(running_url);
                   console.log(window1);
@@ -857,7 +859,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   server_sender(timer_overwrite,Username_1);
                   running_url=[];
                   await removeWindow(window1.id);
-                
+                  console.log(`Window ID: ${windowId} removed successfully`);
                 }
               }
               }}
