@@ -26,7 +26,8 @@
   ],
 
   "host_permissions":[
-    "<all_urls>"
+    "<all_urls>",
+    "chrome-extension://bdnkfkcdglljacbjaagbhmdoppfcadmb/*"
   ],
 
 

@@ -616,7 +616,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         running_timer=timer_overwrite[running_url[0]];
         await executeScript(window1.tabs[0].id);
         console.log('executed');
-        pausedtimer = await responsetimer({action:'pausetimer'});
+        pausedtimer = await timerupdate({action:'pausetimer'});
         console.log(pausedtimer.object);
         timer_overwrite[running_url[0]] = pausedtiemr.object;
         const Username_1 = await getFromStorage('username');
@@ -720,8 +720,13 @@ async function executeScript(tabId) {
       target: { tabId: tabId, allFrames: true },
       files: ['timers.js']
     }, () => {
+    
       if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError));
+        // reject(new Error(chrome.runtime.lastError));
+        // console.log('failure');
+        console.warn('Non-critical error during script execution:', chrome.runtime.lastError);
+          // Continue processing instead of rejecting
+          resolve();
       } else {
         resolve();
       }
@@ -854,7 +859,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   running_timer=timer_overwrite[running_url[0]];
                   await executeScript(window1.tabs[0].id);
                   console.log('executed');
-                  pausedtimer = await responsetimer({action:'pausetimer'});
+                  pausedtimer = await timerupdate({action:'pausetimer'});
                   console.log(pausedtimer.object);
                   timer_overwrite[running_url[0]] = pausedtiemr.object;
                   const Username_1 = await getFromStorage('username');
