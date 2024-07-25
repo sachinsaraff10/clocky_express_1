@@ -485,14 +485,12 @@ function queryer(ID) {
   });
 }
 
-
-
 chrome.tabs.onActivated.addListener(async(activeInfo)=>{
 
   
   
   try {
-    const tab = await queryer(currentTabId);
+    const tab = await queryer(activeInfo.tabId);
     // Proceed with the logic for the activated tab
 
     taburl=tab.url;
