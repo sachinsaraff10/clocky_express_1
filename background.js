@@ -116,14 +116,43 @@ function sendUsername() {
   }
 }
 
-chrome.windows.onFocusChanged.addListener((windowId) => {
-  if (windowId != chrome.windows.WINDOW_ID_NONE) {
-    // Query all tabs or perform any tasks when focus changes to a window
-    queryTabs();
+chrome.windows.onFocusChanged.addListener(async (windowId) => {
+  // Ensure we have a valid windowId
+  if (windowId !== chrome.windows.WINDOW_ID_NONE) {
+    try {
+      // Retrieve window details
+      const window = await new Promise((resolve, reject) => {
+        chrome.windows.get(windowId, (win) => {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError));
+          } else {
+            resolve(win);
+          }
+        });
+      });
+
+      // Check if the window is not a popup
+      if (window.type !== 'popup') {
+        // Query all tabs or perform any tasks when focus changes to a non-popup window
+        // queryTabs();
+      }
+    } catch (error) {
+      console.error('Error fetching window details:', error);
+    }
   }
 });
 
-
+async function windowtypegetter(windowId){
+  return new Promise((resolve, reject) => {
+    chrome.windows.get(windowId, (win) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError));
+      } else {
+        resolve(win);
+      }
+    });
+  })
+}
 
 function checkUsernameExists(callback) {
   chrome.storage.local.get('username', (result) => {
@@ -488,81 +517,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   })
       
 let currenttabId;
-async function queryTabs(){
-  chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-    for (let i = 0; i < tabs.length; i++) {
-      let curr_url = tabs[i].url;
-      let tabId=tabs[i].id;
-      const result = await getFromStorage(['urls','urltotimer',
-        'overwritten','visitedDomain']);
-       urls = result.urls || [];
-       visitedDomain=result.visitedDomain||[];
-        urltotimer = result.urltotimer || {};
-       overwritten = result.overwritten || {};
-      let curr_domain=new URL(curr_url).hostname
-      console.log(curr_domain);
-        for(let i=0;i<urls.length;i++){
-            if (curr_domain===urls[i]) { 
-              
-               addToArrayIfNotExists(visitedDomain,curr_domain);
-               chrome.storage.local.set({visitedDomain:visitedDomain
-                },
-                 ()=>{console.log('nice to see')
-                     console.log('Data stored in local storage.');
-                    //  let popupURL = `timers.html?domainId=${curr_domain}`
-                    if(window1){
-                      chrome.windows.remove(window1.id,()=>{
-                      running_url=[];
-                      chrome.windows.create({
-                        url: 'timers.html',
-                        type: 'popup',
-                        width: 100,
-                        height: 100,
-                        left: 950, // Adjust the position to the bottom right
-                        top: 520
-                      },
-                      (window)=>{
-                        window1=window;
-                        console.log('checking');
-                  running_url.push(releurl);
-                  chrome.storage.local.set({running:running_url})
-                  chrome.runtime.sendMessage({action:'launch_now',
-                  object:timer_overwrite[releurl]})
-                      })})
-                    }else{
-                      chrome.windows.create({
-                        url: 'timers.html',
-                        type: 'popup',
-                        width: 100,
-                        height: 100,
-                        left: 950, // Adjust the position to the bottom right
-                        top: 520
-                      },
-                      (window)=>{
-                        window1=window;
-                        console.log('checking');
-                  running_url.push(releurl);
-                  chrome.storage.local.set({running:running_url})
-                  chrome.scripting.executeScript({
-                    target: {tabId:window1.tabs[0].id, allFrames: true,},
-                    files: ['timers.js'],
-                 },
-                 ()=>{
-                  chrome.runtime.sendMessage({action:'launch_now',
-                  object:timer_overwrite[releurl]})
-                 })
-                      })
-  
-                    }
-                    
-                      })
-             
-             }
-           }
-          // })
-      
-  }     })
-}
+// 
 
 
 function queryer(ID) {
@@ -909,6 +864,64 @@ async function windowStatus(tab) {
   });
 }
 
+async function storeCurrentTimer() {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({action: 'store_current_timer'}, (response) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError));
+      } else {
+        resolve(response.object);
+      }
+    });
+  });
+}
+
+async function removeWindow(windowId) {
+  return new Promise((resolve, reject) => {
+    chrome.windows.remove(windowId, () => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError));
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+async function createWindow() {
+  return new Promise((resolve, reject) => {
+    chrome.windows.create({
+      url: 'timers.html',
+      type: 'popup',
+      width: 100,
+      height: 100,
+      left: 950,
+      top: 520
+    }, (window) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError));
+      } else {
+        resolve(window);
+      }
+    });
+  });
+}
+
+async function executeScript(tabId) {
+  return new Promise((resolve, reject) => {
+    chrome.scripting.executeScript({
+      target: { tabId: tabId, allFrames: true },
+      files: ['timers.js']
+    }, () => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError));
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 
 
 
@@ -934,7 +947,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                 console.log('lets go');
                 console.log(urls);
               for (let i=0;i<urls.length;i++)
-              {
+              { console.log(urls[i]);
                 if (currentdomain.includes(urls[i])){
                   console.log(urls[i]);
                   releurl=urls[i];
@@ -1127,8 +1140,14 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                       
                   }
                 
-              }
+              
+                
+                }
+                
                 else {
+                  console.log(urls[i]);
+                  console.log(currentdomain.includes(urls[i]));
+                  console.log(currentdomain.includes(releurl));
                   console.log(currentdomain);
                   console.log(running_url);
                   console.log(window1);
