@@ -53,13 +53,15 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
       clearInterval(timer.intervalId);
       chrome.runtime.sendMessage({action:'timesup'});
     }
-    chrome.runtime.onMessage.addListener((message,sendResponse)=>
+    chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>
     {
         if(message.action==='store_current_timer'){
             console.log('on it');
             clearInterval(timer.intervalId)
+            console.log(timer);
+
             sendResponse({action:'hereyougo',object:timer})
-            chrome.storage.local.set({updatedtimer:timer})
+            // chrome.storage.local.set({updatedtimer:timer})
                 
             }
 
@@ -67,8 +69,9 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
         if(message.action==='pausetimer'){
             console.log('on it boss');
             clearInterval(timer.intervalId)
+            console.log(timer);
             sendResponse({action:'hereyougo',object:timer})
-            chrome.storage.local.set({pausedtimer:timer})
+            // chrome.storage.local.set({pausedtimer:timer})
                 
             
     } })

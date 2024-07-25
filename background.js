@@ -618,7 +618,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         console.log('executed');
         pausedtimer = await timerupdate({action:'pausetimer'});
         console.log(pausedtimer.object);
-        timer_overwrite[running_url[0]] = pausedtiemr.object;
+        timer_overwrite[running_url[0]] = pausedtimer.object;
         const Username_1 = await getFromStorage('username');
         server_sender(timer_overwrite,Username_1);
         running_url=[];
@@ -675,7 +675,8 @@ async function timerupdate(message) {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(message, (response) => {
       if (chrome.runtime.lastError) {
-        console.warn('Non-critical error during script execution:', chrome.runtime.lastError);
+        console.warn('Non-critical error during script execution:', 
+          chrome.runtime.lastError);
         reject(new Error(chrome.runtime.lastError));
       } else {
         resolve(response);
@@ -764,7 +765,8 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   console.log(timer_overwrite);
                   console.log(releurl);
                   console.log(running_url);
-                  if(visitedDomain.includes(releurl)){
+                  if(visitedDomain.includes(releurl))
+                    {
                     if(running_url.length>0){
                       if(releurl===running_url[0]){
 
@@ -867,7 +869,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   server_sender(timer_overwrite,Username_1);
                   running_url=[];
                   await removeWindow(window1.id);
-                  console.log(`Window ID: ${windowId} removed successfully`);
+                  console.log(`Window ID: ${window1.id} removed successfully`);
                 }
               }
               }}
