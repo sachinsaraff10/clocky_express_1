@@ -7,8 +7,10 @@
   let reconnectInterval = 1000; 
   let previousTabId = null;
   let windowID;
-
+  let responsetimer;
+  let updatedtimer
 let ws;
+let taburl;
 
 function extractDomainFromTabId(tabId) {
   chrome.tabs.get(tabId, (tab) => {
@@ -131,10 +133,10 @@ chrome.windows.onFocusChanged.addListener(async (windowId) => {
         });
       });
 
-      // Check if the window is not a popup
-      if (window.type !== 'popup') {
+      // Check if the window is a popup
+      if (window.type === 'popup') {
         // Query all tabs or perform any tasks when focus changes to a non-popup window
-        // queryTabs();
+        return;
       }
     } catch (error) {
       console.error('Error fetching window details:', error);
@@ -377,64 +379,7 @@ let activeTabId;
     }
   })
 // first event post installation that occurs once extension icon gets clicked
-// chrome.action.onClicked.addListener(()=>{
-//   // 
-//   console.log(visitedDomain);
-//   console.log(urls)
-//   console.log(urltimer[urls[0]]);
-//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-//     if (tabs.length > 0) {
-//          activeTabId = tabs[0].id;
-//       console.log("Active tab ID:", activeTabId);
-//     }
-//   ;
-//   ;    if(urls.length>0)
-//     {
-//         // chrome.storage.local.get(['sites'],
-//         //   (result)=>{
-//             // let popupURL=result.sites;
-//             chrome.windows.create({
-//               url:'sites.html',
-//               type:'popup',
-//               width:300,
-//               height:300,
-//               left: 900, // Adjust the position to the bottom right
-//               top: 70},(window)=>{
-//                 window1=window;
-//                 chrome.scripting.executeScript({
-//                   target: {tabId:window1.tabs[0].id, allFrames: true,},
-//                   files: ['sites.js']
-//                },
-//                ()=>{
-//                   chrome.runtime.sendMessage({action:
-//                 'hereyougo',object:urls,urltotimer:urltimer})
-//               })
-//               })
-      
-          
-//         ;
-        
-//             // let popupURL=`sites.html?domainId=${domains}`
-//             // chrome.tabs.reload(tabId,{bypassCache:false});
-//             ;
-        
-//         ;
-//     }
-//     else{
-//       chrome.windows.create({
-//         url:'sites.html',
-//         type:'popup',
-//         width:300,
-//         height:300,
-//         left: 900, // Adjust the position to the bottom right
-//         top: 70
-       
-    
-//     });
-//     }
-//   })
- 
-//   } );
+
 
 async function storethenget(){
   const data= await new Promise((resolve)=>{
@@ -785,20 +730,144 @@ function queryer(ID) {
 
 chrome.tabs.onActivated.addListener(async(activeInfo)=>{
 
-  const currentTabId = activeInfo.tabId;
-  if (previousTabId !== null && previousTabId !== currentTabId) {
-      console.log(`Switched from tab ${previousTabId} to tab ${currentTabId}`);
-
-  }
-  previousTabId = currentTabId;
-
+  
+  
   try {
     const tab = await queryer(currentTabId);
     // Proceed with the logic for the activated tab
 
-    const newdomain = new URL(tab.url).hostname;
-    tabUrls[currentTabId] =newdomain;
-    console.log()
+    taburl=tab.url;
+    console.log(activeTabId);
+    let currentdomain=new URL(taburl).hostname;
+    // const newdomain = new URL(tab.url).hostname;
+
+    
+    console.log(currentdomain);
+    
+    console.log(tabId);
+    console.log(taburl);
+
+    if (urls.length>0){
+      console.log('lets go');
+      console.log(urls);
+    for (let i=0;i<urls.length;i++)
+    { console.log(urls[i]);
+      if (currentdomain.includes(urls[i])){
+        console.log(urls[i]);
+        releurl=urls[i];
+        console.log(typeof releurl); // Should be 'string'
+        console.log(visitedDomain);
+        console.log(timer_overwrite);
+        console.log(releurl);
+        console.log(running_url);
+        if(visitedDomain.includes(releurl)){
+          if(running_url.length>0){
+            if(releurl===running_url[0]){
+
+    responsetimer = await timerupdate({action:'store_current_timer'});
+    new_timer = responsetimer.object;
+    console.log('received');
+    timer_overwrite[releurl]=new_timer;
+    await removeWindow(window1.id);
+    running_url = [];
+    window1 = await createWindow();
+    console.log(window1.tabs[0].id);
+    await executeScript(window1.tabs[0].id);
+    running_url.push(releurl);
+    updatedtimer = await timerupdate({action:'launch_now',
+      object:timer_overwrite[releurl]})
+    
+            }
+            else{
+
+        running_timer=timer_overwrite[running_url[0]];
+        responsetimer = await timerupdate({action:'pausetimer',
+          object:running_timer});
+        pausedtimer=responsetimer.object;
+        timer_overwrite[running_url[0]]=pausedtimer;
+        await removeWindow(window1.id);
+        running_url = [];
+        window1 = await createWindow();
+        console.log(window1.tabs[0].id);
+        await executeScript(window1.tabs[0].id);
+        running_url.push(releurl);
+        updatedtimer = await timerupdate({action:'launch_now',
+        object:timer_overwrite[releurl]})
+
+            }
+          }
+          else{
+            window1 = await createWindow();
+            console.log(window1.tabs[0].id);
+            await executeScript(window1.tabs[0].id);
+            running_url.push(releurl);
+            updatedtimer = await timerupdate({action:'launch_now',
+            object:timer_overwrite[releurl]})
+          }
+        }
+        else{
+          if(running_url.length>0)
+            {
+              running_timer=timer_overwrite[running_url[0]];
+              console.log(timer_overwrite);
+              addToArrayIfNotExists(visitedDomain,releurl);
+              responsetimer = await timerupdate({action:'pausetimer',
+                object:running_timer});
+              pausedtimer=responsetimer.object;
+              timer_overwrite[running_url[0]]=pausedtimer;
+              await removeWindow(window1.id);
+              running_url = [];
+              window1 = await createWindow();
+              console.log(window1.tabs[0].id);
+              await executeScript(window1.tabs[0].id);
+              running_url.push(releurl);
+              updatedtimer = await timerupdate({action:'launch_now',
+              object:timer_overwrite[releurl]})
+}
+          else{
+      addToArrayIfNotExists(visitedDomain,releurl);
+    
+    console.log(timer_overwrite[releurl]);
+    console.log(visitedDomain);
+  window1 = await createWindow();
+  console.log(window1.tabs[0].id);
+  await executeScript(window1.tabs[0].id);
+  running_url.push(releurl);
+  timer_overwrite[releurl] = urltimer[releurl]; 
+  updatedtimer = await timerupdate({action:'launch_now',
+  object:timer_overwrite[releurl]})
+        
+    
+        }
+        }
+      }
+      
+      else {
+        console.log(urls[i]);
+        console.log(currentdomain.includes(urls[i]));
+        console.log(currentdomain.includes(releurl));
+        console.log(currentdomain);
+        console.log(running_url);
+        console.log(window1);
+        console.log(tab.url);
+        if (running_url.length>0){
+        running_timer=timer_overwrite[running_url[0]];
+        await executeScript(window1.tabs[0].id);
+        console.log('executed');
+        pausedtimer = await responsetimer({action:'pausetimer'});
+        console.log(pausedtimer.object);
+        timer_overwrite[running_url[0]] = pausedtiemr.object;
+        const Username_1 = await getFromStorage('username');
+        server_sender(timer_overwrite,Username_1);
+        running_url=[];
+        await removeWindow(window1.id);
+      
+      }
+    }
+    }}
+   
+
+
   
   } catch (error) {
     console.error(`Error getting tab status: ${error}`);
@@ -824,27 +893,6 @@ async function URLgetter(tabbb){
   })
 }
 
-
-// chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
-// if (changeInfo.status === 'complete'){
-//   const taburl=tab.url;
-//   console.log(tabUrls);
-//   console.log(timer_overwrite);
-//   let currentdomain=new URL(taburl).hostname;
-//   if (tabUrls[tabId] && tabUrls[tabId] !== currentdomain)
-//     {
-      
-//   }
-//   // else if(){
-
-//   // }
-
-//   tabUrls[tabId] = currentdomain;
-
-// }
-// })
-
-
 async function windowStatus(tab) {
   return new Promise((resolve, reject) => {
     chrome.windows.get(tab.windowId, { populate: false }, (window) => {
@@ -864,13 +912,13 @@ async function windowStatus(tab) {
   });
 }
 
-async function storeCurrentTimer() {
+async function timerupdate(message) {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({action: 'store_current_timer'}, (response) => {
+    chrome.runtime.sendMessage(message, (response) => {
       if (chrome.runtime.lastError) {
         reject(new Error(chrome.runtime.lastError));
       } else {
-        resolve(response.object);
+        resolve(response);
       }
     });
   });
@@ -929,8 +977,8 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
       
         if ((changeInfo.status==='complete')){
           try{
-            await windowStatus(tab);
-              const taburl=tab.url;
+            const status = await windowStatus(tab);
+              taburl=tab.url;
               console.log(activeTabId);
               let currentdomain=new URL(taburl).hostname;
               // const newdomain = new URL(tab.url).hostname;
@@ -940,9 +988,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
               
               console.log(tabId);
               console.log(taburl);
-  //             chrome.tabs.query({active:true, currentWindow:true},(tabs)=>{
-  //                activeTaburl=new URL(tabs[0].url).hostname
-  // })
+
               if (urls.length>0){
                 console.log('lets go');
                 console.log(urls);
@@ -959,109 +1005,46 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   if(visitedDomain.includes(releurl)){
                     if(running_url.length>0){
                       if(releurl===running_url[0]){
-                        chrome.runtime.sendMessage({action:'store_current_timer'},
-                          (response)=>{new_timer=response.object;
-                          console.log('received')
-                          timer_overwrite[releurl]=new_timer;
-                          chrome.windows.remove(window1.id,
-                            ()=>{
-                              running_url=[];
-                              chrome.windows.create({
-                                url: 'timers.html',
-                                type: 'popup',
-                                width: 100,
-                                height: 100,
-                                left: 950, // Adjust the position to the bottom right
-                                top: 520
-                              },
-                              (window)=>{
-                                window1=window;
-                                chrome.scripting.executeScript({
-                                  target: {tabId:window1.tabs[0].id, allFrames: true,},
-                                  files: ['timers.js'],
-                               },()=>{
-                                console.log('checking');
-                          running_url.push(releurl);
-                          chrome.storage.local.set({running:running_url,
-                            visitedDomain:visitedDomain})
-                          chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
-                           })
-                              })
-    
-                          })
-                  
-                
-              })
+
+              responsetimer = await timerupdate({action:'store_current_timer'});
+              new_timer = responsetimer.object;
+              console.log('received');
+              timer_overwrite[releurl]=new_timer;
+              await removeWindow(window1.id);
+              running_url = [];
+              window1 = await createWindow();
+              console.log(window1.tabs[0].id);
+              await executeScript(window1.tabs[0].id);
+              running_url.push(releurl);
+              updatedtimer = await timerupdate({action:'launch_now',
+                object:timer_overwrite[releurl]})
               
                       }
                       else{
     
                   running_timer=timer_overwrite[running_url[0]];
-              
-                    chrome.runtime.sendMessage(
-                      {action:'pausetimer',
-                      object:running_timer},
-                    (response)=>{
-                pausedtimer=response.object;
-                timer_overwrite[running_url[0]]=pausedtimer;
-               
-              })
-                chrome.windows.remove(window1.id,
-                ()=>{
-                  running_url=[]
-                  chrome.windows.create({
-                    url: 'timers.html',
-                    type: 'popup',
-                    width: 100,
-                    height: 100,
-                    left: 950, // Adjust the position to the bottom right
-                    top: 520
-                  },
-                  (window)=>{
-                    window1=window;
-                    chrome.scripting.executeScript({
-                      target: {tabId:window1.tabs[0].id, allFrames: true,},
-                      files: ['timers.js'],
-                   },()=>{
-                    console.log('checking');
-              running_url.push(releurl);
-              chrome.storage.local.set({running:running_url,
-                visitedDomain:visitedDomain})
-              chrome.runtime.sendMessage({action:'launch_now',
-                object:timer_overwrite[releurl]})
-               })
-        })
-            }
-              )
+                  responsetimer = await timerupdate({action:'pausetimer',
+                    object:running_timer});
+                  pausedtimer=responsetimer.object;
+                  timer_overwrite[running_url[0]]=pausedtimer;
+                  await removeWindow(window1.id);
+                  running_url = [];
+                  window1 = await createWindow();
+                  console.log(window1.tabs[0].id);
+                  await executeScript(window1.tabs[0].id);
+                  running_url.push(releurl);
+                  updatedtimer = await timerupdate({action:'launch_now',
+                  object:timer_overwrite[releurl]})
+      
                       }
                     }
                     else{
-                        chrome.windows.create({
-                                url: 'timers.html',
-                                type: 'popup',
-                                width: 100,
-                                height: 100,
-                                left: 950, // Adjust the position to the bottom right
-                                top: 520
-                              },
-                              (window)=>{
-                                window1=window;
-                                chrome.scripting.executeScript({
-                                  target: {tabId:window1.tabs[0].id, 
-                                    allFrames: true,},
-                                  files: ['timers.js'],
-                               },()=>{
-                                console.log('checking');
-                                console.log(timer_overwrite);
-                          running_url.push(releurl);
-                          chrome.storage.local.set({running:running_url,
-                            visitedDomain:visitedDomain})
-                          chrome.runtime.sendMessage(
-                            {action:'launch_now',
-                            object:timer_overwrite[releurl]}
-                          )
-                           })
-                          })
+                      window1 = await createWindow();
+                      console.log(window1.tabs[0].id);
+                      await executeScript(window1.tabs[0].id);
+                      running_url.push(releurl);
+                      updatedtimer = await timerupdate({action:'launch_now',
+                      object:timer_overwrite[releurl]})
                     }
                   }
                   else{
@@ -1070,78 +1053,35 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                         running_timer=timer_overwrite[running_url[0]];
                         console.log(timer_overwrite);
                         addToArrayIfNotExists(visitedDomain,releurl);
-                        chrome.runtime.sendMessage({action:'pausetimer'},
-                        (response)=>{
-                          pausedtimer=response.object;
-                          running_timer=pausedtimer;
-                          // running_url=[];
-                          
-                        chrome.windows.remove(window1.id,
-                        ()=>{
-                          running_url=[];
-                          chrome.windows.create({
-                            url: 'timers.html',
-                            type: 'popup',
-                            width: 100,
-                            height: 100,
-                            left: 950, // Adjust the position to the bottom right
-                            top: 520
-                          },
-                          (window)=>{
-                            window1=window;
-                            chrome.scripting.executeScript({
-                              target: {tabId:window1.tabs[0].id, allFrames: true,},
-                              files: ['timers.js'],
-                           },()=>{
-                            console.log('checking');
-                      running_url.push(releurl);
-                      chrome.storage.local.set({running:running_url,
-                        visitedDomain:visitedDomain})
-                      chrome.runtime.sendMessage({action:'launch_now',object:timer_overwrite[releurl]})
-                       }) })
-                    }
-                      )
-                    })
-                      
-                    }
+                        responsetimer = await timerupdate({action:'pausetimer',
+                          object:running_timer});
+                        pausedtimer=responsetimer.object;
+                        timer_overwrite[running_url[0]]=pausedtimer;
+                        await removeWindow(window1.id);
+                        running_url = [];
+                        window1 = await createWindow();
+                        console.log(window1.tabs[0].id);
+                        await executeScript(window1.tabs[0].id);
+                        running_url.push(releurl);
+                        updatedtimer = await timerupdate({action:'launch_now',
+                        object:timer_overwrite[releurl]})
+      }
                     else{
                 addToArrayIfNotExists(visitedDomain,releurl);
               
               console.log(timer_overwrite[releurl]);
               console.log(visitedDomain);
-    
-                    chrome.windows.create({
-                      url: 'timers.html',
-                      type: 'popup',
-                      width: 100,
-                      height: 100,
-                      left: 950, // Adjust the position to the bottom right
-                      top: 520
-                    },
-                    (window)=>{
-                      window1=window;
-                      chrome.scripting.executeScript({
-                        target: {
-                          tabId:window1.tabs[0].id, 
-                          allFrames: true,},
-                        files: ['timers.js'],
-                     },()=>{
-                      console.log('checking');
-                      running_url.push(releurl);
-                      timer_overwrite[releurl] = urltimer[releurl]; 
-                      chrome.storage.local.set({running:running_url,
-                  visitedDomain:visitedDomain})
-                chrome.runtime.sendMessage({action:'launch_now',
-                  object:timer_overwrite[releurl]})
-                 })
-                })
+            window1 = await createWindow();
+            console.log(window1.tabs[0].id);
+            await executeScript(window1.tabs[0].id);
+            running_url.push(releurl);
+            timer_overwrite[releurl] = urltimer[releurl]; 
+            updatedtimer = await timerupdate({action:'launch_now',
+            object:timer_overwrite[releurl]})
+                  
               
                   }
-                      
                   }
-                
-              
-                
                 }
                 
                 else {
@@ -1154,36 +1094,23 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   console.log(tab.url);
                   if (running_url.length>0){
                   running_timer=timer_overwrite[running_url[0]];
-                  chrome.scripting.executeScript({
-                    target: {tabId:window1.tabs[0].id, allFrames: true,},
-                    files: ['timers.js'],
-                 },()=>{
-                    console.log('oh')
-                    console.log(running_url);
-                    running_timer=timer_overwrite[running_url[0]];
-                    chrome.runtime.sendMessage({action:'pausetimer'},
-                      async (response)=>{
-                    console.log(response);
-                    pausedtimer=response.object;
-                    console.log(pausedtimer)
-                    timer_overwrite[running_url[0]]=pausedtimer;
-                    const Username_1 = await getFromStorage('username');
-                    server_sender(timer_overwrite,Username_1);
-                    running_url=[];
-                    console.log(running_url);
-                    // chrome.storage.local.set({overwritten:timer_overwrite, running:running_url},()=>{
-                    // })
-  
-                    chrome.windows.remove(window1.id);
-                  })
-                ; 
-                })
+                  await executeScript(window1.tabs[0].id);
+                  console.log('executed');
+                  pausedtimer = await responsetimer({action:'pausetimer'});
+                  console.log(pausedtimer.object);
+                  timer_overwrite[running_url[0]] = pausedtiemr.object;
+                  const Username_1 = await getFromStorage('username');
+                  server_sender(timer_overwrite,Username_1);
+                  running_url=[];
+                  await removeWindow(window1.id);
+                
                 }
               }
               }}
              
           
-        } catch (error) {
+        } 
+        catch (error) {
           console.warn('Exiting handler due to:', error); 
         }
         }  
