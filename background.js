@@ -675,6 +675,7 @@ async function timerupdate(message) {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(message, (response) => {
       if (chrome.runtime.lastError) {
+        console.warn('Non-critical error during script execution:', chrome.runtime.lastError);
         reject(new Error(chrome.runtime.lastError));
       } else {
         resolve(response);

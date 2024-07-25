@@ -26,11 +26,15 @@
   ],
 
   "host_permissions":[
-    "<all_urls>",
-    "chrome-extension://bdnkfkcdglljacbjaagbhmdoppfcadmb/*"
+    "<all_urls>"
   ],
 
-
+"web_accessible_resources": [
+    {
+      "resources": ["timers.js"],
+      "matches": ["chrome-extension://bdnkfkcdglljacbjaagbhmdoppfcadmb/*"]
+    }
+  ],
 
   "action":{
     "default_icon":{
