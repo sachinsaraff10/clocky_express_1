@@ -70,9 +70,19 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             console.log('on it boss');
             clearInterval(timer.intervalId)
             console.log(timer);
-            sendResponse({action:'hereyougo',object:timer})
-            // chrome.storage.local.set({pausedtimer:timer})
-                
+            // sendResponse({action:'hereyougo',object:timer},()=>{
+            //     console.log('been sent');
+            // })
+            // return true;
+            chrome.storage.local.set({ pausedtimer: timer }, () => {
+                if (chrome.runtime.lastError) {
+                  console.error('Error setting paused timer:', chrome.runtime.lastError);
+                //   sendResponse({ status: 'error', message: chrome.runtime.lastError.message });
+                } 
+              });
+          
+              // Return true to indicate the response is sent asynchronously
+              return true;     
             
     } })
     
