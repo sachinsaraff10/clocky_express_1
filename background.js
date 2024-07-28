@@ -547,8 +547,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         running_timer=timer_overwrite[running_url[0]];
         responsetimer = await timerupdate({action:'pausetimer',
           object:running_timer});
-        const result = await getFromStorage('pausedtimer');
-                    pausedtimer = result.pausedtimer;;
+        pausedtimer=responsetimer.object;
         timer_overwrite[running_url[0]]=pausedtimer;
         await removeWindow(window1.id);
         console.log(`Window ID: ${window1.id} removed successfully`);
@@ -579,8 +578,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
               addToArrayIfNotExists(visitedDomain,releurl);
               responsetimer = await timerupdate({action:'pausetimer',
                 object:running_timer});
-              const result = await getFromStorage('pausedtimer');
-                    pausedtimer = result.pausedtimer;;
+              pausedtimer=responsetimer.object;
               timer_overwrite[running_url[0]]=pausedtimer;
               await removeWindow(window1.id);
               console.log(`Window ID: ${window1.id} removed successfully`);
@@ -686,7 +684,7 @@ async function timerupdate(message) {
         console.warn('Non-critical error during script execution:', 
           chrome.runtime.lastError);
         // reject(new Error(chrome.runtime.lastError));
-          resolve();
+          resolve()
       } else {
         resolve(response);
       }
@@ -803,8 +801,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   running_timer=timer_overwrite[running_url[0]];
                   responsetimer = await timerupdate({action:'pausetimer',
                     object:running_timer});
-                    const result = await getFromStorage('pausedtimer');
-                    pausedtimer = result.pausedtimer;
+                  pausedtimer=responsetimer.object;
                   timer_overwrite[running_url[0]]=pausedtimer;
                   await removeWindow(window1.id);
                   console.log(`Window ID: ${window1.id} removed successfully`);
@@ -835,8 +832,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                         addToArrayIfNotExists(visitedDomain,releurl);
                         responsetimer = await timerupdate({action:'pausetimer',
                           object:running_timer});
-                        const result = await getFromStorage('pausedtimer');
-                    pausedtimer = result.pausedtimer;;
+                        pausedtimer=responsetimer.object;
                         timer_overwrite[running_url[0]]=pausedtimer;
                         await removeWindow(window1.id);
                         console.log(`Window ID: ${window1.id} removed successfully`);
@@ -878,9 +874,8 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   await executeScript(window1.tabs[0].id);
                   console.log('executed');
                   pausedtimer = await timerupdate({action:'pausetimer'});
-                  const result = await getFromStorage('pausedtimer');
-                  pausedtimer = result.pausedtimer;
-                  timer_overwrite[running_url[0]] = pausedtimer;
+                  console.log(pausedtimer.object);
+                  timer_overwrite[running_url[0]] = pausedtimer.object;
                   const Username_1 = await getFromStorage('username');
                   server_sender(timer_overwrite,Username_1);
                   running_url=[];
