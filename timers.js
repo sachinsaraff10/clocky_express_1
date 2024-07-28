@@ -77,7 +77,7 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
             chrome.storage.local.set({ pausedtimer: timer }, () => {
                 if (chrome.runtime.lastError) {
                   console.error('Error setting paused timer:', chrome.runtime.lastError);
-                //   sendResponse({ status: 'error', message: chrome.runtime.lastError.message });
+                  sendResponse({ status: 'error', message: chrome.runtime.lastError.message });
                 } 
               });
           
