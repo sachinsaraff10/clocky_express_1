@@ -33,13 +33,13 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
 
 
 
-        function setTimer(timer){
-            console.log('now running')
-            let hours = Number(hourInput.value);
-            let minutes = Number(minuteInput.value);
-            let seconds = Number(secondInput.value);
+    function setTimer(timer){
+    console.log('now running')
+    let hours = Number(hourInput.value);
+    let minutes = Number(minuteInput.value);
+    let seconds = Number(secondInput.value);
 
-            let totalSeconds = hours * 3600 + minutes * 60 + seconds;
+    let totalSeconds = hours * 3600 + minutes * 60 + seconds;
 
    timer.intervalId = setInterval(() => {
     hours = Math.floor(totalSeconds / 3600);
@@ -61,11 +61,12 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
     totalSeconds--;
   }, 1000)
 
-
+}
   function messageListener(message, sender, sendResponse) {
     if (message.action === 'store_current_timer') {
       console.log('on it');
       clearInterval(timer.intervalId);
+      console.log(timer.intervalId);
       console.log(timer);
       sendResponse({ action: 'hereyougo', object: timer });
       return; // No async operations, so no need to return true
@@ -74,11 +75,13 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
     if (message.action === 'pausetimer') {
       console.log('on it boss');
       clearInterval(timer.intervalId);
+      console.log(timer.intervalId);
       console.log(timer);
   
       chrome.storage.local.set({ pausedtimer: timer }, () => {
         if (chrome.runtime.lastError) {
-          console.error('Error setting paused timer:', chrome.runtime.lastError);
+          console.error('Error setting paused timer:', 
+            chrome.runtime.lastError);
           sendResponse({ status: 'error', message: chrome.runtime.lastError.message });
         } else {
           sendResponse({ action: 'hereyougo', object: timer });
@@ -86,9 +89,9 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
       });
   
       return true; // Return true to indicate the response is sent asynchronously
-    }
+    }   
   }
 
   
-}
+
     // addTimerButton.addEventListener('click', createTimer);
