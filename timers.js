@@ -53,42 +53,41 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
       clearInterval(timer.intervalId);
       chrome.runtime.sendMessage({action:'timesup'});
     }
-    chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>
-    {
-        if(message.action==='store_current_timer'){
-            console.log('on it');
-            clearInterval(timer.intervalId)
-            console.log(timer);
-
-            sendResponse({action:'hereyougo',object:timer})
-            // chrome.storage.local.set({updatedtimer:timer})
-                
-            }
-
-        
-        if(message.action==='pausetimer'){
-            console.log('on it boss');
-            clearInterval(timer.intervalId)
-            console.log(timer);
-            // sendResponse({action:'hereyougo',object:timer},()=>{
-            //     console.log('been sent');
-            // })
-            // return true;
-            chrome.storage.local.set({ pausedtimer: timer }, () => {
-                if (chrome.runtime.lastError) {
-                  console.error('Error setting paused timer:', chrome.runtime.lastError);
-                  sendResponse({ status: 'error', message: chrome.runtime.lastError.message });
-                } 
-              });
-          
-              // Return true to indicate the response is sent asynchronously
-              return true;     
-            
-    } })
     
+    if (!chrome.runtime.onMessage.hasListener(messageListener)) {
+        chrome.runtime.onMessage.addListener(messageListener);
+      }  
 // chrome.runtime.sendMessage({action:'live_timer',object:timer})
     totalSeconds--;
   }, 1000)
+
+
+  function messageListener(message, sender, sendResponse) {
+    if (message.action === 'store_current_timer') {
+      console.log('on it');
+      clearInterval(timer.intervalId);
+      console.log(timer);
+      sendResponse({ action: 'hereyougo', object: timer });
+      return; // No async operations, so no need to return true
+    }
+  
+    if (message.action === 'pausetimer') {
+      console.log('on it boss');
+      clearInterval(timer.intervalId);
+      console.log(timer);
+  
+      chrome.storage.local.set({ pausedtimer: timer }, () => {
+        if (chrome.runtime.lastError) {
+          console.error('Error setting paused timer:', chrome.runtime.lastError);
+          sendResponse({ status: 'error', message: chrome.runtime.lastError.message });
+        } else {
+          sendResponse({ action: 'hereyougo', object: timer });
+        }
+      });
+  
+      return true; // Return true to indicate the response is sent asynchronously
+    }
+  }
 
   
 }
