@@ -545,7 +545,8 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
             else{
 
         running_timer=timer_overwrite[running_url[0]];
-        responsetimer = await timerupdate({action:'pausetimer',
+        responsetimer = await timerupdate({action:'pausetimer', 
+          url:running_url,
           object:running_timer});
         pausedtimer=responsetimer.object;
         timer_overwrite[running_url[0]]=pausedtimer;
@@ -576,7 +577,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
               running_timer=timer_overwrite[running_url[0]];
               console.log(timer_overwrite);
               addToArrayIfNotExists(visitedDomain,releurl);
-              responsetimer = await timerupdate({action:'pausetimer',
+              responsetimer = await timerupdate({action:'pausetimer',url:running_url,
                 object:running_timer});
               pausedtimer=responsetimer.object;
               timer_overwrite[running_url[0]]=pausedtimer;
@@ -622,7 +623,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         running_timer=timer_overwrite[running_url[0]];
         await executeScript(window1.tabs[0].id);
         console.log('executed');
-        pausedtimer = await timerupdate({action:'pausetimer'});
+        pausedtimer = await timerupdate({action:'pausetimer', url:running_url});
         console.log(pausedtimer.object);
         timer_overwrite[running_url[0]] = pausedtimer.object;
         const Username_1 = await getFromStorage('username');
@@ -799,7 +800,8 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                       else{
     
                   running_timer=timer_overwrite[running_url[0]];
-                  responsetimer = await timerupdate({action:'pausetimer',
+                  responsetimer = await timerupdate({action:'pausetimer', 
+                    url:running_url,
                     object:running_timer});
                   pausedtimer=responsetimer.object;
                   timer_overwrite[running_url[0]]=pausedtimer;
@@ -831,6 +833,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                         console.log(timer_overwrite);
                         addToArrayIfNotExists(visitedDomain,releurl);
                         responsetimer = await timerupdate({action:'pausetimer',
+                          url:running_url,
                           object:running_timer});
                         pausedtimer=responsetimer.object;
                         timer_overwrite[running_url[0]]=pausedtimer;
@@ -873,7 +876,8 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   running_timer=timer_overwrite[running_url[0]];
                   await executeScript(window1.tabs[0].id);
                   console.log('executed');
-                  pausedtimer = await timerupdate({action:'pausetimer'});
+                  pausedtimer = await timerupdate({action:'pausetimer', 
+                    url:running_url});
                   console.log(pausedtimer.object);
                   timer_overwrite[running_url[0]] = pausedtimer.object;
                   const Username_1 = await getFromStorage('username');

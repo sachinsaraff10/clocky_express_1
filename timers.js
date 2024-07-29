@@ -2,7 +2,8 @@ const timerContainer = document.getElementById('timerContainer');
 const hourInput = document.getElementById('hourInput');
 const minuteInput = document.getElementById('minuteInput');
 const secondInput = document.getElementById('secondInput');
-           
+const timermap = {};
+let urll;
 // const addTimerButton = document.getElementById('addTimerButton');
       let intervalID;
 chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
@@ -33,8 +34,13 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
 
 
 
-    function setTimer(timer){
-    console.log('now running')
+    function setTimer(timer,url){
+        if (url in timermap) {
+            console.warn('Timer for this URL already exists:', url);
+            return; // Optionally, handle updating or ignoring
+          }
+        console.log('now running')
+
     let hours = Number(hourInput.value);
     let minutes = Number(minuteInput.value);
     let seconds = Number(secondInput.value);
@@ -54,16 +60,18 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
       chrome.runtime.sendMessage({action:'timesup'});
     }
     
-    if (!chrome.runtime.onMessage.hasListener(messageListener)) {
-        chrome.runtime.onMessage.addListener(messageListener);
-      }  
+    
 // chrome.runtime.sendMessage({action:'live_timer',object:timer})
     totalSeconds--;
-  }, 1000)
+  }, 1000);
+
+  timermap[url] = timer
 
 }
   function messageListener(message, sender, sendResponse) {
     if (message.action === 'store_current_timer') {
+        urll = message.url;
+       let timer = timermap[url]; 
       console.log('on it');
       clearInterval(timer.intervalId);
       console.log(timer.intervalId);
@@ -74,6 +82,8 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
   
     if (message.action === 'pausetimer') {
       console.log('on it boss');
+      urll = message.url;
+       let timer = timermap[url];
       clearInterval(timer.intervalId);
       console.log(timer.intervalId);
       console.log(timer);
