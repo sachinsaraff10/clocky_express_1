@@ -58,7 +58,7 @@ function createTimer(timer, url) {
                 // setTimer(timer);
             }
             else{
-
+                
                 hourInput.readOnly=true
                 hourInput.value=timer.hourinput;
                 
@@ -66,6 +66,7 @@ function createTimer(timer, url) {
                 minuteInput.value=timer.minuteinput;
                 secondInput.readOnly=true
                 secondInput.value=timer.secondinput;
+                timermap[url] = timer;
                 // setTimer(timer);
             }
 
