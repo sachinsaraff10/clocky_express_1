@@ -539,6 +539,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
     await executeScript(window1.tabs[0].id);
     running_url.push(releurl);
     updatedtimer = await timerupdate({action:'launch_now',
+      url:running_url,
       object:timer_overwrite[releurl]})
     
             }
@@ -558,6 +559,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         await executeScript(window1.tabs[0].id);
         running_url.push(releurl);
         updatedtimer = await timerupdate({action:'launch_now',
+          url:running_url,
         object:timer_overwrite[releurl]})
 
             }
@@ -568,6 +570,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
             await executeScript(window1.tabs[0].id);
             running_url.push(releurl);
             updatedtimer = await timerupdate({action:'launch_now',
+              url:running_url,
             object:timer_overwrite[releurl]})
           }
         }
@@ -589,6 +592,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
               await executeScript(window1.tabs[0].id);
               running_url.push(releurl);
               updatedtimer = await timerupdate({action:'launch_now',
+                url:running_url,
               object:timer_overwrite[releurl]})
 }
           else{
@@ -602,6 +606,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
   running_url.push(releurl);
   timer_overwrite[releurl] = urltimer[releurl]; 
   updatedtimer = await timerupdate({action:'launch_now',
+    url:running_url,
   object:timer_overwrite[releurl]})
         
     
@@ -794,6 +799,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
               await executeScript(window1.tabs[0].id);
               running_url.push(releurl);
               updatedtimer = await timerupdate({action:'launch_now',
+                url:running_url,
                 object:timer_overwrite[releurl]})
               
                       }
@@ -813,6 +819,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   await executeScript(window1.tabs[0].id);
                   running_url.push(releurl);
                   updatedtimer = await timerupdate({action:'launch_now',
+                    url:running_url,
                   object:timer_overwrite[releurl]})
       
                       }
@@ -823,6 +830,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                       await executeScript(window1.tabs[0].id);
                       running_url.push(releurl);
                       updatedtimer = await timerupdate({action:'launch_now',
+                        url:running_url,
                       object:timer_overwrite[releurl]})
                     }
                   }
@@ -845,6 +853,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                         await executeScript(window1.tabs[0].id);
                         running_url.push(releurl);
                         updatedtimer = await timerupdate({action:'launch_now',
+                          url:running_url,
                         object:timer_overwrite[releurl]})
       }
                     else{
@@ -858,6 +867,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
             running_url.push(releurl);
             timer_overwrite[releurl] = urltimer[releurl]; 
             updatedtimer = await timerupdate({action:'launch_now',
+              url:running_url,
             object:timer_overwrite[releurl]})
                   
               

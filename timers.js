@@ -5,78 +5,120 @@ const secondInput = document.getElementById('secondInput');
 const timermap = {};
 let urll;
 // const addTimerButton = document.getElementById('addTimerButton');
-      let intervalID;
+let intervalID;
+
+async function getFromStorage(key) {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get(key, (result) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  }
+
+  async function settoStorage(pairs){
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.set(pairs, () => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+
 chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
         if (message.action==='launch_now'){
             console.log('received');
             let timerObject = message.object;
+            urll = message.url
             // JSON.parse(timerObject);
             // JSON.parse(timerObject);
             console.log(timerObject);
             console.log(timerObject.hourinput);
-            createTimer(timerObject);
+            createTimer(timerObject, urll);
             setTimer(timerObject);
         }
     })
-         function createTimer(timer) {
+function createTimer(timer, url) {
+            initializeMessageListener9();
+            if (url in timermap){
 
-            hourInput.readOnly=true
-            hourInput.value=timer.hourinput;
-            
-            minuteInput.readOnly=true
-            minuteInput.value=timer.minuteinput;
-            secondInput.readOnly=true
-            secondInput.value=timer.secondinput;
-            // setTimer(timer);
+                hourInput.readOnly=true
+                hourInput.value=timermap[url].hourinput;
+                
+                minuteInput.readOnly=true
+                minuteInput.value=timermap[url].minuteinput;
+                secondInput.readOnly=true
+                secondInput.value=timermap[url].secondinput;
+                // setTimer(timer);
+            }
+            else{
+
+                hourInput.readOnly=true
+                hourInput.value=timer.hourinput;
+                
+                minuteInput.readOnly=true
+                minuteInput.value=timer.minuteinput;
+                secondInput.readOnly=true
+                secondInput.value=timer.secondinput;
+                // setTimer(timer);
+            }
+
             
             
         }
 
 
 
-    function setTimer(timer,url){
-        if (url in timermap) {
-            console.warn('Timer for this URL already exists:', url);
-            return; // Optionally, handle updating or ignoring
-          }
-        console.log('now running')
+    function setTimer(timer){
+        
+            // console.warn('Timer for this URL already exists:', url);
+            
+            console.log(' resuming')
 
-    let hours = Number(hourInput.value);
-    let minutes = Number(minuteInput.value);
-    let seconds = Number(secondInput.value);
-
-    let totalSeconds = hours * 3600 + minutes * 60 + seconds;
-
-   timer.intervalId = setInterval(() => {
-    hours = Math.floor(totalSeconds / 3600);
-    minutes = Math.floor((totalSeconds % 3600) / 60);
-    seconds = totalSeconds % 60;
-    hourInput.value=hours;
-    minuteInput.value=minutes;
-    secondInput.value=seconds;
-
-    if (totalSeconds <= 0) {
-      clearInterval(timer.intervalId);
-      chrome.runtime.sendMessage({action:'timesup'});
-    }
-    
-    
-// chrome.runtime.sendMessage({action:'live_timer',object:timer})
-    totalSeconds--;
-  }, 1000);
-
-  timermap[url] = timer
-
+            let hours = Number(hourInput.value);
+            let minutes = Number(minuteInput.value);
+            let seconds = Number(secondInput.value);
+        
+            let totalSeconds = hours * 3600 + minutes * 60 + seconds;
+        
+           timer.intervalId = setInterval(() => {
+            hours = Math.floor(totalSeconds / 3600);
+            minutes = Math.floor((totalSeconds % 3600) / 60);
+            seconds = totalSeconds % 60;
+            hourInput.value=hours;
+            minuteInput.value=minutes;
+            secondInput.value=seconds;
+        
+            if (totalSeconds <= 0) {
+              clearInterval(timer.intervalId);
+              chrome.runtime.sendMessage({action:'timesup'});
+            }
+            
+            
+        // chrome.runtime.sendMessage({action:'live_timer',object:timer})
+            totalSeconds--;
+          }, 1000);
+        
 }
+
+
   function messageListener(message, sender, sendResponse) {
     if (message.action === 'store_current_timer') {
         urll = message.url;
        let timer = timermap[url]; 
       console.log('on it');
       clearInterval(timer.intervalId);
+    //   let overwrite  = await getFromStorage()
       console.log(timer.intervalId);
       console.log(timer);
-      sendResponse({ action: 'hereyougo', object: timer });
+      sendResponse({ action: 'hereyougo', 
+        object: timer });
       return; // No async operations, so no need to return true
     }
   
@@ -92,7 +134,8 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
         if (chrome.runtime.lastError) {
           console.error('Error setting paused timer:', 
             chrome.runtime.lastError);
-          sendResponse({ status: 'error', message: chrome.runtime.lastError.message });
+          sendResponse({ status: 'error',
+             message: chrome.runtime.lastError.message });
         } else {
           sendResponse({ action: 'hereyougo', object: timer });
         }
@@ -102,6 +145,11 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
     }   
   }
 
+  function initializeMessageListener() {
+    if (!chrome.runtime.onMessage.hasListener(messageListener)) {
+      chrome.runtime.onMessage.addListener(messageListener);
+    }
+  }
   
 
     // addTimerButton.addEventListener('click', createTimer);
