@@ -116,8 +116,11 @@ function createTimer(timer, url) {
       console.log('on it');
       clearInterval(timer.intervalId);
     //   let overwrite  = await getFromStorage()
-      console.log(timer.intervalId);
-      console.log(timer);
+    timer.hourinput = hourInput.value; // or whatever property holds the hours
+    timer.minuteinput = minuteInput.value; // or whatever property holds the minutes
+    timer.secondinput = secondInput.value; // or whatever property holds the seconds
+    console.log(timer.intervalId);
+    console.log(timer);
       sendResponse({ action: 'hereyougo', 
         object: timer });
       return; // No async operations, so no need to return true
@@ -129,9 +132,11 @@ function createTimer(timer, url) {
       urll = message.url;
        let timer = timermap[urll];
       clearInterval(timer.intervalId);
-      console.log(timer.intervalId);
+      timer.hourinput = hourInput.value; // or whatever property holds the hours
+      timer.minuteinput = minuteInput.value; // or whatever property holds the minutes
+      timer.secondinput = secondInput.value; // or whatever property holds the seconds
+     console.log(timer.intervalId);
       console.log(timer);
-  
       chrome.storage.local.set({ pausedtimer: timer }, () => {
         if (chrome.runtime.lastError) {
           console.error('Error setting paused timer:', 

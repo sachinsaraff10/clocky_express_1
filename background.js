@@ -532,6 +532,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
       url:running_url
     });
     new_timer = responsetimer.object;
+    console.log(new_timer);
     console.log('received');
     timer_overwrite[releurl]=new_timer;
     await removeWindow(window1.id);
@@ -568,6 +569,10 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
             }
           }
           else{
+            if (window1.id){
+              await removeWindow(window1.id);
+              console.log(`Window ID: ${window1.id} removed successfully`);
+            }
             window1 = await createWindow();
             console.log(window1.tabs[0].id);
             await executeScript(window1.tabs[0].id);
@@ -640,7 +645,8 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         const Username_1 = await getFromStorage('username');
         server_sender(timer_overwrite,Username_1);
         running_url=[];
-        await removeWindow(window1.id);
+        // await removeWindow(window1.id);
+
         console.log(`Window ID: ${window1.id} removed successfully`);
       }
     }
@@ -710,6 +716,7 @@ async function removeWindow(windowId) {
       if (chrome.runtime.lastError) {
         reject(new Error(chrome.runtime.lastError));
       } else {
+        windowId = null;
         resolve();
       }
     });
@@ -798,6 +805,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
               });
               new_timer = responsetimer.object;
               console.log('received');
+              console.log(new_timer);
               timer_overwrite[releurl]=new_timer;
               await removeWindow(window1.id);
               console.log(`Window ID: ${window1.id} removed successfully`);
@@ -833,6 +841,10 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                       }
                     }
                     else{
+                      if (window1.id){
+                        await removeWindow(window1.id);
+                        console.log(`Window ID: ${window1.id} removed successfully`);
+                      }
                       window1 = await createWindow();
                       console.log(window1.tabs[0].id);
                       await executeScript(window1.tabs[0].id);
@@ -904,7 +916,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   const Username_1 = await getFromStorage('username');
                   server_sender(timer_overwrite,Username_1);
                   running_url=[];
-                  await removeWindow(window1.id);
+                  // await removeWindow(window1.id);
                   console.log(`Window ID: ${window1.id} removed successfully`);
                 }
               }
