@@ -45,7 +45,7 @@ chrome.runtime.onMessage.addListener((message,sender,sendResponse)=>{
         }
     })
 function createTimer(timer, url) {
-            initializeMessageListener9();
+            initializeMessageListener();
             if (url in timermap){
 
                 hourInput.readOnly=true
