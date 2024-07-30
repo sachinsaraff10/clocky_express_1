@@ -112,7 +112,7 @@ function createTimer(timer, url) {
   function messageListener(message, sender, sendResponse) {
     if (message.action === 'store_current_timer') {
         urll = message.url;
-       let timer = timermap[url]; 
+       let timer = timermap[urll]; 
       console.log('on it');
       clearInterval(timer.intervalId);
     //   let overwrite  = await getFromStorage()
@@ -125,8 +125,9 @@ function createTimer(timer, url) {
   
     if (message.action === 'pausetimer') {
       console.log('on it boss');
+      console.log(message.url);
       urll = message.url;
-       let timer = timermap[url];
+       let timer = timermap[urll];
       clearInterval(timer.intervalId);
       console.log(timer.intervalId);
       console.log(timer);

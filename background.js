@@ -10,6 +10,7 @@
   let responsetimer;
   let updatedtimer
   let urls = [];
+  const popup_id = 'bdnkfkcdglljacbjaagbhmdoppfcadmb';
 let timers_url = {};
 let urltimer = {};
 let visitedDomain = [];
@@ -515,7 +516,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
       console.log(urls);
     for (let i=0;i<urls.length;i++)
     { console.log(urls[i]);
-      if (currentdomain.includes(urls[i])){
+      if (currentdomain.includes(urls[i]) || currentdomain === popup_id){
         console.log(urls[i]);
         releurl=urls[i];
         console.log(typeof releurl); // Should be 'string'
@@ -774,7 +775,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                 console.log(urls);
               for (let i=0;i<urls.length;i++)
               { console.log(urls[i]);
-                if (currentdomain.includes(urls[i])){
+                if (currentdomain.includes(urls[i]) || currentdomain === popup_id){
                   console.log(urls[i]);
                   releurl=urls[i];
                   console.log(typeof releurl); // Should be 'string'
