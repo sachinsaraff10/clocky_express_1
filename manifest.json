@@ -31,9 +31,8 @@
 
 "web_accessible_resources": [
     {
-      "resources": ["timers.js"],
-      "matches": ["chrome-extension://bdnkfkcdglljacbjaagbhmdoppfcadmb/*"]
-    }
+    "resources": ["timers.js", "timers.html"],
+      "matches": ["<all_urls>"]}
   ],
 
   "action":{
