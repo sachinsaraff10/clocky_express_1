@@ -516,7 +516,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
       console.log(urls);
     for (let i=0;i<urls.length;i++)
     { console.log(urls[i]);
-      if (currentdomain.includes(urls[i]) || currentdomain === popup_id){
+      if (currentdomain.includes(urls[i])){
         console.log(urls[i]);
         releurl=urls[i];
         console.log(typeof releurl); // Should be 'string'
@@ -528,7 +528,9 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
           if(running_url.length>0){
             if(releurl===running_url[0]){
 
-    responsetimer = await timerupdate({action:'store_current_timer'});
+    responsetimer = await timerupdate({action:'store_current_timer',
+      url:running_url
+    });
     new_timer = responsetimer.object;
     console.log('received');
     timer_overwrite[releurl]=new_timer;
@@ -625,6 +627,9 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         console.log(running_url);
         console.log(window1);
         console.log(tab.url);
+        if (currentdomain === popup_id){
+          return;
+        }
         if (running_url.length>0){
         running_timer=timer_overwrite[running_url[0]];
         await executeScript(window1.tabs[0].id);
@@ -775,7 +780,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                 console.log(urls);
               for (let i=0;i<urls.length;i++)
               { console.log(urls[i]);
-                if (currentdomain.includes(urls[i]) || currentdomain === popup_id){
+                if (currentdomain.includes(urls[i]) ){
                   console.log(urls[i]);
                   releurl=urls[i];
                   console.log(typeof releurl); // Should be 'string'
@@ -788,7 +793,9 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                     if(running_url.length>0){
                       if(releurl===running_url[0]){
 
-              responsetimer = await timerupdate({action:'store_current_timer'});
+              responsetimer = await timerupdate({action:'store_current_timer',
+                url:running_url
+              });
               new_timer = responsetimer.object;
               console.log('received');
               timer_overwrite[releurl]=new_timer;
@@ -883,6 +890,9 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   console.log(running_url);
                   console.log(window1);
                   console.log(tab.url);
+                  if (currentdomain === popup_id){
+                    return;
+                  }
                   if (running_url.length>0){
                   running_timer=timer_overwrite[running_url[0]];
                   await executeScript(window1.tabs[0].id);
