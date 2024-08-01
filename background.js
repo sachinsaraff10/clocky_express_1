@@ -437,6 +437,9 @@ async function message_responsesender(message){
     })
   })
 }
+
+
+
 chrome.runtime.onMessageExternal.addListener((message,sender,sendResponse)=>{
  if(message.action === 'username'){
       let username1 = message.data;
@@ -643,9 +646,13 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         console.log(pausedtimer.object);
         timer_overwrite[running_url[0]] = pausedtimer.object;
         const Username_1 = await getFromStorage('username');
+
         server_sender(timer_overwrite,Username_1);
+        console.log('sent to server');
+        await removeWindow(window1.id);
+        console.log(`Window ID: ${window1.id} removed successfully`);
+        
         running_url=[];
-        // await removeWindow(window1.id);
 
         console.log(`Window ID: ${window1.id} removed successfully`);
       }
@@ -716,12 +723,21 @@ async function removeWindow(windowId) {
       if (chrome.runtime.lastError) {
         reject(new Error(chrome.runtime.lastError));
       } else {
-        windowId = null;
+        // windowId = null;
         resolve();
       }
     });
   });
 }
+
+chrome.windows.onRemoved.addListener((windowId) => {
+  if (windowId === window1.id) {
+    // Handle cleanup when the popup window is closed
+    console.log('Popup window closed');
+    window1.id = null; // Clear the reference
+    running_url = [];
+  }
+});
 
 async function createWindow() {
   return new Promise((resolve, reject) => {
@@ -915,9 +931,10 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   timer_overwrite[running_url[0]] = pausedtimer.object;
                   const Username_1 = await getFromStorage('username');
                   server_sender(timer_overwrite,Username_1);
-                  running_url=[];
-                  // await removeWindow(window1.id);
+                  console.log('sent to server');
+                  await removeWindow(window1.id);
                   console.log(`Window ID: ${window1.id} removed successfully`);
+                  running_url=[];
                 }
               }
               }}
