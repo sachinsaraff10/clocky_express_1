@@ -332,6 +332,7 @@ const message = JSON.stringify(
   }
 )
 ws.send(message);
+console.log("Serialized message:", message);
   }
 
 
@@ -645,13 +646,11 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         pausedtimer = await timerupdate({action:'pausetimer', url:running_url});
         console.log(pausedtimer.object);
         timer_overwrite[running_url[0]] = pausedtimer.object;
-        const Username_1 = await getFromStorage('username');
-
-        server_sender(timer_overwrite,Username_1);
-        console.log('sent to server');
         await removeWindow(window1.id);
         console.log(`Window ID: ${window1.id} removed successfully`);
-        
+        const Username_1 = await getFromStorage('username');
+        server_sender(timer_overwrite,Username_1);
+        console.log('sent to server');
         running_url=[];
 
         console.log(`Window ID: ${window1.id} removed successfully`);
@@ -929,11 +928,12 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                     url:running_url});
                   console.log(pausedtimer.object);
                   timer_overwrite[running_url[0]] = pausedtimer.object;
+                  await removeWindow(window1.id);
+                  console.log(`Window ID: ${window1.id} removed successfully`);
+               
                   const Username_1 = await getFromStorage('username');
                   server_sender(timer_overwrite,Username_1);
                   console.log('sent to server');
-                  await removeWindow(window1.id);
-                  console.log(`Window ID: ${window1.id} removed successfully`);
                   running_url=[];
                 }
               }
