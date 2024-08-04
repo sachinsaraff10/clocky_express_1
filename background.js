@@ -647,7 +647,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         await removeWindow(window1.id);
         console.log(`Window ID: ${window1.id} removed successfully`);
         // const Username_1 = await getFromStorage('username');
-        server_sender(timer_overwrite,username);
+        server_sender(pausedtimer,username);
         console.log('sent to server');
         running_url=[];
 
@@ -931,7 +931,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   console.log(`Window ID: ${window1.id} removed successfully`);
                
                   // const Username_1 = await getFromStorage('username');
-                  server_sender(timer_overwrite,username);
+                  server_sender(pausedtimer,username);
                   console.log('sent to server');
                   running_url=[];
                 }
