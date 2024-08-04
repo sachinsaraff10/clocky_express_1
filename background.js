@@ -9,7 +9,7 @@
   let windowID;
   let responsetimer;
   let updatedtimer
-  let urls = [];
+  let urls = new Set();
   const popup_id = 'bdnkfkcdglljacbjaagbhmdoppfcadmb';
 let timers_url = {};
 let urltimer = {};
@@ -18,7 +18,7 @@ let running_url = [];
 let timer_overwrite = {};
 let ws;
 let taburl;
-
+let username;
 function extractDomainFromTabId(tabId) {
   chrome.tabs.get(tabId, (tab) => {
       if (chrome.runtime.lastError) {
@@ -47,7 +47,7 @@ function initializeWebSocket() {
         return;
       }
     
-      const username = result.username;
+      username= result.username;
     
       if (username) {
         console.log('Username exists:', username);
@@ -58,6 +58,7 @@ function initializeWebSocket() {
         }
       )
         ws.send(message);
+        console.log(message);
       } else {
         console.log('No username found in chrome.storage.local');
         // Handle the absence of the username
@@ -101,7 +102,7 @@ initializeWebSocket();
 
   function getUsername() {
     // Retrieve the username from localStorage
-    const username = chrome.storage.local.get('username');
+    username= chrome.storage.local.get('username');
     
     if (!username) {
       console.error('No username found in localStorage');
@@ -114,9 +115,9 @@ initializeWebSocket();
 
   // Function to send the username over WebSocket
 function sendUsername() {
-  const username = getUsername();
+  username= getUsername();
   if (username && ws.readyState === WebSocket.OPEN) {
-    // const username = chrome.storage.local.get('username');
+    // username= chrome.storage.local.get('username');
     // message = {credentials:username};
     ws.send(username);
     console.log('Username sent:', message);
@@ -171,7 +172,7 @@ function checkUsernameExists(callback) {
       return;
     }
 
-    const username = result.username;
+    username= result.username;
 
     if (username) {
       console.log('Username exists:', username);
@@ -192,7 +193,7 @@ function checkUsernameExists(callback) {
       ['urls', 'overwritten', 'visitedDomain', 'running', 
       'timers', 'urltotimer'],
       (result) => {
-        urls = result.urls || [];
+        urls = result.urls || new Set();
         console.log(urls);
         timers_url = result.timers || {};
         urltimer = result.urltotimer || {};
@@ -260,7 +261,7 @@ ws.onmessage = (event)=>{
 
         for (let i=0;i<data.sites.length;i++){
           console.log(data.sites[i]);
-          urls.push(data.sites[i].website);
+          urls.add(data.sites[i].website);
           let  timer = {
                   
             hourinput: data.sites[i].hours,
@@ -346,7 +347,7 @@ console.log("Serialized message:", message);
     //       return;
     //     }
       
-    //     const username = result.username;
+    //     username= result.username;
       
     //     if (username) {
     //       console.log('Username exists:', username);
@@ -515,14 +516,11 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
     // console.log(tabId);
     console.log(taburl);
 
-    if (urls.length>0){
+    if (urls.size>0){
       console.log('lets go');
       console.log(urls);
-    for (let i=0;i<urls.length;i++)
-    { console.log(urls[i]);
-      if (currentdomain.includes(urls[i])){
-        console.log(urls[i]);
-        releurl=urls[i];
+        if (urls.has(currentdomain)){
+        releurl=currentdomain;
         console.log(typeof releurl); // Should be 'string'
         console.log(visitedDomain);
         console.log(timer_overwrite);
@@ -625,12 +623,10 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         }
         }
       
-      break;
+      
     }
       
       else {
-        console.log(urls[i]);
-        console.log(currentdomain.includes(urls[i]));
         console.log(currentdomain.includes(releurl));
         console.log(currentdomain);
         console.log(running_url);
@@ -648,15 +644,16 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         timer_overwrite[running_url[0]] = pausedtimer.object;
         await removeWindow(window1.id);
         console.log(`Window ID: ${window1.id} removed successfully`);
-        const Username_1 = await getFromStorage('username');
-        server_sender(timer_overwrite,Username_1);
+        // const Username_1 = await getFromStorage('username');
+        server_sender(timer_overwrite,username);
         console.log('sent to server');
         running_url=[];
 
         console.log(`Window ID: ${window1.id} removed successfully`);
       }
     }
-    }}
+    
+  }
   
   } catch (error) {
     console.error(`Error getting tab status: ${error}`);
@@ -797,14 +794,12 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
               console.log(tabId);
               console.log(taburl);
 
-              if (urls.length>0){
+              if (urls.size>0){
                 console.log('lets go');
                 console.log(urls);
-              for (let i=0;i<urls.length;i++)
-              { console.log(urls[i]);
-                if (currentdomain.includes(urls[i]) ){
-                  console.log(urls[i]);
-                  releurl=urls[i];
+              
+                if (urls.has(currentdomain)){
+                  releurl=currentdomain;
                   console.log(typeof releurl); // Should be 'string'
                   console.log(visitedDomain);
                   console.log(timer_overwrite);
@@ -908,11 +903,10 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
               
                   }
                   }
-                break;
+                
                 }
                 
                 else {
-                  console.log(urls[i]);
                   console.log(currentdomain);
                   console.log(running_url);
                   console.log(window1);
@@ -921,6 +915,7 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                     return;
                   }
                   if (running_url.length>0){
+                  
                   running_timer=timer_overwrite[running_url[0]];
                   await executeScript(window1.tabs[0].id);
                   console.log('executed');
@@ -931,13 +926,14 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   await removeWindow(window1.id);
                   console.log(`Window ID: ${window1.id} removed successfully`);
                
-                  const Username_1 = await getFromStorage('username');
-                  server_sender(timer_overwrite,Username_1);
+                  // const Username_1 = await getFromStorage('username');
+                  server_sender(timer_overwrite,username);
                   console.log('sent to server');
                   running_url=[];
                 }
               }
-              }}
+              
+            }
              
           
         } 
