@@ -206,7 +206,7 @@ function checkUsernameExists(callback) {
     {chrome.storage.local.get(
       ['urls', 'overwritten', 'visitedDomain', 'running', 'timers', 'urltotimer'],
       (result) => {
-        urls = result.urls || [];
+        urls = result.urls || new Set();
         console.log(urls);
         timers_url = result.timers || {};
         urltimer = result.urltotimer || {};
@@ -254,7 +254,7 @@ ws.onmessage = (event)=>{
           'overwritten',
           'running','timers'
         ]);
-        urls = [];
+        urls = new Set();
         urltimer = {};
         timer_overwrite = {};
         running_url = [];
@@ -508,6 +508,8 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
     taburl=tab.url;
     console.log(activeTabId);
     let currentdomain=new URL(taburl).hostname;
+    currentdomain = currentdomain.replace(/^www\./, '');
+
     // const newdomain = new URL(tab.url).hostname;
 
     
@@ -784,6 +786,8 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
               taburl=tab.url;
               console.log(activeTabId);
               let currentdomain=new URL(taburl).hostname;
+              
+              currentdomain = currentdomain.replace(/^www\./, '');
               // stored = await getFromStorage('visitedDomain');
               // visitedDomain = stored
               // const newdomain = new URL(tab.url).hostname;
