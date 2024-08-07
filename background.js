@@ -8,7 +8,8 @@
   let previousTabId = null;
   let windowID;
   let responsetimer;
-  let updatedtimer
+  let updatedtimer;
+  let old_url;
   let urls = new Set();
   const popup_id = 'bdnkfkcdglljacbjaagbhmdoppfcadmb';
 let timers_url = {};
@@ -324,12 +325,13 @@ ws.onmessage = (event)=>{
     }
  
 
-  function server_sender(temp_map,username){
+  function server_sender(temp_map,username, url){
 const message = JSON.stringify(
   {
     message : "paused timer from old tab",
     username: username,
-    timers: temp_map
+    timers: temp_map,
+    url:url
   }
 )
 ws.send(message);
@@ -644,10 +646,12 @@ chrome.tabs.onActivated.addListener(async(activeInfo)=>{
         pausedtimer = await timerupdate({action:'pausetimer', url:running_url});
         console.log(pausedtimer.object);
         timer_overwrite[running_url[0]] = pausedtimer.object;
+        old_url = running_url;
         await removeWindow(window1.id);
         console.log(`Window ID: ${window1.id} removed successfully`);
         // const Username_1 = await getFromStorage('username');
-        server_sender(pausedtimer,username);
+
+        server_sender(pausedtimer.object,username, old_url);
         console.log('sent to server');
         running_url=[];
 
@@ -926,12 +930,13 @@ chrome.tabs.onUpdated.addListener(async(tabId,changeInfo,tab)=>{
                   pausedtimer = await timerupdate({action:'pausetimer', 
                     url:running_url});
                   console.log(pausedtimer.object);
+                  old_url = running_url;
                   timer_overwrite[running_url[0]] = pausedtimer.object;
                   await removeWindow(window1.id);
                   console.log(`Window ID: ${window1.id} removed successfully`);
                
                   // const Username_1 = await getFromStorage('username');
-                  server_sender(pausedtimer,username);
+                  server_sender(pausedtimer.object,username, old_url);
                   console.log('sent to server');
                   running_url=[];
                 }
