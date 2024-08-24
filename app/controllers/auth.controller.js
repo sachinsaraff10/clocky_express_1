@@ -27,13 +27,13 @@ let transporter = nodemailer.createTransport({
   }
 })
 
-const broadcast = (data) => {
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
-    }
-  });
-};
+// const broadcast = (data) => {
+//   wss.clients.forEach((client) => {
+//     if (client.readyState === WebSocket.OPEN) {
+//       client.send(JSON.stringify(data));
+//     }
+//   });
+// };
 
 
 
@@ -380,7 +380,7 @@ const user = req.session.username;
             else{
               const profileUpdate = { type: 'profileUpdate', 
               websites: populatedUser.websites };
-              broadcast(profileUpdate);
+              // broadcast(profileUpdate);
                 user.save((err,user)=>{
                 if (err) {
                   res.status(500).send({ message: err });

@@ -6,7 +6,7 @@ const User = db.user;
 const Sites=db.sites;
 const Website= db.website;
 const express = require("express");
-
+const crypto = require('crypto');
 const cors = require("cors");
 const cookieSession = require("cookie-session");
 const yhh= require('dotenv').config();
@@ -89,47 +89,103 @@ wss.on('connection', (ws) => {
   ws.on('message', (message) => {
     console.log('Received:', message);
     // Echo the message back to the client
-    const messageStr = message.toString();
-
-
-    // Parse the string as JSON
-    let parsedMessage;
-    try {
-      // parsedMessage = JSON.parse(messageStr);
-      console.log('Received:', messageStr);
-    } catch (e) {
-      console.error('Error parsing JSON:', e);
-    }
-    ws.send(`Server received: ${message}`);
+    let messageStr =  JSON.parse(message);
     console.log(messageStr);
-    const user1=  User.findOne({username:messageStr}).exec(
-      (err,user)=>{
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-        if (!user) {
-          return res.status(404).send({ message: "User Not found." });
-        }
-        user.populate('websites',(err,populatedsites)=>{
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-        }
-        else{
-          console.log(populatedsites.websites);
-          const jsonwebsites = JSON.stringify({
-            message:"here are the user websites",
-            sites: populatedsites.websites});
-          
-          ws.send(jsonwebsites);
-        }
-        })
-        
-
+        // Parse the string as JSON
+    let parsedMessage;
+    if (messageStr.action === "username delivered"){
+      try {
+        // parsedMessage = JSON.parse(messageStr);
+        console.log('Received:', messageStr);
+      } catch (e) {
+        console.error('Error parsing JSON:', e);
       }
-    )
+      ws.send(`Server received: ${message}`);
+      console.log(messageStr);
+      let username = messageStr.username;
+      username = username.replace(/^'|'$/g, '');
+      const user1=  User.findOne({username:username}).
+      exec(
+        (err,user)=>{
+          if (err) {
+            // res.status(500).send({ message: err });
+            return;
+          }
+          if (!user) {
+            return res.status(404).send({ message: "User Not found." });
+          }
+          user.populate('websites',(err,populatedsites)=>{
+            if (err) {
+              res.status(500).send({ message: err });
+              return;
+          }
+          else{
+            console.log(populatedsites.websites);
+            let arr_1 = populatedsites.websites;
+            for (let i = arr_1.length -1 ;i>=0 ; i -- ){
+            if (arr_1[i] in user.temp_websites){
+              arr_1.splice(i,1);
+              }
+            }
+            const jsonwebsites = JSON.stringify({
+              message:"here are the user websites",
+              sites: arr_1,
+              visitedsites:user.temp_websites});
+            
+            ws.send(jsonwebsites);
+          }
+          })
+          
+  
+        }
+      )
+    }
+    if (messageStr.message === "paused timer from old tab"){
+      try {
+        // parsedMessage = JSON.parse(messageStr);
+        // console.log('Received:', messageStr);
 
+      } catch (e) {
+        console.error('Error parsing JSON:', e);
+      }
+      ws.send(`Server received: ${message}`);
+      let username = messageStr.username;
+      username = username.replace(/^'|'$/g, '');
+      const user1=  User.findOne({username:username}).
+      exec(
+        (err,user)=>{
+          if (err) {
+            // res.status(500).send({ message: err });
+            return;
+          }
+          if (!user) {
+            return res.status(404).send({ message: "User Not found." });
+          }
+          let key = messageStr.url;
+          console.log(key);
+          // const hashedKey = crypto.createHash('sha256').update(key).digest('hex');
+          let timer_1 = messageStr.timers;
+          if (Object.keys(user.temp_websites).length === 0) {
+            // temp_websites is an empty object
+            user.temp_websites = {};
+          }
+          // delete user.temp_websites.l;
+          user.temp_websites[key] = timer_1;
+          user.save(err => {
+            if (err) {
+              console.log("error", err);
+            }
+    
+            console.log("added pausedtimer");
+            
+          })
+          
+          console.log(user);
+  
+        }
+      )
+      
+    }
   });
 
   ws.on('close', () => {

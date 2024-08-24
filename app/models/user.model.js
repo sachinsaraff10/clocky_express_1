@@ -20,10 +20,18 @@ const User = mongoose.model(
 
 websites: [{type: mongoose.Schema.Types.ObjectId,
   ref: 'Website'}],
-temp_websites:
- [{ URL: String, hours: Number, minutes: Number,
-   seconds: Number }] // Array of JSON objects
-
-  })
+temp_websites:{
+type: Object
+// of: new mongoose.Schema({
+//   hourinput: String,
+//   minuteinput: String,
+//   secondinput: String,
+//   urlId:{
+//     type: mongoose.Schema.Types.Mixed // Allows any type, including null
+//   } ,
+//   intervalId:Number
+// }, { _id: false })
+}
+ })
 );
 module.exports = User;
