@@ -294,6 +294,53 @@ ws.onmessage = (event)=>{
     } else {
       console.log('Received other message:', data.message);
       // Handle other types of messages if needed
+      if (data.message === 'here are the user websites') {
+        console.log('Received user websites data');
+        // Handle the user websites data here
+        console.log('Websites:', data.sites);
+    
+        try {
+          const result = await getFromStorage(['urls','urltotimer',
+            'overwritten',
+            'running','timers'
+          ]);
+          urls = new Set();
+          urltimer = {};
+          timer_overwrite = {};
+          running_url = [];
+  
+          for (let i=0;i<data.sites.length;i++){
+            console.log(data.sites[i]);
+            urls.add(data.sites[i].website);
+            let  timer = {
+                    
+              hourinput: data.sites[i].hours,
+              minuteinput: data.sites[i].minutes,
+              secondinput: data.sites[i].seconds,
+              urlId:null,
+              intervalId:null
+            };
+              urltimer[data.sites[i].website]=timer;
+              timer_overwrite[data.sites[i].website] = timer;
+              console.log(timer_overwrite);
+      
+          }
+          
+          await new Promise((resolve, reject) => {
+            chrome.storage.local.set({urls: urls,urltotimer:urltimer}, () => {
+              if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+              } else {
+                resolve();
+              }
+            });
+          });
+    
+          // Further processing as needed
+        } catch (error) {
+          console.error('Error accessing storage:', error);
+        }
+      }
     }
   };
   ;
@@ -458,19 +505,24 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                
     
         if(message.action==='timesup'){
-          chrome.windows.remove(window1.id,()=>{
-          chrome.windows.create(
-            {
-              url: 'timeout.html',
-              type: 'popup',
-              width: 100,
-              height: 100,
-              left: 950, // Adjust the position to the bottom right
-              top: 520
-            }
-          )  
-          })
+          server_sender(message.object,username,
+            running_url[0]);
           
+          chrome.windows.remove(window1.id)
+          
+  // Create a new listener function that blocks the domain
+  function blockRequest(details) {
+    console.log("Blocking request to:", details.url);
+    return { cancel: true };
+  }
+// chrome.webRequest.onBeforeRequest.removeListener(blockRequest);
+
+  // Attach the listener to block the specific domain stored in running_url[0]
+  chrome.webRequest.onBeforeRequest.addListener(
+    blockRequest,
+    { urls: [`*://${running_url[0]}/*`] }, // URL pattern to block dynamically
+    ["blocking"]
+  );
           }
       
   })

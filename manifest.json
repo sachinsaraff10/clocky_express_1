@@ -20,7 +20,9 @@
     "activeTab",
     "storage",
     "windows",
-    "scripting"
+    "scripting",
+    "webRequest",
+    "webRequestBlocking"
 
     
   ],

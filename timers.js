@@ -98,7 +98,15 @@ function createTimer(timer, url) {
         
             if (totalSeconds <= 0) {
               clearInterval(timer.intervalId);
-              chrome.runtime.sendMessage({action:'timesup'});
+              //   let overwrite  = await getFromStorage()
+              timer.hourinput = hourInput.value; // or whatever property holds the hours
+              timer.minuteinput = minuteInput.value; // or whatever property holds the minutes
+              timer.secondinput = secondInput.value; // or whatever property holds the seconds
+              console.log(timer.intervalId);
+              console.log(timer);
+              chrome.runtime.sendMessage({action:'timesup',
+                object:timer
+              });
             }
             
             
