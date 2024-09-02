@@ -17,20 +17,27 @@ let urltimer = {};
 let visitedDomain = [];
 let running_url = [];
 let timer_overwrite = {};
+let blocked = new Set();
 let ws;
 let taburl;
+let nextRuleId = 1; // Initialize rule ID counter
+
 let username;
-function extractDomainFromTabId(tabId) {
-  chrome.tabs.get(tabId, (tab) => {
+async function extractDomainFromTabId(tabId) {
+  return new Promise((resolve,reject)=>{
+   chrome.tabs.get(tabId, (tab) => {
       if (chrome.runtime.lastError) {
-          console.error(chrome.runtime.lastError.message);
-          return;
+          return reject(chrome.runtime.lastError.message);
+          
       }
 
       const url = new URL(tab.url);
       const domain = url.hostname;
       console.log(`Domain for tabId ${tabId}: ${domain}`);
-  });
+      resolve();
+  }); 
+      })
+  
 }
 
 function initializeWebSocket() {
@@ -501,31 +508,49 @@ chrome.runtime.onMessageExternal.addListener((message,sender,sendResponse)=>{
     } 
 })
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => { 
-               
-    
-        if(message.action==='timesup'){
-          server_sender(message.object,username,
-            running_url[0]);
-          
-          chrome.windows.remove(window1.id)
-          
-  // Create a new listener function that blocks the domain
-  function blockRequest(details) {
-    console.log("Blocking request to:", details.url);
-    return { cancel: true };
-  }
-// chrome.webRequest.onBeforeRequest.removeListener(blockRequest);
-
-  // Attach the listener to block the specific domain stored in running_url[0]
-  chrome.webRequest.onBeforeRequest.addListener(
-    blockRequest,
-    { urls: [`*://${running_url[0]}/*`] }, // URL pattern to block dynamically
-    ["blocking"]
-  );
-          }
+chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => { 
+  if (message.action === 'timesup') {
+      server_sender(message.object, username, running_url[0]);
+      let forbiddendomain = running_url[0];
       
-  })
+      chrome.windows.remove(window1.id);
+      // Close the window  
+
+      // Define the rule to block requests to the specific domain
+      const blockRule = {
+          id: nextRuleId, // Use a unique ID for each rule, change this ID as needed
+          priority: 1,
+          action: { type: "block" },
+          condition: {
+              urlFilter: `||${running_url[0]}/*`, // URL pattern to block
+              resourceTypes: ["main_frame", "sub_frame", "xmlhttprequest", "script", "image"] // Block main and subframe requests
+          }
+      };
+
+      // Add the rule using declarativeNetRequest
+      chrome.declarativeNetRequest.updateDynamicRules({
+          addRules: [blockRule], // Add the new blocking rule
+          removeRuleIds: [1] // Remove any existing rule with the same ID before adding
+      }, async() => {
+          if (chrome.runtime.lastError) {
+              console.error(chrome.runtime.lastError);
+          } else {
+              
+              blocked.add(forbiddendomain);
+              chrome.declarativeNetRequest.getDynamicRules((rules) => {
+                console.log("Current dynamic rules:", rules); // Logs all the active rules
+              });
+              await activetabreload(forbiddendomain);
+              console.log('reloaded and ready');
+              nextRuleId++;    
+              console.log(`Blocking requests to ${running_url[0]}`);
+              
+            }
+      });
+
+      
+  }
+});
       
 let currenttabId;
 // 
@@ -754,6 +779,32 @@ async function windowStatus(tab) {
       }
     });
   });
+}
+
+async function activetabreload(tab){
+  return new Promise((resolve,reject)=>{
+chrome.tabs.query({active:true,currentWindow:true},async(tabs)=>{
+  if (chrome.runtime.lastError) {
+    return reject(chrome.runtime.lastError);
+  }
+if (tabs.length>0){
+  let domm = await extractDomainFromTabId(tabs[0].id);
+  console.log(tab);
+  if (domm === tab){
+
+    chrome.tabs.reload(tabs[0].id, () => {
+      if (chrome.runtime.lastError) {
+        return reject(chrome.runtime.lastError);
+      }
+      resolve();
+    });
+  }
+  resolve();
+}
+}
+
+)
+  })
 }
 
 async function timerupdate(message) {

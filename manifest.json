@@ -21,9 +21,8 @@
     "storage",
     "windows",
     "scripting",
-    "webRequest",
-    "webRequestBlocking"
-
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess"
     
   ],
 
