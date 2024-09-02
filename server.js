@@ -122,6 +122,7 @@ wss.on('connection', (ws) => {
           else{
             console.log(populatedsites.websites);
             let arr_1 = populatedsites.websites;
+            checkAndResetDaily(user.temp_websites);
             for (let i = arr_1.length -1 ;i>=0 ; i -- ){
             if (arr_1[i] in user.temp_websites){
               arr_1.splice(i,1);
@@ -212,6 +213,37 @@ const broadcast = (data) => {
   });
 };
 
+let lastResetDate = null;
+
+function resetWebSocketConnections() {
+    wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.terminate();  // Forcefully close the connection
+        }
+    });
+
+    console.log('WebSocket connections have been reset.');
+}
+
+function checkAndResetDaily(data) {
+    const now = new Date();
+    const currentDate = now.toDateString(); // Get current date as a string
+
+    if (lastResetDate !== currentDate) {
+        resetWebSocketConnections();
+        data = {};
+        lastResetDate = currentDate;
+
+    }
+}
+
+// Call this function when the server starts
+// checkAndResetDaily();
+
+// Optional: Schedule a check every hour (or any interval you like)
+setInterval(checkAndResetDaily, 60 * 60 * 1000); // 1 hour in milliseconds
+
+// WebSocket connection handling logic
 
 function initial() {
   Role.estimatedDocumentCount((err, count) => {
