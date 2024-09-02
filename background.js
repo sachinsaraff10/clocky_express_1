@@ -105,6 +105,79 @@ function reconnect() {
    // Maximum reconnect interval of 1 minute (60000ms)
 }
 
+// Function to clear all declarativeNetRequest rules
+function clearRules() {
+  chrome.declarativeNetRequest.updateDynamicRules(
+      {
+          removeRuleIds: [] // Pass an empty array to remove all rules
+      },
+      () => {
+          if (chrome.runtime.lastError) {
+              console.error("Failed to clear rules:", chrome.runtime.lastError);
+          } else {
+              console.log("All declarativeNetRequest rules have been cleared.");
+              // After clearing, update the last clear date
+              updateLastClearDate();
+          }
+      }
+  );
+}
+
+// Function to update the last clear date in chrome.storage
+function updateLastClearDate() {
+  const today = new Date().toDateString(); // Get current date as a string
+  chrome.storage.local.set({ lastClearDate: today }, () => {
+      if (chrome.runtime.lastError) {
+          console.error("Failed to update last clear date:", chrome.runtime.lastError);
+      } else {
+          console.log("Last clear date updated to:", today);
+      }
+  });
+}
+
+// Function to check if it's a new day since the last rule clear
+function checkForNewDayAndClearRules() {
+  chrome.storage.local.get('lastClearDate', (result) => {
+      const lastClearDate = result.lastClearDate || null;
+      const today = new Date().toDateString();
+
+      if (lastClearDate !== today) {
+          // It's a new day, clear the rules
+          clearRules();
+      } else {
+          console.log("Rules have already been cleared today.");
+      }
+  });
+}
+
+// Function to calculate milliseconds until the next midnight
+function getMillisecondsUntilMidnight() {
+  const now = new Date();
+  const nextMidnight = new Date(now);
+  nextMidnight.setHours(24, 0, 0, 0); // Set to the next midnight
+  return nextMidnight - now;
+}
+
+// Function to set up the timer to clear rules at midnight and repeat every 24 hours
+function scheduleMidnightClear() {
+  const msUntilMidnight = getMillisecondsUntilMidnight();
+
+  // Set a timeout to clear rules at midnight
+  setTimeout(() => {
+      clearRules();
+
+      // After clearing at midnight, set an interval to clear rules every 24 hours
+      setInterval(clearRules, 24 * 60 * 60 * 1000); // 24 hours in milliseconds
+
+  }, msUntilMidnight);
+}
+
+// Initialize the schedule when the extension starts
+scheduleMidnightClear();
+
+// Check if rules need to be cleared whenever the background script runs or wakes up
+checkForNewDayAndClearRules();
+
 
 initializeWebSocket();
 
@@ -256,6 +329,7 @@ ws.onmessage = (event)=>{
       console.log('Received user websites data');
       // Handle the user websites data here
       console.log('Websites:', data.sites);
+      console.log(data.visitedsites);
   
       try {
         const result = await getFromStorage(['urls','urltotimer',
@@ -283,6 +357,10 @@ ws.onmessage = (event)=>{
             console.log(timer_overwrite);
     
         }
+
+        Object.keys(data.visitedsites).forEach(key => {
+          timer_overwrite[key] = data.visitedsites[key];
+        })
         
         await new Promise((resolve, reject) => {
           chrome.storage.local.set({urls: urls,urltotimer:urltimer}, () => {
