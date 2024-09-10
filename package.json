@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "electron_dir",
   "version": "1.0.0",
   "description": "",
@@ -15,5 +16,40 @@
     "axios": "^1.4.0",
     "http-proxy-middleware": "^2.0.6",
     "uuid": "^9.0.0"
+=======
+  "name": "node-js-jwt-auth-mongodb",
+  "version": "1.0.0",
+  "description": "Node.js + MongoDB: JWT Authentication & Authorization",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node.js",
+    "express",
+    "jwt",
+    "login",
+    "registration",
+    "authentication",
+    "authorization",
+    "mongodb",
+    "mongoose"
+  ],
+  "author": "bezkoder",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-session": "^2.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.11.2",
+    "mongoose-int32": "^0.6.0",
+    "neverbounce": "^4.4.1",
+    "nodemailer": "^6.9.8",
+    "uuid": "^9.0.1",
+    "ws": "^8.17.1"
+>>>>>>> repo2/main
   }
 }
